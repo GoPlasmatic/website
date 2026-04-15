@@ -1,0 +1,2345 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Plasmatic – Orion</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+        <style>
+            :root {
+                --bg-deep: #07111a;
+                --bg-section: #063b4c;
+                --bg-card: #0f2030;
+                --text-heading: #ecf4f8;
+                --text-body: #7fafc0;
+                --text-muted: #3d6b7d;
+                --accent-blue: #119fcd;
+                --accent-green: #06d6a0;
+                --accent-teal: #4cbd97;
+                --accent-yellow: #ffd167;
+                --accent-red: #ef476f;
+                --border-subtle: rgba(17, 159, 205, 0.1);
+                --border-hover: rgba(6, 214, 160, 0.3);
+                --radius-lg: 16px;
+                --radius-md: 12px;
+                --radius-sm: 10px;
+            }
+
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-snap-type: y mandatory;
+            }
+
+            body {
+                background: var(--bg-deep);
+                color: var(--text-heading);
+                font-family: "DM Sans", sans-serif;
+                overflow-x: hidden;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+            ul {
+                list-style: none;
+            }
+
+            /* ── Canvas Background ─────────────────────────────────────────── */
+
+            #bg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
+            }
+
+            .content {
+                position: relative;
+                z-index: 1;
+                pointer-events: none;
+            }
+            .content > * {
+                pointer-events: auto;
+            }
+
+            /* ── Navigation ────────────────────────────────────────────────── */
+
+            .nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 24px 32px;
+                background: rgba(7, 17, 26, 0.8);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--border-subtle);
+                pointer-events: auto;
+            }
+
+            .nav-logo {
+                height: 48px;
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+            }
+
+            .nav-links a {
+                font-size: 14px;
+                color: var(--text-body);
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: white;
+            }
+
+            .btn-nav {
+                padding: 10px 20px;
+                background: var(--accent-green);
+                color: var(--bg-section);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 500;
+                font-size: 14px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: opacity 0.2s;
+            }
+            .btn-nav:hover {
+                opacity: 0.9;
+            }
+
+            /* ── Buttons ────────────────────────────────────────────────────── */
+
+            .btn-primary {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 16px 28px;
+                background: linear-gradient(
+                    193deg,
+                    var(--accent-teal) 15%,
+                    var(--accent-blue) 85%
+                );
+                color: var(--bg-section);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 700;
+                font-size: 15px;
+                letter-spacing: 1px;
+                border: none;
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                transition: opacity 0.2s;
+                text-decoration: none;
+            }
+            .btn-primary:hover {
+                opacity: 0.9;
+            }
+
+            .btn-secondary {
+                display: inline-flex;
+                align-items: center;
+                padding: 16px 28px;
+                background: transparent;
+                color: var(--text-body);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 400;
+                font-size: 15px;
+                border: 1px solid rgba(17, 159, 205, 0.22);
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                transition:
+                    border-color 0.2s,
+                    background 0.2s;
+                text-decoration: none;
+            }
+            .btn-secondary:hover {
+                border-color: rgba(17, 159, 205, 0.4);
+                background: rgba(17, 159, 205, 0.1);
+            }
+
+            /* ── Hero ──────────────────────────────────────────────────────── */
+
+            .hero {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                padding: 0 clamp(32px, 6vw, 96px);
+                padding-top: 96px;
+                scroll-snap-align: start;
+            }
+
+            .hero-text {
+                max-width: 720px;
+                transition: opacity 0.3s;
+            }
+
+            .hero-badge {
+                display: inline-block;
+                padding: 6px 14px;
+                border-radius: 999px;
+                border: 1px solid rgba(76, 189, 151, 0.3);
+                background: rgba(76, 189, 151, 0.1);
+                backdrop-filter: blur(4px);
+                margin-bottom: 28px;
+            }
+
+            .hero-badge span {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                color: var(--accent-teal);
+            }
+
+            .hero h1 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 800;
+                font-size: clamp(40px, 6vw, 80px);
+                color: var(--text-heading);
+                line-height: 1.1;
+                letter-spacing: -0.5px;
+                margin-bottom: 24px;
+            }
+
+            .hero p {
+                font-size: 18px;
+                font-weight: 300;
+                color: var(--text-body);
+                max-width: 520px;
+                line-height: 1.7;
+                margin-bottom: 36px;
+            }
+
+            .hero-ctas {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .hero,
+            .section-full,
+            .section-orion,
+            .section-cta {
+                border-bottom: 1px solid transparent;
+                border-image: linear-gradient(
+                        90deg,
+                        transparent 0%,
+                        rgba(6, 214, 160, 0.3) 50%,
+                        transparent 100%
+                    )
+                    1;
+            }
+
+            /* ── Section Layout ────────────────────────────────────────────── */
+
+            .section-full {
+                padding: 128px 32px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                scroll-snap-align: start;
+            }
+
+            .section-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .section-header {
+                text-align: center;
+                margin-bottom: 80px;
+            }
+
+            .section-header h2 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: clamp(32px, 4vw, 56px);
+                color: var(--text-heading);
+                line-height: 1.15;
+                letter-spacing: -0.5px;
+                margin-bottom: 16px;
+            }
+
+            .section-header p {
+                font-size: 20px;
+                color: var(--text-body);
+                max-width: 640px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+            .grid-2col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+                align-items: center;
+            }
+
+            .grid-2x2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+
+            .grid-3col {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 32px;
+            }
+
+            /* ── Gradient Text ──────────────────────────────────────────────── */
+
+            .gradient-text {
+                background: linear-gradient(
+                    to right,
+                    var(--accent-blue),
+                    var(--accent-green)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* ── Problem Section ────────────────────────────────────────────── */
+
+            .problem-content h2,
+            .solution-content h2 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: clamp(32px, 4vw, 56px);
+                color: var(--text-heading);
+                line-height: 1.15;
+                letter-spacing: -0.5px;
+                margin-bottom: 32px;
+            }
+
+            .section-body {
+                font-size: 20px;
+                color: var(--text-body);
+                line-height: 1.6;
+                margin-bottom: 32px;
+            }
+
+            .pain-points {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-bottom: 40px;
+            }
+
+            .pain-point {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .dot {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .dot::after {
+                content: "";
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+            }
+
+            .dot-red {
+                background: rgba(239, 71, 111, 0.2);
+            }
+            .dot-red::after {
+                background: var(--accent-red);
+            }
+            .pain-title {
+                font-size: 16px;
+                color: var(--text-heading);
+                font-weight: 500;
+                margin-bottom: 4px;
+            }
+
+            .pain-desc {
+                font-size: 14px;
+                color: var(--text-body);
+            }
+
+            .callout {
+                padding-left: 24px;
+                border-left: 2px solid var(--accent-green);
+            }
+
+            .callout p {
+                font-size: 18px;
+                color: var(--text-heading);
+                line-height: 1.6;
+            }
+
+            .callout strong {
+                color: white;
+            }
+
+            /* ── Solution Section ───────────────────────────────────────────── */
+
+            .feature-cards-stack {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-top: 32px;
+            }
+
+            .feature-card {
+                padding: 24px;
+                border-radius: var(--radius-md);
+                border: 1px solid transparent;
+            }
+
+            .feature-card h3 {
+                font-weight: 500;
+                font-size: 16px;
+                color: var(--text-heading);
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .feature-card p {
+                color: var(--text-body);
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            .dot-inline {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                display: inline-block;
+                flex-shrink: 0;
+            }
+
+            .dot-blue {
+                background: var(--accent-blue);
+            }
+            .dot-green {
+                background: var(--accent-green);
+            }
+            .dot-yellow {
+                background: var(--accent-yellow);
+            }
+
+            .feature-card-blue {
+                border-color: rgba(17, 159, 205, 0.2);
+                background: linear-gradient(
+                    to right,
+                    rgba(17, 159, 205, 0.1),
+                    transparent
+                );
+            }
+
+            .feature-card-green {
+                border-color: rgba(6, 214, 160, 0.2);
+                background: linear-gradient(
+                    to right,
+                    rgba(6, 214, 160, 0.1),
+                    transparent
+                );
+            }
+
+            .feature-card-yellow {
+                border-color: rgba(255, 209, 103, 0.2);
+                background: linear-gradient(
+                    to right,
+                    rgba(255, 209, 103, 0.1),
+                    transparent
+                );
+            }
+
+            /* ── Capabilities Section ───────────────────────────────────────── */
+
+            .capability-card {
+                padding: 40px;
+                border-radius: var(--radius-lg);
+                border: 1px solid var(--border-subtle);
+                background: var(--bg-card);
+                transition: border-color 0.3s;
+            }
+
+            .capability-card:hover {
+                border-color: var(--border-hover);
+            }
+
+            .icon-box {
+                width: 56px;
+                height: 56px;
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 24px;
+            }
+
+            .icon-box svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .icon-blue {
+                background: rgba(17, 159, 205, 0.08);
+                color: var(--accent-blue);
+            }
+            .icon-yellow {
+                background: rgba(255, 209, 103, 0.08);
+                color: var(--accent-yellow);
+            }
+            .icon-teal {
+                background: rgba(76, 189, 151, 0.08);
+                color: var(--accent-teal);
+            }
+            .icon-red {
+                background: rgba(239, 71, 111, 0.08);
+                color: var(--accent-red);
+            }
+
+            .capability-card h3 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: 24px;
+                color: var(--text-heading);
+                margin-bottom: 4px;
+            }
+
+            .capability-subtitle {
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-body);
+                margin-bottom: 12px;
+            }
+
+            .capability-card > p:last-child {
+                color: var(--text-body);
+                font-size: 15px;
+                line-height: 1.7;
+            }
+
+            /* ── How It Works — Comparison Cards ─────────────────────────────── */
+
+            .comparison-grid {
+                margin-bottom: 48px;
+                align-items: stretch;
+            }
+
+            .comparison-card {
+                padding: 48px;
+                border-radius: var(--radius-lg);
+                background: var(--bg-card);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .before-card {
+                border: 1px solid rgba(239, 71, 111, 0.2);
+            }
+
+            .after-card {
+                border: 1px solid var(--border-hover);
+                background: linear-gradient(
+                    135deg,
+                    rgba(6, 214, 160, 0.1),
+                    var(--bg-card),
+                    var(--bg-card)
+                );
+            }
+
+            .comparison-label {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-body);
+                margin-bottom: 12px;
+            }
+
+            .comparison-label-green {
+                color: var(--accent-green);
+            }
+
+            .comparison-card h3 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: 28px;
+                color: var(--text-heading);
+                margin-bottom: 32px;
+            }
+
+            .comparison-points {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .comparison-point {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .comparison-point .dot-sm {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                margin-top: 7px;
+            }
+
+            .comparison-point p {
+                font-size: 15px;
+                color: var(--text-body);
+                line-height: 1.6;
+            }
+
+            .after-card .comparison-point p {
+                color: var(--text-heading);
+            }
+
+            /* ── How It Works — Step Cards ───────────────────────────────────── */
+
+            .steps-grid {
+                margin-top: 0;
+            }
+
+            .step-card {
+                padding: 32px;
+                border-radius: var(--radius-lg);
+                border: 1px solid var(--border-subtle);
+                background: var(--bg-card);
+                transition: border-color 0.3s;
+                position: relative;
+            }
+
+            .step-card:hover {
+                border-color: var(--border-hover);
+            }
+
+            .step-card::before {
+                content: "";
+                position: absolute;
+                inset: -1px;
+                border-radius: var(--radius-lg);
+                background: linear-gradient(
+                    to right,
+                    var(--accent-blue),
+                    var(--accent-green)
+                );
+                opacity: 0;
+                transition: opacity 0.3s;
+                z-index: -1;
+            }
+
+            .step-card:hover::before {
+                opacity: 0.1;
+            }
+
+            .step-num {
+                font-size: 40px;
+                font-weight: 300;
+                color: rgba(127, 175, 192, 0.3);
+                margin-bottom: 16px;
+            }
+
+            .step-card h3 {
+                font-size: 20px;
+                font-weight: 500;
+                color: var(--text-heading);
+                margin-bottom: 12px;
+            }
+
+            .step-card p {
+                font-size: 15px;
+                color: var(--text-body);
+                line-height: 1.6;
+            }
+
+            /* ── Orion Product Section ──────────────────────────────────────── */
+
+            .section-orion {
+                padding: 96px 32px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                scroll-snap-align: start;
+            }
+
+            .orion-grid {
+                align-items: start;
+            }
+
+            .orion-label {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: var(--text-muted);
+                line-height: 20px;
+                margin-bottom: 14px;
+            }
+
+            .orion-heading {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: clamp(32px, 3.5vw, 46px);
+                color: var(--text-heading);
+                line-height: 1.15;
+                letter-spacing: -0.5px;
+                margin-bottom: 14px;
+            }
+
+            .orion-desc-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 24px;
+                margin-bottom: 20px;
+            }
+
+            .orion-desc-card p {
+                font-size: 15px;
+                font-weight: 300;
+                color: var(--text-body);
+                line-height: 1.7;
+            }
+
+            .orion-desc-card strong {
+                font-weight: 500;
+                color: var(--text-heading);
+            }
+
+            /* ── Orion Feature List ──────────────────────────────────────────── */
+
+            .orion-feature-list {
+                display: flex;
+                flex-direction: column;
+                gap: 11px;
+            }
+
+            .orion-feature-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 16px 20px 16px 63px;
+                position: relative;
+                min-height: 88px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .orion-feature-icon {
+                position: absolute;
+                left: 17px;
+                top: 16px;
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                background: rgba(17, 159, 205, 0.12);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .orion-feature-icon svg {
+                width: 16px;
+                height: 16px;
+                color: var(--text-heading);
+            }
+
+            .orion-feature-card h4 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: 18px;
+                color: var(--text-heading);
+                margin-bottom: 4px;
+            }
+
+            .orion-feature-card p {
+                font-size: 15px;
+                color: var(--text-body);
+                line-height: 1.6;
+            }
+
+            /* ── CTA Section ────────────────────────────────────────────────── */
+
+            .section-cta {
+                padding: 128px 32px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                scroll-snap-align: start;
+            }
+
+            .section-cta .cta-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .cta-inner {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cta-label {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: var(--accent-teal);
+                margin-bottom: 14px;
+            }
+
+            .section-cta h2 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 800;
+                font-size: clamp(32px, 3.5vw, 46px);
+                color: var(--text-heading);
+                letter-spacing: -0.5px;
+                margin-bottom: 14px;
+            }
+
+            .cta-desc {
+                font-size: 15px;
+                color: var(--text-body);
+                line-height: 1.6;
+                margin-bottom: 30px;
+            }
+
+            .audience-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 14px;
+                width: 100%;
+                margin-bottom: 30px;
+            }
+
+            .audience-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .audience-card h4 {
+                font-size: 14px;
+                font-weight: 400;
+                color: var(--text-heading);
+                margin-bottom: 4px;
+            }
+
+            .audience-card p {
+                font-size: 14px;
+                color: var(--text-body);
+                line-height: 1.6;
+                flex: 1;
+            }
+
+            .audience-card a {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: var(--accent-blue);
+                margin-top: 16px;
+                transition: opacity 0.2s;
+            }
+            .audience-card a:hover {
+                opacity: 0.8;
+            }
+
+            .cta-buttons {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            /* ── Footer ─────────────────────────────────────────────────────── */
+
+            .footer {
+                border-top: 1px solid var(--border-subtle);
+                padding: 64px 32px;
+                scroll-snap-align: start;
+            }
+
+            .footer-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+                gap: 48px;
+                margin-bottom: 48px;
+            }
+
+            .footer-logo {
+                height: 52px;
+                margin-bottom: 16px;
+            }
+
+            .footer-brand p {
+                font-size: 14px;
+                color: var(--text-body);
+                line-height: 1.6;
+            }
+
+            .footer-col h4 {
+                font-weight: 500;
+                font-size: 15px;
+                color: var(--text-heading);
+                margin-bottom: 16px;
+            }
+
+            .footer-col li {
+                margin-bottom: 8px;
+            }
+
+            .footer-col a {
+                font-size: 14px;
+                color: var(--text-body);
+                transition: color 0.2s;
+            }
+            .footer-col a:hover {
+                color: var(--text-heading);
+            }
+
+            .footer-bottom {
+                padding-top: 32px;
+                border-top: 1px solid var(--border-subtle);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 14px;
+                color: var(--text-body);
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 24px;
+            }
+
+            .footer-links a {
+                color: var(--text-body);
+                transition: color 0.2s;
+            }
+            .footer-links a:hover {
+                color: var(--text-heading);
+            }
+
+            /* ── Scroll Hint ────────────────────────────────────────────────── */
+
+            .scroll-hint {
+                position: fixed;
+                bottom: 48px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 10;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                opacity: 0.4;
+                transition: opacity 0.5s;
+                pointer-events: auto;
+            }
+            .scroll-hint.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+            .scroll-hint span {
+                font-size: 14px;
+                color: var(--text-body);
+            }
+            .scroll-hint .arrow {
+                width: 16px;
+                height: 16px;
+                border-right: 2px solid var(--text-body);
+                border-bottom: 2px solid var(--text-body);
+                transform: rotate(45deg);
+                animation: bounce 1.5s infinite;
+            }
+            @keyframes bounce {
+                0%,
+                20%,
+                50%,
+                80%,
+                100% {
+                    transform: rotate(45deg) translateY(0);
+                }
+                40% {
+                    transform: rotate(45deg) translateY(6px);
+                }
+                60% {
+                    transform: rotate(45deg) translateY(3px);
+                }
+            }
+
+            /* ── Section Dimming Overlay ──────────────────────────────────── */
+
+            .section-dimmed {
+                position: relative;
+            }
+
+            .section-dimmed::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(7, 17, 26, 0.7);
+                z-index: -1;
+                pointer-events: none;
+            }
+
+            /* ── Scroll Reveal Animation ──────────────────────────────────── */
+
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .reveal-left {
+                opacity: 0;
+                transform: translateX(-30px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+            }
+            .reveal-left.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .reveal-right {
+                opacity: 0;
+                transform: translateX(30px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+            }
+            .reveal-right.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            /* ── Responsive ─────────────────────────────────────────────────── */
+
+            @media (max-width: 1024px) {
+                .grid-2col {
+                    grid-template-columns: 1fr;
+                    gap: 48px;
+                }
+                .grid-2x2 {
+                    grid-template-columns: 1fr;
+                }
+                .grid-3col {
+                    grid-template-columns: 1fr;
+                }
+                .audience-grid {
+                    grid-template-columns: 1fr;
+                }
+                .footer-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .nav-links a {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .hero-ctas {
+                    flex-direction: column;
+                }
+                .hero-ctas .btn-primary,
+                .hero-ctas .btn-secondary {
+                    width: 100%;
+                    justify-content: center;
+                }
+                .footer-grid {
+                    grid-template-columns: 1fr;
+                }
+                .footer-bottom {
+                    flex-direction: column;
+                    gap: 16px;
+                    text-align: center;
+                }
+                .cta-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="bg"></canvas>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <img
+                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
+                alt="Plasmatic"
+                class="nav-logo"
+            />
+            <div class="nav-links">
+                <a href="#">Product</a>
+                <a href="#">Docs</a>
+                <a href="#">Community</a>
+                <a href="#">GitHub</a>
+                <button class="btn-nav">Get started</button>
+            </div>
+        </nav>
+
+        <!-- Scroll Hint -->
+        <div class="scroll-hint" id="scrollHint">
+            <span>Scroll to explore</span>
+            <div class="arrow"></div>
+        </div>
+
+        <div class="content">
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- HERO                                                          -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="hero">
+                <div class="hero-text" id="heroText">
+                    <div class="hero-badge">
+                        <span>Introducing Orion</span>
+                    </div>
+                    <h1><span class="gradient-text">Orion</span></h1>
+                    <h1>The nervous system for modern software.</h1>
+                    <p>
+                        AI is accelerating how systems are built. But without
+                        coordination, behaviour becomes unpredictable. Orion is
+                        the runtime that makes systems work as one.
+                    </p>
+                    <div class="hero-ctas">
+                        <a href="#" class="btn-primary"
+                            >Start a conversation &rarr;</a
+                        >
+                        <a href="#" class="btn-secondary"
+                            >Explore how it works</a
+                        >
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- PROBLEM                                                       -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full">
+                <div class="section-container">
+                    <div class="grid-2col">
+                        <div class="problem-content reveal-left">
+                            <h2>
+                                Systems are growing faster than they can
+                                coordinate.
+                            </h2>
+                            <p class="section-body">
+                                Every service has its own logic. Every
+                                deployment changes behaviour. Every integration
+                                introduces drift.
+                            </p>
+                            <div class="pain-points">
+                                <div class="pain-point">
+                                    <div class="dot dot-red"></div>
+                                    <div>
+                                        <p class="pain-title">
+                                            Behaviour is unpredictable
+                                        </p>
+                                        <p class="pain-desc">
+                                            Logic scattered across dozens of
+                                            services
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="pain-point">
+                                    <div class="dot dot-red"></div>
+                                    <div>
+                                        <p class="pain-title">
+                                            Changes take too long
+                                        </p>
+                                        <p class="pain-desc">
+                                            Every update requires rebuilding and
+                                            redeploying
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="pain-point">
+                                    <div class="dot dot-red"></div>
+                                    <div>
+                                        <p class="pain-title">
+                                            No single source of truth
+                                        </p>
+                                        <p class="pain-desc">
+                                            Understanding system behaviour
+                                            requires reading all the code
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="callout">
+                                <p>
+                                    The issue isn't building systems.<br /><strong
+                                        >It's controlling how they
+                                        behave.</strong
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- SOLUTION                                                      -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full">
+                <div class="section-container">
+                    <div class="grid-2col">
+                        <div></div>
+                        <div class="solution-content reveal-right">
+                            <h2>
+                                What's missing is a
+                                <span class="gradient-text"
+                                    >nervous system.</span
+                                >
+                            </h2>
+                            <p class="section-body">
+                                Orion sits between your services as a runtime
+                                coordination layer &mdash; a central spine that
+                                routes signals, governs behaviour, and controls
+                                how your entire system responds.
+                            </p>
+                            <div class="feature-cards-stack">
+                                <div class="feature-card feature-card-blue">
+                                    <h3>
+                                        <span
+                                            class="dot-inline dot-blue"
+                                        ></span>
+                                        Signal routing
+                                    </h3>
+                                    <p>
+                                        Direct events to the right handlers
+                                        based on content, priority, or context
+                                    </p>
+                                </div>
+                                <div class="feature-card feature-card-green">
+                                    <h3>
+                                        <span
+                                            class="dot-inline dot-green"
+                                        ></span>
+                                        Instant deployment
+                                    </h3>
+                                    <p>
+                                        Change behaviour across all services
+                                        without rebuilding or redeploying code
+                                    </p>
+                                </div>
+                                <div class="feature-card feature-card-yellow">
+                                    <h3>
+                                        <span
+                                            class="dot-inline dot-yellow"
+                                        ></span>
+                                        Central governance
+                                    </h3>
+                                    <p>
+                                        One source of truth for how your system
+                                        should behave
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- CAPABILITIES                                                  -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full section-dimmed">
+                <div class="section-container">
+                    <div class="section-header reveal">
+                        <h2>Built like a real nervous system</h2>
+                        <p>
+                            Signals, reflexes, memory, and protection &mdash;
+                            the same principles that coordinate biological
+                            systems
+                        </p>
+                    </div>
+                    <div class="grid-2x2">
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-blue">
+                                <i data-lucide="git-branch"></i>
+                            </div>
+                            <h3>Signals</h3>
+                            <p class="capability-subtitle">
+                                Route and orchestrate
+                            </p>
+                            <p>
+                                Direct events through your system based on
+                                content, context, and priority. Coordinate
+                                workflows that span multiple services.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-yellow">
+                                <i data-lucide="zap"></i>
+                            </div>
+                            <h3>Reflexes</h3>
+                            <p class="capability-subtitle">Instant response</p>
+                            <p>
+                                Deploy behaviour changes that take effect
+                                immediately across all services. No code
+                                deployments, no downtime.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-teal">
+                                <i data-lucide="database"></i>
+                            </div>
+                            <h3>Memory</h3>
+                            <p class="capability-subtitle">Version and audit</p>
+                            <p>
+                                Every behaviour change is versioned and
+                                traceable. Understand what changed, when, and
+                                why.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-red">
+                                <i data-lucide="shield"></i>
+                            </div>
+                            <h3>Protection</h3>
+                            <p class="capability-subtitle">
+                                Govern and control
+                            </p>
+                            <p>
+                                Enforce policies, validate changes, and maintain
+                                complete visibility over how your system
+                                behaves.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- HOW IT WORKS                                                  -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full section-dimmed">
+                <div class="section-container">
+                    <div class="section-header reveal">
+                        <h2>
+                            From scattered signals to
+                            <span class="gradient-text"
+                                >coordinated behaviour</span
+                            >
+                        </h2>
+                    </div>
+                    <div class="grid-2col comparison-grid">
+                        <div class="comparison-card before-card reveal-left">
+                            <div class="comparison-label">Before Orion</div>
+                            <h3>Scattered signals</h3>
+                            <div class="comparison-points">
+                                <div class="comparison-point">
+                                    <span
+                                        class="dot-sm"
+                                        style="background: var(--accent-red)"
+                                    ></span>
+                                    <p>Logic embedded in every service</p>
+                                </div>
+                                <div class="comparison-point">
+                                    <span
+                                        class="dot-sm"
+                                        style="background: var(--accent-red)"
+                                    ></span>
+                                    <p>Changes require full deployments</p>
+                                </div>
+                                <div class="comparison-point">
+                                    <span
+                                        class="dot-sm"
+                                        style="background: var(--accent-red)"
+                                    ></span>
+                                    <p>Inconsistent behaviour across system</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comparison-card after-card reveal-right">
+                            <div
+                                class="comparison-label comparison-label-green"
+                            >
+                                With Orion
+                            </div>
+                            <h3>Coordinated behaviour</h3>
+                            <div class="comparison-points">
+                                <div class="comparison-point">
+                                    <span
+                                        class="dot-sm"
+                                        style="background: var(--accent-green)"
+                                    ></span>
+                                    <p>Central coordination layer</p>
+                                </div>
+                                <div class="comparison-point">
+                                    <span
+                                        class="dot-sm"
+                                        style="background: var(--accent-green)"
+                                    ></span>
+                                    <p>Instant behaviour changes</p>
+                                </div>
+                                <div class="comparison-point">
+                                    <span
+                                        class="dot-sm"
+                                        style="background: var(--accent-green)"
+                                    ></span>
+                                    <p>Governed, predictable system</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-3col steps-grid">
+                        <div class="step-card reveal">
+                            <div class="step-num">01</div>
+                            <h3>Define behaviour</h3>
+                            <p>
+                                Describe what your system should do &mdash;
+                                routing, transformation, orchestration
+                            </p>
+                        </div>
+                        <div class="step-card reveal">
+                            <div class="step-num">02</div>
+                            <h3>Deploy instantly</h3>
+                            <p>
+                                Changes activate across all services without
+                                rebuilding or redeploying
+                            </p>
+                        </div>
+                        <div class="step-card reveal">
+                            <div class="step-num">03</div>
+                            <h3>Observe &amp; govern</h3>
+                            <p>
+                                See how signals flow, trace decisions, enforce
+                                policies
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- ORION PRODUCT SECTION                                         -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-orion section-dimmed">
+                <div class="section-container">
+                    <div class="grid-2col orion-grid">
+                        <div class="reveal-left">
+                            <div class="orion-label">
+                                Orion &mdash; Business Runtime Platform
+                            </div>
+                            <h2 class="orion-heading">
+                                Control how your systems behave. Without
+                                touching code.
+                            </h2>
+                            <div class="orion-desc-card">
+                                <p>
+                                    Business logic buried inside microservices
+                                    means every change needs an engineer, a PR,
+                                    and a release cycle.
+                                    <strong
+                                        >Orion externalises that logic</strong
+                                    >
+                                    into a governed runtime layer &mdash; giving
+                                    you instant, traceable control over how your
+                                    systems behave.
+                                </p>
+                            </div>
+                            <a href="#" class="btn-primary"
+                                >Request early access &rarr;</a
+                            >
+                        </div>
+                        <div class="orion-feature-list reveal-right">
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="zap"></i>
+                                </div>
+                                <h4>Instant system changes</h4>
+                                <p>
+                                    Deploy logic changes in real time. No
+                                    engineering cycles, no PRs, no release
+                                    schedules.
+                                </p>
+                            </div>
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="building-2"></i>
+                                </div>
+                                <h4>Governance at scale</h4>
+                                <p>
+                                    Define standards once in a central layer.
+                                    Every service enforces the same rules
+                                    automatically.
+                                </p>
+                            </div>
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="search"></i>
+                                </div>
+                                <h4>Full traceability</h4>
+                                <p>
+                                    Every execution is versioned and traceable.
+                                    Know exactly what ran, when, and why.
+                                </p>
+                            </div>
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="link-2"></i>
+                                </div>
+                                <h4>Decoupled from services</h4>
+                                <p>
+                                    Logic lives in the runtime layer, not inside
+                                    microservices. Easier to own and evolve.
+                                </p>
+                            </div>
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="bot"></i>
+                                </div>
+                                <h4>Ready for AI systems</h4>
+                                <p>
+                                    Govern AI-generated outputs at runtime.
+                                    Apply rules and stay in control as AI
+                                    accelerates your systems.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- CTA                                                           -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-cta">
+                <div class="section-container cta-container">
+                    <div class="grid-2col">
+                        <div class="cta-inner reveal-left">
+                            <div class="cta-label">Get involved</div>
+                            <h2>Shape what comes next.</h2>
+                            <p class="cta-desc">
+                                Plasmatic is building in the open. Whether
+                                you're an engineer, an organisation, or an
+                                investor &mdash; there's a place for you in this
+                                journey.
+                            </p>
+                            <div class="audience-grid">
+                                <div class="audience-card">
+                                    <h4>Organisations</h4>
+                                    <p>
+                                        Early access to Orion for platform and
+                                        engineering teams building at scale.
+                                    </p>
+                                    <a href="mailto:enquiries@goplasmatic.io"
+                                        >enquiries@goplasmatic.io &rarr;</a
+                                    >
+                                </div>
+                                <div class="audience-card">
+                                    <h4>Investors</h4>
+                                    <p>
+                                        Redefining how distributed systems are
+                                        governed, controlled and evolved.
+                                    </p>
+                                    <a href="#">Get in touch &rarr;</a>
+                                </div>
+                                <div class="audience-card">
+                                    <h4>Developers</h4>
+                                    <p>
+                                        Explore repos, contribute, and shape the
+                                        platform alongside the core team.
+                                    </p>
+                                    <a href="#"
+                                        >github.com/GoPlasmatic &rarr;</a
+                                    >
+                                </div>
+                            </div>
+                            <div class="cta-buttons">
+                                <a href="#" class="btn-primary"
+                                    >Request early access &rarr;</a
+                                >
+                                <a href="#" class="btn-secondary"
+                                    >Visit goplasmatic.io</a
+                                >
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- FOOTER                                                        -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <footer class="footer section-dimmed">
+                <div class="section-container">
+                    <div class="footer-grid">
+                        <div class="footer-brand">
+                            <img
+                                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
+                                alt="Plasmatic"
+                                class="footer-logo"
+                            />
+                            <p>
+                                Building the nervous system for modern software.
+                            </p>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Product</h4>
+                            <ul>
+                                <li><a href="#">Features</a></li>
+                                <li><a href="#">Documentation</a></li>
+                                <li><a href="#">Pricing</a></li>
+                                <li><a href="#">Changelog</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Guides</a></li>
+                                <li><a href="#">Examples</a></li>
+                                <li><a href="#">Community</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">GitHub</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>&copy; 2026 Plasmatic. All rights reserved.</p>
+                        <div class="footer-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Scroll reveal observer -->
+        <script>
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Intersection Observer for scroll reveal animations
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                        }
+                    });
+                },
+                { threshold: 0.1 },
+            );
+
+            document
+                .querySelectorAll(".reveal, .reveal-left, .reveal-right")
+                .forEach((el) => {
+                    observer.observe(el);
+                });
+        </script>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+                }
+            }
+        </script>
+        <script type="module">
+            import * as THREE from "three";
+            import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+            import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+            import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+            import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+            /* ── Config ─────────────────────────────────────────────────────────── */
+
+            const PULSE_COUNT = 200;
+            const MODEL_START_X = 1.5; // initial rightward offset for hero layout
+
+            /* ── Load binary (uint8 quantized) ─────────────────────────────────── */
+
+            async function loadNervousSystem() {
+                const resp = await fetch("nervous-system.bin");
+                const buf = await resp.arrayBuffer();
+                const view = new DataView(buf);
+
+                const numLines = view.getUint32(0, true);
+                const minX = view.getFloat32(4, true);
+                const minY = view.getFloat32(8, true);
+                const minZ = view.getFloat32(12, true);
+                const rangeX = view.getFloat32(16, true);
+                const rangeY = view.getFloat32(20, true);
+                const rangeZ = view.getFloat32(24, true);
+                const numBrainEdges = view.getUint32(28, true);
+                let byteOffset = 32;
+
+                const dq = (raw, s) => [
+                    minX + (raw[s] / 255) * rangeX,
+                    minY + (raw[s + 1] / 255) * rangeY,
+                    minZ + (raw[s + 2] / 255) * rangeZ,
+                ];
+
+                const brainEdges = [];
+                for (let i = 0; i < numBrainEdges; i++) {
+                    brainEdges.push(
+                        view.getUint16(byteOffset, true),
+                        view.getUint16(byteOffset + 2, true),
+                    );
+                    byteOffset += 4;
+                }
+
+                const numBrainVerts = view.getUint16(byteOffset, true);
+                byteOffset += 2;
+                const brainVerts = new Float32Array(numBrainVerts * 3);
+                const brainRaw = new Uint8Array(
+                    buf,
+                    byteOffset,
+                    numBrainVerts * 3,
+                );
+                for (let i = 0; i < numBrainVerts; i++) {
+                    const [x, y, z] = dq(brainRaw, i * 3);
+                    brainVerts[i * 3] = x;
+                    brainVerts[i * 3 + 1] = y;
+                    brainVerts[i * 3 + 2] = z;
+                }
+                byteOffset += numBrainVerts * 3;
+
+                const lines = [];
+                for (let i = 0; i < numLines; i++) {
+                    const pointCount = view.getUint8(byteOffset);
+                    byteOffset += 1;
+
+                    const line = [];
+                    const raw = new Uint8Array(buf, byteOffset, pointCount * 3);
+                    for (let j = 0; j < pointCount; j++) {
+                        const [x, y, z] = dq(raw, j * 3);
+                        line.push(x, y, z);
+                    }
+                    byteOffset += pointCount * 3;
+                    lines.push(line);
+                }
+                return {
+                    lines,
+                    numLines,
+                    brainVerts,
+                    brainEdges,
+                    numBrainEdges,
+                };
+            }
+
+            /* ── Scene ───────────────────────────────────────────────────────────── */
+
+            const canvas = document.getElementById("bg");
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x07111a);
+
+            const camera = new THREE.PerspectiveCamera(
+                45,
+                innerWidth / innerHeight,
+                0.1,
+                100,
+            );
+            // Initial position is set by updateCamera on first frame
+
+            const renderer = new THREE.WebGLRenderer({
+                canvas,
+                antialias: true,
+            });
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            renderer.setSize(innerWidth, innerHeight);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+
+            /* ── Resolution-adaptive helpers ───────────────────────────────────── */
+
+            // Reference resolution: bloom was tuned at this total pixel count
+            const REF_PIXELS = 2560 * 1440;
+
+            function getResScale() {
+                const pr = Math.min(devicePixelRatio, 2);
+                const totalPx = innerWidth * pr * innerHeight * pr;
+                return Math.sqrt(totalPx / REF_PIXELS); // <1 on low-res, >1 on hi-res
+            }
+
+            // Clamp to 1 on hi-res so points never grow beyond the original size
+            function pointScale(rs) {
+                return 35.0 * Math.min(rs, 1.0);
+            }
+            // Lines look thicker on low-res; dim them to compensate
+            function lineOpacity(rs) {
+                return 0.2 * Math.min(rs, 1.0);
+            }
+
+            function adaptedBloom(resScale) {
+                // On low-res: reduce strength, widen radius to keep glow round and soft
+                return {
+                    strength: THREE.MathUtils.clamp(0.6 * resScale, 0.25, 0.8),
+                    radius: THREE.MathUtils.clamp(0.85 / resScale, 0.6, 1.0),
+                };
+            }
+
+            /* ── Post-processing (Bloom) ────────────────────────────────────────── */
+
+            const composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+
+            const initScale = getResScale();
+            const initBloom = adaptedBloom(initScale);
+            const bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(innerWidth, innerHeight),
+                initBloom.strength,
+                initBloom.radius,
+                0.75, // threshold
+            );
+            composer.addPass(bloomPass);
+            composer.addPass(new OutputPass());
+
+            /* ── Build geometry from data ───────────────────────────────────────── */
+
+            const data = await loadNervousSystem();
+            const { lines, numLines, brainVerts, brainEdges, numBrainEdges } =
+                data;
+
+            // Center the model
+            let bMinX = Infinity,
+                bMinY = Infinity,
+                bMinZ = Infinity;
+            let bMaxX = -Infinity,
+                bMaxY = -Infinity,
+                bMaxZ = -Infinity;
+            for (let i = 0; i < brainVerts.length; i += 3) {
+                bMinX = Math.min(bMinX, brainVerts[i]);
+                bMaxX = Math.max(bMaxX, brainVerts[i]);
+                bMinY = Math.min(bMinY, brainVerts[i + 1]);
+                bMaxY = Math.max(bMaxY, brainVerts[i + 1]);
+                bMinZ = Math.min(bMinZ, brainVerts[i + 2]);
+                bMaxZ = Math.max(bMaxZ, brainVerts[i + 2]);
+            }
+            for (const line of lines) {
+                for (let i = 0; i < line.length; i += 3) {
+                    bMinX = Math.min(bMinX, line[i]);
+                    bMaxX = Math.max(bMaxX, line[i]);
+                    bMinY = Math.min(bMinY, line[i + 1]);
+                    bMaxY = Math.max(bMaxY, line[i + 1]);
+                    bMinZ = Math.min(bMinZ, line[i + 2]);
+                    bMaxZ = Math.max(bMaxZ, line[i + 2]);
+                }
+            }
+            const cx = (bMinX + bMaxX) / 2;
+            const cy = (bMinY + bMaxY) / 2;
+            const cz = (bMinZ + bMaxZ) / 2;
+
+            const MODEL_SCALE = 2.0;
+            for (const line of lines) {
+                for (let i = 0; i < line.length; i += 3) {
+                    line[i] = (line[i] - cx) * MODEL_SCALE;
+                    line[i + 1] = (line[i + 1] - cy) * MODEL_SCALE;
+                    line[i + 2] = (line[i + 2] - cz) * MODEL_SCALE;
+                }
+            }
+            for (let i = 0; i < brainVerts.length; i += 3) {
+                brainVerts[i] = (brainVerts[i] - cx) * MODEL_SCALE;
+                brainVerts[i + 1] = (brainVerts[i + 1] - cy) * MODEL_SCALE;
+                brainVerts[i + 2] = (brainVerts[i + 2] - cz) * MODEL_SCALE;
+            }
+
+            /* ── Model bounds (after centering + scaling) ────────────────────────── */
+
+            // Brain top = max Y of brain verts, spine bottom = min Y of all geometry
+            let brainTopY = -Infinity,
+                spineBottomY = Infinity;
+            for (let i = 0; i < brainVerts.length; i += 3) {
+                brainTopY = Math.max(brainTopY, brainVerts[i + 1]);
+            }
+            for (const line of lines) {
+                for (let i = 0; i < line.length; i += 3) {
+                    spineBottomY = Math.min(spineBottomY, line[i + 1]);
+                }
+            }
+            // Brain center is roughly the upper 25% of the model
+            const brainCenterY = brainTopY * 0.75;
+
+            /* ── Model group (for scroll-driven offset) ────────────────────────── */
+
+            const MODEL_START_ROT = -Math.PI / 2; // face left in hero
+            const modelGroup = new THREE.Group();
+            modelGroup.position.x = MODEL_START_X;
+            modelGroup.rotation.y = MODEL_START_ROT;
+            scene.add(modelGroup);
+
+            /* ── Brain wireframe ───────────────────────────────────────────────── */
+
+            const brainWirePositions = new Float32Array(numBrainEdges * 2 * 3);
+            for (let i = 0; i < numBrainEdges; i++) {
+                const a = brainEdges[i * 2];
+                const b = brainEdges[i * 2 + 1];
+                brainWirePositions[i * 6] = brainVerts[a * 3];
+                brainWirePositions[i * 6 + 1] = brainVerts[a * 3 + 1];
+                brainWirePositions[i * 6 + 2] = brainVerts[a * 3 + 2];
+                brainWirePositions[i * 6 + 3] = brainVerts[b * 3];
+                brainWirePositions[i * 6 + 4] = brainVerts[b * 3 + 1];
+                brainWirePositions[i * 6 + 5] = brainVerts[b * 3 + 2];
+            }
+
+            const brainWireGeo = new THREE.BufferGeometry();
+            brainWireGeo.setAttribute(
+                "position",
+                new THREE.BufferAttribute(brainWirePositions, 3),
+            );
+
+            const brainWireMat = new THREE.LineBasicMaterial({
+                color: 0x119fcd,
+                transparent: true,
+                opacity: 0.06,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+
+            modelGroup.add(new THREE.LineSegments(brainWireGeo, brainWireMat));
+
+            /* ── Lines geometry with per-vertex fade ────────────────────────────── */
+
+            let totalSegs = 0;
+            for (const line of lines) totalSegs += line.length / 3 - 1;
+            const linePositions = new Float32Array(totalSegs * 2 * 3);
+            const lineAlphas = new Float32Array(totalSegs * 2);
+
+            let li = 0,
+                ai = 0;
+            for (const line of lines) {
+                const ptCount = line.length / 3;
+                for (let j = 0; j < ptCount - 1; j++) {
+                    const s = j * 3;
+                    linePositions[li++] = line[s];
+                    linePositions[li++] = line[s + 1];
+                    linePositions[li++] = line[s + 2];
+                    linePositions[li++] = line[s + 3];
+                    linePositions[li++] = line[s + 4];
+                    linePositions[li++] = line[s + 5];
+
+                    const t1 = j / (ptCount - 1);
+                    const t2 = (j + 1) / (ptCount - 1);
+                    const fade = (t) => {
+                        const edgeBright = Math.max(0, 1.0 - t * 4.0);
+                        const endBright = Math.max(0, (t - 0.7) * 3.3);
+                        const mid = 0.08;
+                        return Math.min(1.0, edgeBright + endBright + mid);
+                    };
+                    lineAlphas[ai++] = fade(t1);
+                    lineAlphas[ai++] = fade(t2);
+                }
+            }
+
+            const lineGeo = new THREE.BufferGeometry();
+            lineGeo.setAttribute(
+                "position",
+                new THREE.BufferAttribute(linePositions, 3),
+            );
+            lineGeo.setAttribute(
+                "alpha",
+                new THREE.BufferAttribute(lineAlphas, 1),
+            );
+
+            const lineMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    uColor: { value: new THREE.Color(0x119fcd) },
+                    uOpacity: { value: lineOpacity(initScale) },
+                },
+                vertexShader: `
+        attribute float alpha;
+        varying float vAlpha;
+        void main() {
+          vAlpha = alpha;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+                fragmentShader: `
+        uniform vec3 uColor;
+        uniform float uOpacity;
+        varying float vAlpha;
+        void main() {
+          gl_FragColor = vec4(uColor, vAlpha * uOpacity);
+        }
+      `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+
+            modelGroup.add(new THREE.LineSegments(lineGeo, lineMat));
+
+            /* ── Endpoint nodes (emissive pulsing) ──────────────────────────────── */
+
+            const endpointCount = numLines * 2;
+            const epPositions = new Float32Array(endpointCount * 3);
+            const epPhases = new Float32Array(endpointCount);
+            const epSpeeds = new Float32Array(endpointCount);
+
+            for (let i = 0; i < numLines; i++) {
+                const line = lines[i];
+                const last = line.length - 3;
+
+                epPositions[i * 6] = line[0];
+                epPositions[i * 6 + 1] = line[1];
+                epPositions[i * 6 + 2] = line[2];
+                epPositions[i * 6 + 3] = line[last];
+                epPositions[i * 6 + 4] = line[last + 1];
+                epPositions[i * 6 + 5] = line[last + 2];
+
+                epPhases[i * 2] = Math.random() * Math.PI * 2;
+                epPhases[i * 2 + 1] = Math.random() * Math.PI * 2;
+                epSpeeds[i * 2] = 1.0 + Math.random() * 2.0;
+                epSpeeds[i * 2 + 1] = 1.0 + Math.random() * 2.0;
+            }
+
+            const epGeo = new THREE.BufferGeometry();
+            epGeo.setAttribute(
+                "position",
+                new THREE.BufferAttribute(epPositions, 3),
+            );
+            epGeo.setAttribute("phase", new THREE.BufferAttribute(epPhases, 1));
+            epGeo.setAttribute("speed", new THREE.BufferAttribute(epSpeeds, 1));
+
+            const epMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0 },
+                    uColor: { value: new THREE.Color(0x7dd3fc) },
+                    uPointScale: { value: pointScale(initScale) },
+                },
+                vertexShader: `
+        attribute float phase;
+        attribute float speed;
+        varying float vBrightness;
+
+        uniform float uTime;
+        uniform float uPointScale;
+
+        void main() {
+          vBrightness = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * speed + phase));
+
+          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = (1.6 + vBrightness * 1.6) * (uPointScale / -mvPos.z);
+          gl_Position = projectionMatrix * mvPos;
+        }
+      `,
+                fragmentShader: `
+        uniform vec3 uColor;
+        varying float vBrightness;
+
+        void main() {
+          float d = length(gl_PointCoord - vec2(0.5));
+          if (d > 0.5) discard;
+
+          float core = exp(-d * d * 80.0);
+          float halo = exp(-d * 12.0) * 0.3;
+
+          float intensity = core + halo;
+          vec3 col = mix(uColor, vec3(1.0), core * vBrightness);
+
+          gl_FragColor = vec4(col * intensity * vBrightness, intensity * vBrightness);
+        }
+      `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+
+            modelGroup.add(new THREE.Points(epGeo, epMat));
+
+            /* ── Traveling pulses ───────────────────────────────────────────────── */
+
+            const pulseLineIndices = [];
+            const pulseProgress = new Float32Array(PULSE_COUNT);
+            const pulseSpeed = new Float32Array(PULSE_COUNT);
+            const pulsePositions = new Float32Array(PULSE_COUNT * 3);
+            const pulseDirection = new Int8Array(PULSE_COUNT);
+
+            function assignPulse(i) {
+                pulseLineIndices[i] = Math.floor(Math.random() * numLines);
+                pulseProgress[i] = Math.random();
+                pulseSpeed[i] = 0.15 + Math.random() * 0.35;
+                pulseDirection[i] = Math.random() < 0.5 ? 1 : -1;
+            }
+
+            for (let i = 0; i < PULSE_COUNT; i++) {
+                assignPulse(i);
+            }
+
+            const pulseGeo = new THREE.BufferGeometry();
+            pulseGeo.setAttribute(
+                "position",
+                new THREE.BufferAttribute(pulsePositions, 3),
+            );
+
+            const pulseMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    uColor: { value: new THREE.Color(0xaaeeff) },
+                    uPointScale: { value: pointScale(initScale) },
+                },
+                vertexShader: `
+        uniform float uPointScale;
+        void main() {
+          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = 4.5 * (uPointScale / -mvPos.z);
+          gl_Position = projectionMatrix * mvPos;
+        }
+      `,
+                fragmentShader: `
+        uniform vec3 uColor;
+
+        void main() {
+          float d = length(gl_PointCoord - vec2(0.5));
+          if (d > 0.5) discard;
+
+          float core = exp(-d * d * 100.0);
+          float halo = exp(-d * 15.0) * 0.2;
+          float intensity = core + halo;
+
+          vec3 col = mix(uColor, vec3(1.0), core);
+          gl_FragColor = vec4(col * intensity, intensity);
+        }
+      `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+
+            modelGroup.add(new THREE.Points(pulseGeo, pulseMat));
+
+            function updatePulses(dt) {
+                const posAttr = pulseGeo.getAttribute("position");
+
+                for (let i = 0; i < PULSE_COUNT; i++) {
+                    pulseProgress[i] += pulseSpeed[i] * dt * pulseDirection[i];
+
+                    if (pulseProgress[i] > 1.0 || pulseProgress[i] < 0.0) {
+                        assignPulse(i);
+                    }
+
+                    const line = lines[pulseLineIndices[i]];
+                    const t = Math.max(0, Math.min(1, pulseProgress[i]));
+                    const linePtCount = line.length / 3;
+                    const segs = linePtCount - 1;
+                    const seg = Math.min(Math.floor(t * segs), segs - 1);
+                    const frac = t * segs - seg;
+
+                    const s = seg * 3;
+                    posAttr.array[i * 3] =
+                        line[s] + (line[s + 3] - line[s]) * frac;
+                    posAttr.array[i * 3 + 1] =
+                        line[s + 1] + (line[s + 4] - line[s + 1]) * frac;
+                    posAttr.array[i * 3 + 2] =
+                        line[s + 2] + (line[s + 5] - line[s + 2]) * frac;
+                }
+
+                posAttr.needsUpdate = true;
+            }
+
+            /* ── Scroll-driven camera (brain → spine journey) ────────────────── */
+
+            // One keyframe per snap-section (8 sections, 7 segments)
+            // Hero | Problem | Solution | Capabilities | How It Works | Orion | CTA | Footer
+            const maxLookY = spineBottomY * 0.45; // limit: don't let spine go above mid-screen
+            const modelCenterY = (brainTopY + spineBottomY) / 2; // vertical center of full model
+            const camKeyframes = [
+                {
+                    posX: 1.5,
+                    lookY: brainCenterY,
+                    camZ: 5,
+                    camYOff: 0.5,
+                    rotOff: 0,
+                }, // 0 Hero: brain right
+                {
+                    posX: 1.5,
+                    lookY: brainCenterY,
+                    camZ: 6,
+                    camYOff: 0.4,
+                    rotOff: 0,
+                }, // 1 Problem: stay right
+                {
+                    posX: -1.5,
+                    lookY: brainCenterY * 0.3,
+                    camZ: 8,
+                    camYOff: 0.3,
+                    rotOff: 0,
+                }, // 2 Solution: move left
+                { posX: 0, lookY: 0, camZ: 9, camYOff: 0.2, rotOff: 0 }, // 3 Capabilities: dimmed
+                {
+                    posX: 0,
+                    lookY: spineBottomY * 0.25,
+                    camZ: 10,
+                    camYOff: 0.1,
+                    rotOff: 0,
+                }, // 4 How It Works: dimmed
+                { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 5 Orion: dimmed
+                {
+                    posX: 2.4,
+                    lookY: brainCenterY * 0.4,
+                    camZ: 10,
+                    camYOff: 0.3,
+                    rotOff: -Math.PI / 2,
+                }, // 6 CTA: top 3/4, right, zoomed
+                {
+                    posX: 2.4,
+                    lookY: brainCenterY * 0.4,
+                    camZ: 10,
+                    camYOff: 0.3,
+                    rotOff: -Math.PI / 2,
+                }, // 7 Footer: same
+            ];
+
+            // Initialize from current scroll position so a refresh mid-page syncs immediately
+            function getScrollProgress() {
+                const max = document.body.scrollHeight - innerHeight;
+                return max > 0 ? scrollY / max : 0;
+            }
+            let targetScrollProgress = getScrollProgress();
+            let scrollProgress = targetScrollProgress; // no lerp on first frame
+            addEventListener("scroll", () => {
+                targetScrollProgress = getScrollProgress();
+                document
+                    .getElementById("scrollHint")
+                    .classList.toggle("hidden", scrollY > 80);
+            });
+
+            const heroText = document.getElementById("heroText");
+            const lookTarget = new THREE.Vector3(0, 0, 0);
+            const ease = (t) =>
+                t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+
+            function lerpKeyframes(p) {
+                const n = camKeyframes.length - 1; // 7 segments
+                const raw = p * n;
+                const seg = Math.min(Math.floor(raw), n - 1);
+                const t = ease(raw - seg);
+
+                const a = camKeyframes[seg];
+                const b = camKeyframes[seg + 1];
+                return {
+                    posX: a.posX + (b.posX - a.posX) * t,
+                    lookY: a.lookY + (b.lookY - a.lookY) * t,
+                    camZ: a.camZ + (b.camZ - a.camZ) * t,
+                    camYOff: a.camYOff + (b.camYOff - a.camYOff) * t,
+                    rotOff: a.rotOff + (b.rotOff - a.rotOff) * t,
+                };
+            }
+
+            function updateCamera(p, elapsed) {
+                const kf = lerpKeyframes(p);
+
+                // Model horizontal position driven by keyframes
+                modelGroup.position.x = kf.posX;
+
+                // Rotation: unwind intro over first section, then continuous scroll rotation + per-keyframe offset
+                const introT = ease(Math.min(p * 7, 1)); // completes by section 1
+                const introRot = MODEL_START_ROT * (1 - introT);
+                const scrollRot = p * Math.PI * 2;
+                modelGroup.rotation.y = introRot + scrollRot + kf.rotOff;
+
+                // Camera position from keyframes
+                lookTarget.set(0, kf.lookY, 0);
+                camera.position.set(0, kf.lookY + kf.camYOff, kf.camZ);
+                camera.lookAt(lookTarget);
+            }
+
+            /* ── Resize ──────────────────────────────────────────────────────────── */
+
+            addEventListener("resize", () => {
+                const pr = Math.min(devicePixelRatio, 2);
+                camera.aspect = innerWidth / innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setPixelRatio(pr);
+                renderer.setSize(innerWidth, innerHeight);
+                composer.setSize(innerWidth, innerHeight);
+
+                // Re-adapt bloom, point sizes, line opacity to new resolution
+                const rs = getResScale();
+                const ab = adaptedBloom(rs);
+                bloomPass.strength = ab.strength;
+                bloomPass.radius = ab.radius;
+                epMat.uniforms.uPointScale.value = pointScale(rs);
+                pulseMat.uniforms.uPointScale.value = pointScale(rs);
+                lineMat.uniforms.uOpacity.value = lineOpacity(rs);
+            });
+
+            /* ── Render loop ─────────────────────────────────────────────────────── */
+
+            const clock = new THREE.Clock();
+            (function animate() {
+                requestAnimationFrame(animate);
+                const dt = clock.getDelta();
+                const elapsed = clock.getElapsedTime();
+
+                scrollProgress +=
+                    (targetScrollProgress - scrollProgress) * 0.05;
+
+                // Fade hero text as user scrolls
+                heroText.style.opacity = Math.max(0, 1 - scrollProgress * 4);
+
+                // Update endpoint pulse uniforms
+                epMat.uniforms.uTime.value = elapsed;
+
+                // Update traveling pulses
+                updatePulses(dt);
+
+                // Scroll-driven camera + model position + continuous rotation
+                updateCamera(scrollProgress, elapsed);
+
+                composer.render();
+            })();
+        </script>
+    </body>
+</html>
