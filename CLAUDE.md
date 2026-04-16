@@ -18,7 +18,7 @@ Then visit `http://localhost:8000` (index.html) or `http://localhost:8000/produc
 ```bash
 python tools/convert_obj.py
 ```
-Requires numpy, scipy, matplotlib. Reads `source/nervous-system.obj`, writes `nervous-system.bin`.
+Requires numpy, open3d. Reads `source/nervous-system.obj`, writes `nervous-system.bin`.
 
 ## Architecture
 
@@ -38,14 +38,14 @@ Blender (.blend) → Export (.glb / .obj) → convert_obj.py → Binary (.bin) �
 - **Three.js v0.170.0** loaded via CDN import maps (ES modules)
 - **Post-processing**: GTAO on index.html, UnrealBloomPass on product.html
 - **Custom shaders**: product.html contains GLSL vertex/fragment shaders for nerve lines, endpoint nodes, and traveling pulses
-- `nervous-system.bin` uses a custom uint8-quantized binary format (see header struct in `tools/convert_obj.py`)
+- `nervous-system.bin` is a compact binary (~11 KB) containing decimated brain mesh (1024 verts, delta-encoded faces) and pre-sampled spine endpoints. Nerve pathway curves are generated on the frontend via natural cubic spline interpolation. See format spec in `tools/convert_obj.py`.
 - Never edit `.bin` files directly — always regenerate from source
 
 ### product.html 3D Scene
 
 Scroll-snap sections drive camera position through 8 keyframes. The scene renders:
-- Brain wireframe (LineSegments, additive blend)
-- ~590 nerve pathways with per-vertex alpha fade
+- Brain wireframe (LineSegments, additive blend, 1024-vert decimated mesh)
+- ~650 nerve pathways generated on frontend (cubic spline through waypoints) with per-vertex alpha fade
 - Pulsing endpoint nodes (custom shader)
 - 200 traveling pulses animating along random pathways
 
