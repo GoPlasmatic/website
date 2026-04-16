@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Plasmatic – Orion</title>
+        <link rel="stylesheet" href="https://use.typekit.net/eef1zhq.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -40,6 +41,9 @@
             }
 
             html {
+                scroll-snap-type: none;
+            }
+            html.snap-ready {
                 scroll-snap-type: y mandatory;
             }
 
@@ -216,8 +220,8 @@
             }
 
             .hero h1 {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 800;
+                font-family: "Filson Pro", sans-serif;
+                font-weight: 700;
                 font-size: clamp(40px, 6vw, 80px);
                 color: var(--text-heading);
                 line-height: 1.1;
@@ -1127,6 +1131,15 @@
                 }
             }
         </style>
+        <script>
+            if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+            window.addEventListener('load', function () {
+                window.scrollTo(0, 0);
+                requestAnimationFrame(function () {
+                    document.documentElement.classList.add('snap-ready');
+                });
+            });
+        </script>
     </head>
     <body>
         <canvas id="bg"></canvas>
