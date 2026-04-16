@@ -41,6 +41,7 @@
 
             html {
                 scroll-snap-type: y mandatory;
+                scroll-behavior: smooth;
             }
 
             body {
@@ -1028,8 +1029,8 @@
                 opacity: 0;
                 transform: translateY(30px);
                 transition:
-                    opacity 0.8s ease,
-                    transform 0.8s ease;
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .reveal.visible {
                 opacity: 1;
@@ -1039,8 +1040,8 @@
                 opacity: 0;
                 transform: translateX(-30px);
                 transition:
-                    opacity 0.8s ease,
-                    transform 0.8s ease;
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .reveal-left.visible {
                 opacity: 1;
@@ -1050,12 +1051,30 @@
                 opacity: 0;
                 transform: translateX(30px);
                 transition:
-                    opacity 0.8s ease,
-                    transform 0.8s ease;
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .reveal-right.visible {
                 opacity: 1;
                 transform: translateX(0);
+            }
+
+            /* ── Headline blur-in ─────────────────────────────────────────── */
+
+            .reveal-blur {
+                opacity: 0;
+                filter: blur(10px);
+                transform: translateY(20px);
+                transition:
+                    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+                transition-delay: var(--reveal-delay, 0s);
+            }
+            .reveal-blur.visible {
+                opacity: 1;
+                filter: blur(0px);
+                transform: translateY(0);
             }
 
             /* ── Responsive ─────────────────────────────────────────────────── */
@@ -1140,8 +1159,8 @@
                     <div class="hero-badge">
                         <span>Introducing Orion</span>
                     </div>
-                    <h1><span class="gradient-text">Orion</span></h1>
-                    <h1>The nervous system for modern software.</h1>
+                    <h1 class="reveal-blur"><span class="gradient-text">Orion</span></h1>
+                    <h1 class="reveal-blur" style="--reveal-delay: 0.12s">The nervous system for modern software.</h1>
                     <p>
                         AI is accelerating how systems are built. But without
                         coordination, behaviour becomes unpredictable. Orion is
@@ -1165,7 +1184,7 @@
                 <div class="section-container">
                     <div class="grid-2col">
                         <div class="problem-content reveal-left">
-                            <h2>
+                            <h2 class="reveal-blur">
                                 Systems are growing faster than they can
                                 coordinate.
                             </h2>
@@ -1234,7 +1253,7 @@
                     <div class="grid-2col">
                         <div></div>
                         <div class="solution-content reveal-right">
-                            <h2>
+                            <h2 class="reveal-blur">
                                 What's missing is a
                                 <span class="gradient-text"
                                     >nervous system.</span
@@ -1295,7 +1314,7 @@
             <section class="section-full section-dimmed">
                 <div class="section-container">
                     <div class="section-header reveal">
-                        <h2>Built like a real nervous system</h2>
+                        <h2 class="reveal-blur">Built like a real nervous system</h2>
                         <p>
                             Signals, reflexes, memory, and protection &mdash;
                             the same principles that coordinate biological
@@ -1365,7 +1384,7 @@
             <section class="section-full section-dimmed">
                 <div class="section-container">
                     <div class="section-header reveal">
-                        <h2>
+                        <h2 class="reveal-blur">
                             From scattered signals to
                             <span class="gradient-text"
                                 >coordinated behaviour</span
@@ -1471,7 +1490,7 @@
                             <div class="orion-label">
                                 Orion &mdash; Business Runtime Platform
                             </div>
-                            <h2 class="orion-heading">
+                            <h2 class="orion-heading reveal-blur">
                                 Control how your systems behave. Without
                                 touching code.
                             </h2>
@@ -1559,7 +1578,7 @@
                     <div class="grid-2col">
                         <div class="cta-inner reveal-left">
                             <div class="cta-label">Get involved</div>
-                            <h2>Shape what comes next.</h2>
+                            <h2 class="reveal-blur">Shape what comes next.</h2>
                             <p class="cta-desc">
                                 Plasmatic is building in the open. Whether
                                 you're an engineer, an organisation, or an
@@ -1683,7 +1702,7 @@
             );
 
             document
-                .querySelectorAll(".reveal, .reveal-left, .reveal-right")
+                .querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-blur")
                 .forEach((el) => {
                     observer.observe(el);
                 });
