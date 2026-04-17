@@ -1820,6 +1820,13 @@
                 group.position.y = GROUP_BASE_Y;
                 scene.add(group);
 
+                // Idle sway: the whole group rocks around Y and bobs on Y
+                // after the assemble animation finishes.
+                const ROT_TIME_SCALE = 0.0002; // ms → rad for the sway driver
+                const ROT_Y_AMPLITUDE = 0.55; // peak yaw in radians (~31°)
+                const BOB_FREQ_MULT = 1.4; // bob freq relative to sway
+                const BOB_AMPLITUDE = 0.04; // peak vertical bob (world units)
+
                 // Cubes + trails live in a child group so the logo can be
                 // scaled independently of the wave below it.
                 const MESH_SCALE = 1.25;
@@ -2372,10 +2379,12 @@
                         const elapsed = performance.now() - startTime;
 
                         const rt =
-                            Math.max(0, elapsed - assembleDuration) * 0.0004;
-                        group.rotation.y = Math.sin(rt) * 0.55;
+                            Math.max(0, elapsed - assembleDuration) *
+                            ROT_TIME_SCALE;
+                        group.rotation.y = Math.sin(rt) * ROT_Y_AMPLITUDE;
                         group.position.y =
-                            GROUP_BASE_Y + Math.sin(rt * 1.4) * 0.04;
+                            GROUP_BASE_Y +
+                            Math.sin(rt * BOB_FREQ_MULT) * BOB_AMPLITUDE;
 
                         computeMouseLocal();
 
