@@ -12,6 +12,14 @@
             rel="stylesheet"
         />
         <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+                    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+                }
+            }
+        </script>
         <style>
             :root {
                 --bg-deep: #07111a;
@@ -60,26 +68,6 @@
             }
             ul {
                 list-style: none;
-            }
-
-            /* ── Canvas Background ─────────────────────────────────────────── */
-
-            #bg {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 0;
-            }
-
-            .content {
-                position: relative;
-                z-index: 1;
-                pointer-events: none;
-            }
-            .content > * {
-                pointer-events: auto;
             }
 
             /* ── Navigation ────────────────────────────────────────────────── */
@@ -189,17 +177,34 @@
             /* ── Hero ──────────────────────────────────────────────────────── */
 
             .hero {
+                position: relative;
                 min-height: 100vh;
                 display: flex;
                 align-items: center;
                 padding: 0 clamp(32px, 6vw, 96px);
                 padding-top: 96px;
                 scroll-snap-align: start;
+                background: #000;
             }
 
             .hero-text {
+                position: relative;
+                z-index: 2;
                 max-width: 680px;
                 transition: opacity 0.3s;
+            }
+
+            .hero-3d {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .hero-3d canvas {
+                display: block;
+                width: 100%;
+                height: 100%;
             }
 
             .hero-eyebrow {
@@ -471,23 +476,41 @@
                 flex-shrink: 0;
             }
 
-            .dot-blue { background: var(--accent-blue); }
-            .dot-green { background: var(--accent-green); }
-            .dot-yellow-fill { background: var(--accent-yellow); }
+            .dot-blue {
+                background: var(--accent-blue);
+            }
+            .dot-green {
+                background: var(--accent-green);
+            }
+            .dot-yellow-fill {
+                background: var(--accent-yellow);
+            }
 
             .approach-card-blue {
                 border-color: rgba(17, 159, 205, 0.2);
-                background: linear-gradient(to right, rgba(17, 159, 205, 0.1), transparent);
+                background: linear-gradient(
+                    to right,
+                    rgba(17, 159, 205, 0.1),
+                    transparent
+                );
             }
 
             .approach-card-green {
                 border-color: rgba(6, 214, 160, 0.2);
-                background: linear-gradient(to right, rgba(6, 214, 160, 0.1), transparent);
+                background: linear-gradient(
+                    to right,
+                    rgba(6, 214, 160, 0.1),
+                    transparent
+                );
             }
 
             .approach-card-yellow {
                 border-color: rgba(255, 209, 103, 0.2);
-                background: linear-gradient(to right, rgba(255, 209, 103, 0.1), transparent);
+                background: linear-gradient(
+                    to right,
+                    rgba(255, 209, 103, 0.1),
+                    transparent
+                );
             }
 
             /* ── Capability Cards ───────────────────────────────────────────── */
@@ -871,9 +894,19 @@
                 animation: bounce 1.5s infinite;
             }
             @keyframes bounce {
-                0%, 20%, 50%, 80%, 100% { transform: rotate(45deg) translateY(0); }
-                40% { transform: rotate(45deg) translateY(6px); }
-                60% { transform: rotate(45deg) translateY(3px); }
+                0%,
+                20%,
+                50%,
+                80%,
+                100% {
+                    transform: rotate(45deg) translateY(0);
+                }
+                40% {
+                    transform: rotate(45deg) translateY(6px);
+                }
+                60% {
+                    transform: rotate(45deg) translateY(3px);
+                }
             }
 
             /* ── Section Dimming Overlay ──────────────────────────────────── */
@@ -968,6 +1001,9 @@
                 .nav-links a {
                     display: none;
                 }
+                .hero-3d {
+                    display: none;
+                }
             }
 
             @media (max-width: 640px) {
@@ -994,18 +1030,17 @@
             }
         </style>
         <script>
-            if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-            window.addEventListener('load', function () {
+            if ("scrollRestoration" in history)
+                history.scrollRestoration = "manual";
+            window.addEventListener("load", function () {
                 window.scrollTo(0, 0);
                 requestAnimationFrame(function () {
-                    document.documentElement.classList.add('snap-ready');
+                    document.documentElement.classList.add("snap-ready");
                 });
             });
         </script>
     </head>
     <body>
-        <canvas id="bg"></canvas>
-
         <!-- Navigation -->
         <nav class="nav">
             <img
@@ -1054,11 +1089,15 @@
                             >Explore Orion &rarr;</a
                         >
                         <a href="#" class="btn-secondary">
-                            <i data-lucide="github" style="width:16px;height:16px;"></i>
+                            <i
+                                data-lucide="github"
+                                style="width: 16px; height: 16px"
+                            ></i>
                             View on GitHub
                         </a>
                     </div>
                 </div>
+                <div class="hero-3d" id="hero3d"></div>
             </section>
 
             <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1070,21 +1109,26 @@
                         <div class="what-content reveal-left">
                             <h2 class="reveal-blur">
                                 Infrastructure at the
-                                <span class="gradient-text">core of modern systems.</span>
+                                <span class="gradient-text"
+                                    >core of modern systems.</span
+                                >
                             </h2>
                             <p class="section-body">
                                 Plasmatic builds infrastructure that sits at the
                                 core of modern systems.
                             </p>
                             <p class="section-body">
-                                We focus on how systems define behaviour, execute
-                                logic and maintain control at scale.
+                                We focus on how systems define behaviour,
+                                execute logic and maintain control at scale.
                             </p>
                             <div class="callout">
                                 <p>
-                                    Our work enables organisations to move faster
-                                    <strong>without losing consistency or
-                                    governance.</strong>
+                                    Our work enables organisations to move
+                                    faster
+                                    <strong
+                                        >without losing consistency or
+                                        governance.</strong
+                                    >
                                 </p>
                             </div>
                         </div>
@@ -1103,7 +1147,16 @@
                         <div class="reveal-right">
                             <h2
                                 class="reveal-blur"
-                                style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:var(--text-heading);line-height:1.15;letter-spacing:-0.5px;margin-bottom:28px;"
+                                style="
+                                    font-family:
+                                        &quot;Montserrat&quot;, sans-serif;
+                                    font-weight: 700;
+                                    font-size: clamp(32px, 4vw, 52px);
+                                    color: var(--text-heading);
+                                    line-height: 1.15;
+                                    letter-spacing: -0.5px;
+                                    margin-bottom: 28px;
+                                "
                             >
                                 Organisations are no longer limited by
                                 <span class="gradient-text">speed.</span>
@@ -1117,27 +1170,36 @@
                                 <div class="pain-point">
                                     <div class="dot dot-yellow"></div>
                                     <div>
-                                        <p class="pain-title">AI is generating code</p>
+                                        <p class="pain-title">
+                                            AI is generating code
+                                        </p>
                                         <p class="pain-desc">
-                                            Development velocity has never been higher
+                                            Development velocity has never been
+                                            higher
                                         </p>
                                     </div>
                                 </div>
                                 <div class="pain-point">
                                     <div class="dot dot-yellow"></div>
                                     <div>
-                                        <p class="pain-title">Teams are shipping faster than ever</p>
+                                        <p class="pain-title">
+                                            Teams are shipping faster than ever
+                                        </p>
                                         <p class="pain-desc">
-                                            Release cycles are compressing across the industry
+                                            Release cycles are compressing
+                                            across the industry
                                         </p>
                                     </div>
                                 </div>
                                 <div class="pain-point">
                                     <div class="dot dot-red"></div>
                                     <div>
-                                        <p class="pain-title">Behaviour becomes inconsistent</p>
+                                        <p class="pain-title">
+                                            Behaviour becomes inconsistent
+                                        </p>
                                         <p class="pain-desc">
-                                            Services fragment, governance becomes harder to enforce
+                                            Services fragment, governance
+                                            becomes harder to enforce
                                         </p>
                                     </div>
                                 </div>
@@ -1161,8 +1223,8 @@
                     <div class="section-header reveal">
                         <h2 class="reveal-blur">A better way to build.</h2>
                         <p>
-                            System behaviour should not be tied to release cycles
-                            or embedded across fragmented services.
+                            System behaviour should not be tied to release
+                            cycles or embedded across fragmented services.
                         </p>
                     </div>
                     <div class="grid-3col">
@@ -1171,7 +1233,9 @@
                                 <i data-lucide="pen-line"></i>
                             </div>
                             <h3>Define clearly</h3>
-                            <p class="capability-subtitle">Single source of truth</p>
+                            <p class="capability-subtitle">
+                                Single source of truth
+                            </p>
                             <p>
                                 Behaviour described once, in a central layer —
                                 not scattered across dozens of services and
@@ -1196,9 +1260,9 @@
                             <h3>Govern centrally</h3>
                             <p class="capability-subtitle">Control at scale</p>
                             <p>
-                                Enforce policies consistently. Systems can evolve
-                                continuously while maintaining control and
-                                consistency.
+                                Enforce policies consistently. Systems can
+                                evolve continuously while maintaining control
+                                and consistency.
                             </p>
                         </div>
                     </div>
@@ -1222,11 +1286,11 @@
                             </h2>
                             <div class="orion-desc-card">
                                 <p>
-                                    Instead of building and deploying microservices
-                                    for every change, teams
+                                    Instead of building and deploying
+                                    microservices for every change, teams
                                     <strong>define what should happen</strong>
-                                    and Orion runs it — through governed, versioned
-                                    workflows with full traceability.
+                                    and Orion runs it — through governed,
+                                    versioned workflows with full traceability.
                                 </p>
                             </div>
                             <a href="product.html" class="btn-primary"
@@ -1240,8 +1304,9 @@
                                 </div>
                                 <h4>Real-time execution</h4>
                                 <p>
-                                    Deploy logic changes instantly. No engineering
-                                    cycles, no PRs, no release schedules.
+                                    Deploy logic changes instantly. No
+                                    engineering cycles, no PRs, no release
+                                    schedules.
                                 </p>
                             </div>
                             <div class="orion-feature-card">
@@ -1250,8 +1315,9 @@
                                 </div>
                                 <h4>Built-in governance</h4>
                                 <p>
-                                    Every behaviour change is versioned, auditable
-                                    and policy-enforced from a central layer.
+                                    Every behaviour change is versioned,
+                                    auditable and policy-enforced from a central
+                                    layer.
                                 </p>
                             </div>
                             <div class="orion-feature-card">
@@ -1261,7 +1327,8 @@
                                 <h4>Reduced engineering overhead</h4>
                                 <p>
                                     Logic lives in the runtime, not inside
-                                    microservices. Easier to own, faster to evolve.
+                                    microservices. Easier to own, faster to
+                                    evolve.
                                 </p>
                             </div>
                         </div>
@@ -1275,7 +1342,9 @@
             <section class="section-full section-dimmed">
                 <div class="section-container">
                     <div class="section-header reveal">
-                        <h2 class="reveal-blur">Built for modern architectures.</h2>
+                        <h2 class="reveal-blur">
+                            Built for modern architectures.
+                        </h2>
                         <p>
                             Open, high-performance, and designed to work with
                             how distributed systems are actually built today.
@@ -1290,7 +1359,8 @@
                             <p class="capability-subtitle">Community-driven</p>
                             <p>
                                 Built in the open. Inspect the core, contribute,
-                                and build on a foundation the community can trust.
+                                and build on a foundation the community can
+                                trust.
                             </p>
                         </div>
                         <div class="capability-card reveal">
@@ -1298,10 +1368,13 @@
                                 <i data-lucide="gauge"></i>
                             </div>
                             <h3>High-performance runtime</h3>
-                            <p class="capability-subtitle">Scale without compromise</p>
+                            <p class="capability-subtitle">
+                                Scale without compromise
+                            </p>
                             <p>
-                                Designed for throughput at scale. Execute millions
-                                of governed workflows without performance trade-offs.
+                                Designed for throughput at scale. Execute
+                                millions of governed workflows without
+                                performance trade-offs.
                             </p>
                         </div>
                         <div class="capability-card reveal">
@@ -1309,7 +1382,9 @@
                                 <i data-lucide="network"></i>
                             </div>
                             <h3>Distributed systems native</h3>
-                            <p class="capability-subtitle">Built for the real world</p>
+                            <p class="capability-subtitle">
+                                Built for the real world
+                            </p>
                             <p>
                                 Designed from the ground up for distributed
                                 architectures — microservices, event-driven, and
@@ -1321,7 +1396,9 @@
                                 <i data-lucide="terminal"></i>
                             </div>
                             <h3>API-first &amp; developer-friendly</h3>
-                            <p class="capability-subtitle">Integrate anywhere</p>
+                            <p class="capability-subtitle">
+                                Integrate anywhere
+                            </p>
                             <p>
                                 Every capability exposed via clean APIs. Works
                                 with your existing stack, language, and tooling.
@@ -1339,7 +1416,9 @@
                     <div class="grid-2col">
                         <div class="cta-inner reveal-left">
                             <div class="cta-label">For developers</div>
-                            <h2 class="reveal-blur">Start building with Plasmatic.</h2>
+                            <h2 class="reveal-blur">
+                                Start building with Plasmatic.
+                            </h2>
                             <p class="cta-desc">
                                 Explore Orion, access documentation and start
                                 building with Plasmatic tools.
@@ -1351,7 +1430,10 @@
                                     </div>
                                     <div class="dev-link-body">
                                         <h4>View documentation</h4>
-                                        <p>Guides, API reference and integration docs</p>
+                                        <p>
+                                            Guides, API reference and
+                                            integration docs
+                                        </p>
                                     </div>
                                     <span class="dev-link-arrow">&rarr;</span>
                                 </a>
@@ -1371,7 +1453,10 @@
                                     </div>
                                     <div class="dev-link-body">
                                         <h4>Quickstart</h4>
-                                        <p>Get Orion running in under five minutes</p>
+                                        <p>
+                                            Get Orion running in under five
+                                            minutes
+                                        </p>
                                     </div>
                                     <span class="dev-link-arrow">&rarr;</span>
                                 </a>
@@ -1431,7 +1516,11 @@
                                 <li><a href="#">About</a></li>
                                 <li><a href="#">Careers</a></li>
                                 <li><a href="#">Contact</a></li>
-                                <li><a href="mailto:enquiries@goplasmatic.io">Enquiries</a></li>
+                                <li>
+                                    <a href="mailto:enquiries@goplasmatic.io"
+                                        >Enquiries</a
+                                    >
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -1462,747 +1551,828 @@
             );
 
             document
-                .querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-blur")
+                .querySelectorAll(
+                    ".reveal, .reveal-left, .reveal-right, .reveal-blur",
+                )
                 .forEach((el) => observer.observe(el));
+
+            const scrollHint = document.getElementById("scrollHint");
+            addEventListener("scroll", () => {
+                scrollHint.classList.toggle("hidden", scrollY > 80);
+            });
         </script>
 
-        <script type="importmap">
-            {
-                "imports": {
-                    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-                }
-            }
-        </script>
+        <!-- Hero 3D voxel logo -->
         <script type="module">
             import * as THREE from "three";
             import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
             import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
             import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+            import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
             import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+            import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js";
+            import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-            /* ── Config ─────────────────────────────────────────────────────────── */
+            (async function initHero3D() {
+                const container = document.getElementById("hero3d");
+                if (!container) return;
 
-            const PULSE_COUNT = 200;
-
-            /* ── Seeded PRNG (mulberry32) ───────────────────────────────────────── */
-
-            function mulberry32(seed) {
-                return function () {
-                    seed |= 0;
-                    seed = (seed + 0x6d2b79f5) | 0;
-                    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-                    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-                    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-                };
-            }
-
-            /* ── Natural cubic spline ───────────────────────────────────────────── */
-
-            function cubicSplineInterpolate(points, nSamples) {
-                const n = points.length;
-                if (n < 2) return points.map(p => [p[0], p[1], p[2]]);
-
-                const t = new Float64Array(n);
-                for (let i = 1; i < n; i++) {
-                    const dx = points[i][0] - points[i-1][0];
-                    const dy = points[i][1] - points[i-1][1];
-                    const dz = points[i][2] - points[i-1][2];
-                    t[i] = t[i-1] + Math.sqrt(dx*dx + dy*dy + dz*dz);
-                }
-                if (t[n-1] === 0) return points.map(p => [p[0], p[1], p[2]]);
-                for (let i = 1; i < n; i++) t[i] /= t[n-1];
-                for (let i = 1; i < n; i++) {
-                    if (t[i] <= t[i-1]) t[i] = t[i-1] + 1e-10;
-                }
-
-                const h = new Float64Array(n - 1);
-                for (let i = 0; i < n - 1; i++) h[i] = t[i+1] - t[i];
-
-                function solveAxis(vals) {
-                    const m = n - 2;
-                    if (m <= 0) return new Float64Array(n);
-                    const a = new Float64Array(m), b = new Float64Array(m);
-                    const c = new Float64Array(m), d = new Float64Array(m);
-                    for (let i = 0; i < m; i++) {
-                        const ii = i + 1;
-                        a[i] = h[ii-1]; b[i] = 2*(h[ii-1]+h[ii]); c[i] = h[ii];
-                        d[i] = 6*((vals[ii+1]-vals[ii])/h[ii] - (vals[ii]-vals[ii-1])/h[ii-1]);
-                    }
-                    for (let i = 1; i < m; i++) {
-                        const w = a[i]/b[i-1]; b[i] -= w*c[i-1]; d[i] -= w*d[i-1];
-                    }
-                    const M = new Float64Array(n);
-                    M[m] = d[m-1]/b[m-1];
-                    for (let i = m-2; i >= 0; i--) M[i+1] = (d[i]-c[i]*M[i+2])/b[i];
-                    return M;
-                }
-
-                const vx = points.map(p => p[0]), vy = points.map(p => p[1]), vz = points.map(p => p[2]);
-                const Mx = solveAxis(vx), My = solveAxis(vy), Mz = solveAxis(vz);
-
-                const result = [];
-                for (let s = 0; s < nSamples; s++) {
-                    const tEval = s / (nSamples - 1);
-                    let seg = 0;
-                    for (let i = 0; i < n-2; i++) { if (tEval >= t[i+1]) seg = i+1; else break; }
-                    if (seg > n-2) seg = n-2;
-                    const dt = tEval - t[seg], hi = h[seg];
-                    function evalSeg(vals, M, i) {
-                        const a = vals[i];
-                        const b = (vals[i+1]-vals[i])/hi - hi*(2*M[i]+M[i+1])/6;
-                        const c = M[i]/2, d = (M[i+1]-M[i])/(6*hi);
-                        return a + b*dt + c*dt*dt + d*dt*dt*dt;
-                    }
-                    result.push([evalSeg(vx,Mx,seg), evalSeg(vy,My,seg), evalSeg(vz,Mz,seg)]);
-                }
-                return result;
-            }
-
-            /* ── Farthest-point sampling ───────────────────────────────────────── */
-
-            function farthestPointSample(verts, nSamples, rng) {
-                const n = verts.length / 3;
-                if (n <= nSamples) {
-                    const all = [];
-                    for (let i = 0; i < n; i++) all.push(i);
-                    return all;
-                }
-                const indices = [Math.floor(rng() * n)];
-                const dists = new Float32Array(n).fill(Infinity);
-                for (let iter = 1; iter < nSamples; iter++) {
-                    const last = indices[indices.length - 1];
-                    const lx = verts[last*3], ly = verts[last*3+1], lz = verts[last*3+2];
-                    let maxDist = -1, maxIdx = 0;
-                    for (let j = 0; j < n; j++) {
-                        const dx = verts[j*3]-lx, dy = verts[j*3+1]-ly, dz = verts[j*3+2]-lz;
-                        const d = dx*dx + dy*dy + dz*dz;
-                        if (d < dists[j]) dists[j] = d;
-                        if (dists[j] > maxDist) { maxDist = dists[j]; maxIdx = j; }
-                    }
-                    indices.push(maxIdx);
-                }
-                return indices;
-            }
-
-            /* ── Weighted random choice ────────────────────────────────────────── */
-
-            function weightedChoice(weights, n, rng) {
-                const result = [];
-                const w = new Float64Array(weights);
-                for (let k = 0; k < n; k++) {
-                    let sum = 0;
-                    for (let j = 0; j < w.length; j++) sum += w[j];
-                    if (sum === 0) break;
-                    const invSum = 1/sum, r = rng();
-                    let cumSum = 0, chosen = w.length - 1;
-                    for (let j = 0; j < w.length; j++) {
-                        cumSum += w[j]*invSum;
-                        if (r <= cumSum) { chosen = j; break; }
-                    }
-                    result.push(chosen);
-                    w[chosen] = 0;
-                }
-                return result;
-            }
-
-            /* ── Load compact binary + generate curves on frontend ─────────────── */
-
-            async function loadNervousSystem() {
-                const resp = await fetch("nervous-system.bin");
-                const buf = await resp.arrayBuffer();
-                const view = new DataView(buf);
-
-                const minX = view.getFloat32(0, true);
-                const minY = view.getFloat32(4, true);
-                const minZ = view.getFloat32(8, true);
-                const rangeX = view.getFloat32(12, true);
-                const rangeY = view.getFloat32(16, true);
-                const rangeZ = view.getFloat32(20, true);
-                const numBrainFaces = view.getUint16(24, true);
-                const numBrainVerts = view.getUint16(26, true);
-                const numSpineSegs = view.getUint8(28);
-                let off = 30;
-
-                const dq = (raw, s) => [
-                    minX + (raw[s] / 255) * rangeX,
-                    minY + (raw[s + 1] / 255) * rangeY,
-                    minZ + (raw[s + 2] / 255) * rangeZ,
+                const PALETTE = [
+                    { hex: 0x4cbd97, r: 76, g: 189, b: 151 },
+                    { hex: 0x063b4c, r: 6, g: 59, b: 76 },
+                    { hex: 0xef476f, r: 239, g: 71, b: 111 },
+                    { hex: 0x119fcd, r: 17, g: 159, b: 205 },
+                    { hex: 0xffd167, r: 255, g: 209, b: 103 },
                 ];
 
-                const spineCenters = [];
-                const scRaw = new Uint8Array(buf, off, numSpineSegs * 3);
-                for (let i = 0; i < numSpineSegs; i++) {
-                    const [x, y, z] = dq(scRaw, i * 3);
-                    spineCenters.push([x, y, z]);
-                }
-                off += numSpineSegs * 3;
-
-                const spineSampleCounts = [];
-                for (let i = 0; i < numSpineSegs; i++) {
-                    spineSampleCounts.push(view.getUint8(off));
-                    off += 1;
-                }
-
-                const spineSampledAll = [];
-                for (let si = 0; si < numSpineSegs; si++) {
-                    const count = spineSampleCounts[si];
-                    const raw = new Uint8Array(buf, off, count * 3);
-                    for (let j = 0; j < count; j++) {
-                        const [x, y, z] = dq(raw, j * 3);
-                        spineSampledAll.push({ pt: [x, y, z], segIdx: si });
-                    }
-                    off += count * 3;
-                }
-
-                const faceDataLen = view.getUint16(off, true);
-                off += 2;
-                const faceRaw = new Uint8Array(buf, off, faceDataLen);
-                let fi = 0;
-                const prev = [0, 0, 0];
-                const edgeSet = new Set();
-                for (let f = 0; f < numBrainFaces; f++) {
-                    const idx = [0, 0, 0];
-                    for (let k = 0; k < 3; k++) {
-                        let delta;
-                        if (faceRaw[fi] & 0x80) {
-                            delta = ((faceRaw[fi] & 0x7F) | (faceRaw[fi+1] << 7)) - 8192;
-                            fi += 2;
-                        } else {
-                            delta = faceRaw[fi] - 64;
-                            fi += 1;
+                function snapColor(r, g, b) {
+                    let best = PALETTE[0],
+                        bd = Infinity;
+                    for (const p of PALETTE) {
+                        const dr = r - p.r,
+                            dg = g - p.g,
+                            db = b - p.b;
+                        const d = dr * dr + dg * dg + db * db;
+                        if (d < bd) {
+                            bd = d;
+                            best = p;
                         }
-                        idx[k] = prev[k] + delta;
-                        prev[k] = idx[k];
                     }
-                    for (let k = 0; k < 3; k++) {
-                        const a = idx[k], b = idx[(k+1)%3];
-                        edgeSet.add(Math.min(a,b) | (Math.max(a,b) << 16));
+                    return best.hex;
+                }
+
+                async function loadSvgImage(url, size) {
+                    const res = await fetch(url);
+                    let text = await res.text();
+                    if (!/\swidth="/.test(text)) {
+                        text = text.replace(
+                            "<svg",
+                            '<svg width="' + size + '" height="' + size + '"',
+                        );
                     }
-                }
-                off += faceDataLen;
-
-                const brainEdges = [];
-                for (const packed of edgeSet) {
-                    brainEdges.push(packed & 0xFFFF, packed >>> 16);
-                }
-                const numBrainEdges = edgeSet.size;
-
-                const brainVerts = new Float32Array(numBrainVerts * 3);
-                const brainRaw = new Uint8Array(buf, off, numBrainVerts * 3);
-                for (let i = 0; i < numBrainVerts; i++) {
-                    const [x, y, z] = dq(brainRaw, i * 3);
-                    brainVerts[i * 3] = x;
-                    brainVerts[i * 3 + 1] = y;
-                    brainVerts[i * 3 + 2] = z;
+                    const blob = new Blob([text], { type: "image/svg+xml" });
+                    const objectUrl = URL.createObjectURL(blob);
+                    const img = new Image(size, size);
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = objectUrl;
+                    });
+                    URL.revokeObjectURL(objectUrl);
+                    return img;
                 }
 
-                let bcx = 0, bcy = 0, bcz = 0;
-                for (let i = 0; i < numBrainVerts; i++) {
-                    bcx += brainVerts[i*3]; bcy += brainVerts[i*3+1]; bcz += brainVerts[i*3+2];
-                }
-                bcx /= numBrainVerts; bcy /= numBrainVerts; bcz /= numBrainVerts;
-                const brainCenter = [bcx, bcy, bcz];
-
-                const sampleRng = mulberry32(42);
-                const brainSampleIdx = farthestPointSample(brainVerts, 500, sampleRng);
-                const brainSampled = brainSampleIdx.map(i => [
-                    brainVerts[i*3], brainVerts[i*3+1], brainVerts[i*3+2],
-                ]);
-
-                const connRng = mulberry32(7777);
-                const jitterRng = mulberry32(42);
-                const lines = [];
-
-                for (let i = 0; i < brainSampled.length; i++) {
-                    const bp = brainSampled[i];
-                    const weights = new Float64Array(spineSampledAll.length);
-                    for (let j = 0; j < spineSampledAll.length; j++) {
-                        const sp = spineSampledAll[j].pt;
-                        const dx = sp[0]-bp[0], dz = sp[2]-bp[2];
-                        weights[j] = 1.0 / (Math.sqrt(dx*dx + dz*dz) + 0.1);
-                    }
-                    const nConn = connRng() < 0.7 ? 1 : 2;
-                    const chosen = weightedChoice(weights, nConn, connRng);
-
-                    for (const j of chosen) {
-                        const sp = spineSampledAll[j].pt;
-                        const segIdx = spineSampledAll[j].segIdx;
-
-                        const bcJ = [
-                            brainCenter[0] + (jitterRng()*2-1)*0.08,
-                            brainCenter[1] + (jitterRng()*2-1)*0.08,
-                            brainCenter[2] + (jitterRng()*2-1)*0.08,
-                        ];
-
-                        const waypoints = [bp, bcJ];
-                        for (let s = 0; s <= segIdx; s++) {
-                            const sc = spineCenters[s];
-                            waypoints.push([
-                                sc[0] + (jitterRng()*2-1)*0.02,
-                                sc[1] + (jitterRng()*2-1)*0.02,
-                                sc[2] + (jitterRng()*2-1)*0.02,
-                            ]);
+                function voxelize(img, gridSize) {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = gridSize;
+                    canvas.height = gridSize;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, gridSize, gridSize);
+                    const data = ctx.getImageData(
+                        0,
+                        0,
+                        gridSize,
+                        gridSize,
+                    ).data;
+                    const voxels = [];
+                    for (let y = 0; y < gridSize; y++) {
+                        for (let x = 0; x < gridSize; x++) {
+                            const i = (y * gridSize + x) * 4;
+                            if (data[i + 3] > 180) {
+                                voxels.push({
+                                    gx: x,
+                                    gy: y,
+                                    color: snapColor(
+                                        data[i],
+                                        data[i + 1],
+                                        data[i + 2],
+                                    ),
+                                });
+                            }
                         }
-                        waypoints.push(sp);
-
-                        const nPts = Math.min(30, 12 + Math.floor((segIdx+1)*1.2));
-                        const pts = cubicSplineInterpolate(waypoints, nPts);
-
-                        let startIdx = 0;
-                        if (jitterRng() < 0.5) {
-                            startIdx = 1 + Math.floor(jitterRng() * 4);
-                            if (startIdx >= pts.length) startIdx = 0;
-                        }
-
-                        const line = [];
-                        for (let k = startIdx; k < pts.length; k++) {
-                            line.push(pts[k][0], pts[k][1], pts[k][2]);
-                        }
-                        lines.push(line);
                     }
+                    return voxels;
                 }
 
-                return { lines, numLines: lines.length, brainVerts, brainEdges, numBrainEdges };
-            }
+                let w = container.clientWidth || 1;
+                let h = container.clientHeight || 1;
 
-            /* ── Scene ───────────────────────────────────────────────────────────── */
+                const scene = new THREE.Scene();
 
-            const canvas = document.getElementById("bg");
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x07111a);
+                const camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
+                camera.position.set(0, 1.2, 7.2);
+                camera.lookAt(0, -0.3, 0);
 
-            const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+                const renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                    alpha: true,
+                });
+                renderer.setSize(w, h);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                // Canvas is fully transparent so the page's own --bg-deep
+                // shows through (tone mapping would otherwise shift an opaque
+                // clear color off from the page bg).
+                renderer.setClearColor(0x000000, 0);
+                // Cinematic color response: ACESFilmic tonemap + sRGB output
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.0;
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+                container.appendChild(renderer.domElement);
 
-            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-            renderer.setSize(innerWidth, innerHeight);
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.2;
+                // Image-based lighting: procedural studio env via RoomEnvironment.
+                // Gives MeshStandardMaterial realistic reflections / highlights
+                // without shipping an HDR asset.
+                const pmrem = new THREE.PMREMGenerator(renderer);
+                scene.environment = pmrem.fromScene(
+                    new RoomEnvironment(),
+                    0.04,
+                ).texture;
 
-            /* ── Resolution-adaptive helpers ───────────────────────────────────── */
+                const BLOOM_LAYER = 1;
 
-            const REF_PIXELS = 2560 * 1440;
+                // Bloom pass renders onto a transparent bg so it doesn't brighten empty areas
+                const bloomRenderPass = new RenderPass(scene, camera);
+                bloomRenderPass.clearColor = new THREE.Color(0x000000);
+                bloomRenderPass.clearAlpha = 0;
 
-            function getResScale() {
-                const pr = Math.min(devicePixelRatio, 2);
-                const totalPx = innerWidth * pr * innerHeight * pr;
-                return Math.sqrt(totalPx / REF_PIXELS);
-            }
+                const finalRenderPass = new RenderPass(scene, camera);
+                finalRenderPass.clearAlpha = 0;
 
-            function pointScale(rs) { return 35.0 * Math.min(rs, 1.0); }
-            function lineOpacity(rs) { return 0.2 * Math.min(rs, 1.0); }
+                const bloomPass = new UnrealBloomPass(
+                    new THREE.Vector2(w, h),
+                    0.85, // strength
+                    0.55, // radius
+                    0.0, // threshold (anything on the bloom layer glows)
+                );
 
-            function adaptedBloom(resScale) {
-                return {
-                    strength: THREE.MathUtils.clamp(0.6 * resScale, 0.25, 0.8),
-                    radius: THREE.MathUtils.clamp(0.85 / resScale, 0.6, 1.0),
-                };
-            }
+                // Bloom composer renders ONLY the bloom layer → texture
+                const bloomComposer = new EffectComposer(renderer);
+                bloomComposer.renderToScreen = false;
+                bloomComposer.setSize(w, h);
+                bloomComposer.setPixelRatio(
+                    Math.min(window.devicePixelRatio, 2),
+                );
+                bloomComposer.addPass(bloomRenderPass);
+                bloomComposer.addPass(bloomPass);
 
-            /* ── Post-processing ────────────────────────────────────────────────── */
+                // Mix pass adds the bloom texture on top of the main render
+                const mixPass = new ShaderPass(
+                    new THREE.ShaderMaterial({
+                        uniforms: {
+                            baseTexture: { value: null },
+                            bloomTexture: {
+                                value: bloomComposer.renderTarget2.texture,
+                            },
+                        },
+                        vertexShader: `
+                            varying vec2 vUv;
+                            void main() {
+                                vUv = uv;
+                                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                            }
+                        `,
+                        fragmentShader: `
+                            uniform sampler2D baseTexture;
+                            uniform sampler2D bloomTexture;
+                            varying vec2 vUv;
+                            void main() {
+                                gl_FragColor = texture2D(baseTexture, vUv) + texture2D(bloomTexture, vUv);
+                            }
+                        `,
+                        defines: {},
+                    }),
+                    "baseTexture",
+                );
+                mixPass.needsSwap = true;
 
-            const composer = new EffectComposer(renderer);
-            composer.addPass(new RenderPass(scene, camera));
+                // Final composer: full scene + bloom overlay → screen
+                const finalComposer = new EffectComposer(renderer);
+                finalComposer.setSize(w, h);
+                finalComposer.setPixelRatio(
+                    Math.min(window.devicePixelRatio, 2),
+                );
+                // GTAO (ground-truth ambient occlusion) adds contact darkness
+                // between cubes, under the slab, and around the disc.
+                const gtaoPass = new GTAOPass(scene, camera, w, h);
+                gtaoPass.output = GTAOPass.OUTPUT.Default;
+                gtaoPass.blendIntensity = 1.0;
+                gtaoPass.updateGtaoMaterial({
+                    radius: 0.18,
+                    distanceExponent: 1.6,
+                    thickness: 0.6,
+                    scale: 1.0,
+                    samples: 16,
+                });
 
-            const initScale = getResScale();
-            const initBloom = adaptedBloom(initScale);
-            const bloomPass = new UnrealBloomPass(
-                new THREE.Vector2(innerWidth, innerHeight),
-                initBloom.strength,
-                initBloom.radius,
-                0.75,
-            );
-            composer.addPass(bloomPass);
-            composer.addPass(new OutputPass());
+                finalComposer.addPass(finalRenderPass);
+                finalComposer.addPass(gtaoPass);
+                finalComposer.addPass(mixPass);
+                finalComposer.addPass(new OutputPass());
 
-            /* ── Build geometry ─────────────────────────────────────────────────── */
+                scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 
-            const data = await loadNervousSystem();
-            const { lines, numLines, brainVerts, brainEdges, numBrainEdges } = data;
+                const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
+                keyLight.position.set(4, 8, 6);
+                scene.add(keyLight);
 
-            let bMinX = Infinity, bMinY = Infinity, bMinZ = Infinity;
-            let bMaxX = -Infinity, bMaxY = -Infinity, bMaxZ = -Infinity;
-            for (let i = 0; i < brainVerts.length; i += 3) {
-                bMinX = Math.min(bMinX, brainVerts[i]);
-                bMaxX = Math.max(bMaxX, brainVerts[i]);
-                bMinY = Math.min(bMinY, brainVerts[i + 1]);
-                bMaxY = Math.max(bMaxY, brainVerts[i + 1]);
-                bMinZ = Math.min(bMinZ, brainVerts[i + 2]);
-                bMaxZ = Math.max(bMaxZ, brainVerts[i + 2]);
-            }
-            for (const line of lines) {
-                for (let i = 0; i < line.length; i += 3) {
-                    bMinX = Math.min(bMinX, line[i]);
-                    bMaxX = Math.max(bMaxX, line[i]);
-                    bMinY = Math.min(bMinY, line[i + 1]);
-                    bMaxY = Math.max(bMaxY, line[i + 1]);
-                    bMinZ = Math.min(bMinZ, line[i + 2]);
-                    bMaxZ = Math.max(bMaxZ, line[i + 2]);
-                }
-            }
-            const cx = (bMinX + bMaxX) / 2;
-            const cy = (bMinY + bMaxY) / 2;
-            const cz = (bMinZ + bMaxZ) / 2;
+                const fillLight = new THREE.DirectionalLight(0x119fcd, 0.55);
+                fillLight.position.set(-6, 2, 4);
+                scene.add(fillLight);
 
-            const MODEL_SCALE = 2.0;
-            for (const line of lines) {
-                for (let i = 0; i < line.length; i += 3) {
-                    line[i] = (line[i] - cx) * MODEL_SCALE;
-                    line[i + 1] = (line[i + 1] - cy) * MODEL_SCALE;
-                    line[i + 2] = (line[i + 2] - cz) * MODEL_SCALE;
-                }
-            }
-            for (let i = 0; i < brainVerts.length; i += 3) {
-                brainVerts[i] = (brainVerts[i] - cx) * MODEL_SCALE;
-                brainVerts[i + 1] = (brainVerts[i + 1] - cy) * MODEL_SCALE;
-                brainVerts[i + 2] = (brainVerts[i + 2] - cz) * MODEL_SCALE;
-            }
+                const rimLight = new THREE.DirectionalLight(0x4cbd97, 0.4);
+                rimLight.position.set(0, 2, -6);
+                scene.add(rimLight);
 
-            let brainTopY = -Infinity, spineBottomY = Infinity;
-            for (let i = 0; i < brainVerts.length; i += 3) {
-                brainTopY = Math.max(brainTopY, brainVerts[i + 1]);
-            }
-            for (const line of lines) {
-                for (let i = 0; i < line.length; i += 3) {
-                    spineBottomY = Math.min(spineBottomY, line[i + 1]);
-                }
-            }
-            const brainCenterY = brainTopY * 0.75;
+                const group = new THREE.Group();
+                const GROUP_BASE_Y = -1.0;
+                // Shift right so the logo + wave centre sit at ~66% of the
+                // full-hero canvas (the right 2/3 column), leaving the left
+                // third clear for hero text. Base Y lowers the whole scene so
+                // the logo isn't clipped by the fixed navigation bar.
+                group.position.x = 1.5;
+                group.position.y = GROUP_BASE_Y;
+                scene.add(group);
 
-            /* ── Model group ────────────────────────────────────────────────────── */
+                // Cubes + trails live in a child group that we scale up so the
+                // logo reads ~25% bigger without resizing the disc below.
+                const MESH_SCALE = 1.25;
+                const cubeGroup = new THREE.Group();
+                cubeGroup.scale.setScalar(MESH_SCALE);
+                cubeGroup.position.y = 0.3;
+                group.add(cubeGroup);
 
-            const MODEL_START_ROT = -Math.PI / 2;
-            const modelGroup = new THREE.Group();
-            modelGroup.position.x = 1.5;
-            modelGroup.rotation.y = MODEL_START_ROT;
-            scene.add(modelGroup);
+                try {
+                    // === Voxel grid config ===
+                    // Change gridSize for finer/coarser cubes.
+                    // step, cubeSize, and depth derive from fixed world-space
+                    // targets so the logo's overall size and slab thickness
+                    // stay constant regardless of gridSize.
+                    const gridSize = 128;
+                    const LOGO_WIDTH = 4.1; // world-space width of voxel footprint
+                    const SLAB_THICKNESS = 0.42; // world-space depth of the slab
+                    const CUBE_FILL = 0.95; // cubeSize / step (leaves a tiny gap)
 
-            /* ── Brain wireframe ───────────────────────────────────────────────── */
+                    const img = await loadSvgImage("assets/logo.svg", 400);
+                    const voxels = voxelize(img, gridSize);
+                    if (!voxels.length) return;
 
-            const brainWirePositions = new Float32Array(numBrainEdges * 2 * 3);
-            for (let i = 0; i < numBrainEdges; i++) {
-                const a = brainEdges[i * 2];
-                const b = brainEdges[i * 2 + 1];
-                brainWirePositions[i * 6] = brainVerts[a * 3];
-                brainWirePositions[i * 6 + 1] = brainVerts[a * 3 + 1];
-                brainWirePositions[i * 6 + 2] = brainVerts[a * 3 + 2];
-                brainWirePositions[i * 6 + 3] = brainVerts[b * 3];
-                brainWirePositions[i * 6 + 4] = brainVerts[b * 3 + 1];
-                brainWirePositions[i * 6 + 5] = brainVerts[b * 3 + 2];
-            }
+                    let minGx = Infinity,
+                        maxGx = -Infinity,
+                        minGy = Infinity,
+                        maxGy = -Infinity;
+                    for (const v of voxels) {
+                        if (v.gx < minGx) minGx = v.gx;
+                        if (v.gx > maxGx) maxGx = v.gx;
+                        if (v.gy < minGy) minGy = v.gy;
+                        if (v.gy > maxGy) maxGy = v.gy;
+                    }
+                    const cx = (minGx + maxGx) / 2;
+                    const cy = (minGy + maxGy) / 2;
 
-            const brainWireGeo = new THREE.BufferGeometry();
-            brainWireGeo.setAttribute("position", new THREE.BufferAttribute(brainWirePositions, 3));
+                    const step = LOGO_WIDTH / gridSize;
+                    const cubeSize = step * CUBE_FILL;
+                    const depthStep = cubeSize;
+                    const depth = Math.max(
+                        2,
+                        Math.round(SLAB_THICKNESS / depthStep),
+                    );
+                    const geo = new THREE.BoxGeometry(
+                        cubeSize,
+                        cubeSize,
+                        cubeSize,
+                    );
+                    const mat = new THREE.MeshStandardMaterial({
+                        roughness: 0.5,
+                        metalness: 0.2,
+                        transparent: true,
+                        alphaTest: 0.01,
+                    });
 
-            const brainWireMat = new THREE.LineBasicMaterial({
-                color: 0x119fcd,
-                transparent: true,
-                opacity: 0.10,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-            });
-
-            modelGroup.add(new THREE.LineSegments(brainWireGeo, brainWireMat));
-
-            /* ── Nerve lines with per-vertex alpha fade ─────────────────────────── */
-
-            let totalSegs = 0;
-            for (const line of lines) totalSegs += line.length / 3 - 1;
-            const linePositions = new Float32Array(totalSegs * 2 * 3);
-            const lineAlphas = new Float32Array(totalSegs * 2);
-
-            let li = 0, ai = 0;
-            for (const line of lines) {
-                const ptCount = line.length / 3;
-                for (let j = 0; j < ptCount - 1; j++) {
-                    const s = j * 3;
-                    linePositions[li++] = line[s];
-                    linePositions[li++] = line[s + 1];
-                    linePositions[li++] = line[s + 2];
-                    linePositions[li++] = line[s + 3];
-                    linePositions[li++] = line[s + 4];
-                    linePositions[li++] = line[s + 5];
-
-                    const t1 = j / (ptCount - 1);
-                    const t2 = (j + 1) / (ptCount - 1);
-                    const fade = (t) => {
-                        const edgeBright = Math.max(0, 1.0 - t * 4.0);
-                        const endBright = Math.max(0, (t - 0.7) * 3.3);
-                        const mid = 0.08;
-                        return Math.min(1.0, edgeBright + endBright + mid);
+                    // Inject a per-instance alpha attribute (aAlpha) into the
+                    // standard material so each cube can independently fade in.
+                    mat.onBeforeCompile = (shader) => {
+                        shader.vertexShader = shader.vertexShader.replace(
+                            "void main() {",
+                            `attribute float aAlpha;
+                                varying float vAlpha;
+                                void main() {
+                                    vAlpha = aAlpha;`,
+                        );
+                        shader.fragmentShader = shader.fragmentShader
+                            .replace(
+                                "void main() {",
+                                `varying float vAlpha;
+                                void main() {`,
+                            )
+                            .replace(
+                                "#include <colorspace_fragment>",
+                                `#include <colorspace_fragment>
+                                gl_FragColor.a *= vAlpha;`,
+                            );
                     };
-                    lineAlphas[ai++] = fade(t1);
-                    lineAlphas[ai++] = fade(t2);
+
+                    const totalInstances = voxels.length * depth;
+                    const alphaArr = new Float32Array(totalInstances);
+                    const alphaAttr = new THREE.InstancedBufferAttribute(
+                        alphaArr,
+                        1,
+                    );
+                    geo.setAttribute("aAlpha", alphaAttr);
+
+                    const mesh = new THREE.InstancedMesh(
+                        geo,
+                        mat,
+                        totalInstances,
+                    );
+
+                    const instances = [];
+                    for (const v of voxels) {
+                        for (let dz = 0; dz < depth; dz++) {
+                            const spawnTime = Math.random() * 1100;
+                            const swirlDuration = 800 + Math.random() * 1500;
+                            instances.push({
+                                x: (v.gx - cx) * step,
+                                y: -(v.gy - cy) * step,
+                                z: (dz - (depth - 1) / 2) * depthStep,
+                                color: v.color,
+                                spawnTime,
+                                settleStart: spawnTime + swirlDuration,
+                                settleDuration: 550 + Math.random() * 300,
+                                cycloneRadius: 0.55 + Math.random() * 0.55,
+                                cyclonePhase: Math.random() * Math.PI * 2,
+                                startHeight: 1.6 + Math.random() * 1.2,
+                                bobAmp: 0.05 + Math.random() * 0.1,
+                                bobPhase: Math.random() * Math.PI * 2,
+                            });
+                        }
+                    }
+
+                    const dummy = new THREE.Object3D();
+                    const color = new THREE.Color();
+                    instances.forEach((inst, i) => {
+                        color.setHex(inst.color);
+                        mesh.setColorAt(i, color);
+                    });
+
+                    cubeGroup.add(mesh);
+
+                    const halfWidth = ((maxGx - minGx) / 2) * step;
+                    const halfHeight = ((maxGy - minGy) / 2) * step;
+                    const bottomY = -halfHeight;
+
+                    // Wave disk: a circular grid of points/lines displaced by
+                    // a sum of sines in a vertex shader. Radial fade gives the
+                    // disk shape (alpha drops to 0 outside the radius) and
+                    // amplitude is also radially attenuated so the rim stays
+                    // flat while the centre ripples most. Electric-blue glow
+                    // comes from routing the mesh onto BLOOM_LAYER so it's
+                    // picked up by the existing UnrealBloomPass.
+                    const WAVE_RADIUS = 5.4;
+                    const WAVE_GRID = 12.2; // extent of underlying square grid
+                    const WAVE_RES = 140; // vertices per side
+                    const waveVertCount = WAVE_RES * WAVE_RES;
+                    const wavePositions = new Float32Array(waveVertCount * 3);
+                    const waveFade = new Float32Array(waveVertCount);
+                    const waveRadial = new Float32Array(waveVertCount);
+                    for (let r = 0; r < WAVE_RES; r++) {
+                        const zNorm = r / (WAVE_RES - 1);
+                        const zWorld = (zNorm - 0.5) * WAVE_GRID;
+                        for (let c = 0; c < WAVE_RES; c++) {
+                            const i = r * WAVE_RES + c;
+                            const xNorm = c / (WAVE_RES - 1);
+                            const xWorld = (xNorm - 0.5) * WAVE_GRID;
+                            wavePositions[i * 3] = xWorld;
+                            wavePositions[i * 3 + 1] = 0;
+                            wavePositions[i * 3 + 2] = zWorld;
+                            const d = Math.sqrt(
+                                xWorld * xWorld + zWorld * zWorld,
+                            );
+                            // Smooth radial fall-off: 1 at centre → 0 at rim
+                            const t = Math.max(
+                                0,
+                                Math.min(1, 1 - d / WAVE_RADIUS),
+                            );
+                            const smooth = t * t * (3 - 2 * t);
+                            waveFade[i] = smooth;
+                            waveRadial[i] = smooth;
+                        }
+                    }
+                    // Line indices — only keep segments where BOTH endpoints
+                    // have non-zero fade, so the rim of the disk ends cleanly
+                    // instead of showing stubs in the corners of the grid.
+                    const segList = [];
+                    for (let r = 0; r < WAVE_RES; r++) {
+                        for (let c = 0; c < WAVE_RES - 1; c++) {
+                            const a = r * WAVE_RES + c;
+                            const b = r * WAVE_RES + c + 1;
+                            if (waveFade[a] > 0.001 && waveFade[b] > 0.001) {
+                                segList.push(a, b);
+                            }
+                        }
+                    }
+                    const waveIndices = new Uint32Array(segList);
+                    const waveGeo = new THREE.BufferGeometry();
+                    waveGeo.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(wavePositions, 3),
+                    );
+                    waveGeo.setAttribute(
+                        "aFade",
+                        new THREE.BufferAttribute(waveFade, 1),
+                    );
+                    waveGeo.setAttribute(
+                        "aRadial",
+                        new THREE.BufferAttribute(waveRadial, 1),
+                    );
+                    waveGeo.setIndex(new THREE.BufferAttribute(waveIndices, 1));
+
+                    const waveUniforms = {
+                        uTime: { value: 0 },
+                        uColor: { value: new THREE.Color(0x4cc9ff) },
+                    };
+
+                    const waveVertex = `
+                        uniform float uTime;
+                        attribute float aFade;
+                        attribute float aRadial;
+                        varying float vFade;
+                        varying float vCrest;
+                        void main() {
+                            vec3 p = position;
+                            float w =
+                                sin(p.x * 2.8 + p.z * 0.7 + uTime * 1.4) * 0.09 +
+                                sin(p.z * 4.2 - p.x * 0.9 + uTime * 1.0) * 0.06 +
+                                sin((p.x + p.z * 1.3) * 1.8 + uTime * 1.6) * 0.04;
+                            // Attenuate amplitude near the disk rim so the edge
+                            // stays flat and only the centre ripples.
+                            p.y = w * aRadial;
+                            // Crest factor (0 = trough, 1 = peak) feeds a small
+                            // brightness kick in the fragment shader.
+                            vCrest = clamp(p.y * 2.2 + 0.5, 0.0, 1.0);
+                            vFade = aFade;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+                        }
+                    `;
+                    const waveMat = new THREE.ShaderMaterial({
+                        uniforms: waveUniforms,
+                        transparent: true,
+                        depthWrite: false,
+                        vertexShader: waveVertex,
+                        fragmentShader: `
+                            uniform vec3 uColor;
+                            varying float vFade;
+                            varying float vCrest;
+                            void main() {
+                                vec3 c = uColor * (0.55 + vCrest * 0.5);
+                                gl_FragColor = vec4(c, vFade * 0.7);
+                            }
+                        `,
+                    });
+                    const waveMesh = new THREE.LineSegments(waveGeo, waveMat);
+                    waveMesh.position.y = bottomY * MESH_SCALE - 0.15;
+                    group.add(waveMesh);
+
+                    // Swirling glow trails
+                    const TRAIL_LEN = 14;
+                    const MAX_TRAILS = 1000;
+                    const trailStride = Math.max(
+                        1,
+                        Math.floor(instances.length / MAX_TRAILS),
+                    );
+                    const trailInstanceIdx = [];
+                    for (let i = 0; i < instances.length; i += trailStride) {
+                        trailInstanceIdx.push(i);
+                    }
+                    const NUM_TRAILS = trailInstanceIdx.length;
+
+                    const trailPositions = new Float32Array(
+                        NUM_TRAILS * TRAIL_LEN * 3,
+                    );
+                    const trailColorsAttr = new Float32Array(
+                        NUM_TRAILS * TRAIL_LEN * 3,
+                    );
+                    const trailIndices = new Uint32Array(
+                        NUM_TRAILS * (TRAIL_LEN - 1) * 2,
+                    );
+                    for (let t = 0; t < NUM_TRAILS; t++) {
+                        const base = t * TRAIL_LEN;
+                        for (let s = 0; s < TRAIL_LEN - 1; s++) {
+                            const ii = (t * (TRAIL_LEN - 1) + s) * 2;
+                            trailIndices[ii] = base + s;
+                            trailIndices[ii + 1] = base + s + 1;
+                        }
+                    }
+                    // Seed positions at each cube's starting cyclone point so the first
+                    // frames don't draw segments from origin.
+                    for (let t = 0; t < NUM_TRAILS; t++) {
+                        const inst = instances[trailInstanceIdx[t]];
+                        const seedX =
+                            Math.cos(inst.cyclonePhase) * inst.cycloneRadius;
+                        const seedZ =
+                            Math.sin(inst.cyclonePhase) * inst.cycloneRadius;
+                        const seedY = inst.startHeight;
+                        const base = t * TRAIL_LEN * 3;
+                        for (let p = 0; p < TRAIL_LEN; p++) {
+                            trailPositions[base + p * 3] = seedX;
+                            trailPositions[base + p * 3 + 1] = seedY;
+                            trailPositions[base + p * 3 + 2] = seedZ;
+                        }
+                    }
+
+                    const trailGeo = new THREE.BufferGeometry();
+                    trailGeo.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(trailPositions, 3),
+                    );
+                    trailGeo.setAttribute(
+                        "color",
+                        new THREE.BufferAttribute(trailColorsAttr, 3),
+                    );
+                    trailGeo.setIndex(
+                        new THREE.BufferAttribute(trailIndices, 1),
+                    );
+
+                    const trailMat = new THREE.LineBasicMaterial({
+                        vertexColors: true,
+                        transparent: true,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false,
+                    });
+
+                    const trailLines = new THREE.LineSegments(
+                        trailGeo,
+                        trailMat,
+                    );
+                    trailLines.layers.enable(BLOOM_LAYER);
+                    cubeGroup.add(trailLines);
+
+                    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+                    // Mouse hover explosion state
+                    const EXPLODE_RADIUS = 0.9;
+                    const EXPLODE_STRENGTH = 0.5; // world-space push distance
+                    const EXPLODE_Z_GAIN = 3.0; // amplify z direction (slab is thin)
+                    const HOVER_LERP = 0.15; // per-cube easing rate
+
+                    const hoverOffsetX = new Float32Array(totalInstances);
+                    const hoverOffsetY = new Float32Array(totalInstances);
+                    const hoverOffsetZ = new Float32Array(totalInstances);
+
+                    let mouseActive = false;
+                    const mouseNdc = new THREE.Vector2();
+                    const raycaster = new THREE.Raycaster();
+                    const hoverPlane = new THREE.Plane(
+                        new THREE.Vector3(0, 0, 1),
+                        0,
+                    );
+                    const mouseHit = new THREE.Vector3();
+                    const mouseLocal = new THREE.Vector3();
+
+                    window.addEventListener("pointermove", (e) => {
+                        const rect = container.getBoundingClientRect();
+                        const inside =
+                            e.clientX >= rect.left &&
+                            e.clientX <= rect.right &&
+                            e.clientY >= rect.top &&
+                            e.clientY <= rect.bottom;
+                        if (!inside) {
+                            mouseActive = false;
+                            return;
+                        }
+                        mouseNdc.x =
+                            ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                        mouseNdc.y =
+                            -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                        mouseActive = true;
+                    });
+
+                    function computeMouseLocal() {
+                        if (!mouseActive) return false;
+                        cubeGroup.updateMatrixWorld();
+                        raycaster.setFromCamera(mouseNdc, camera);
+                        if (!raycaster.ray.intersectPlane(hoverPlane, mouseHit))
+                            return false;
+                        mouseLocal.copy(mouseHit);
+                        cubeGroup.worldToLocal(mouseLocal);
+                        return true;
+                    }
+
+                    const CYCLONE_ANGULAR_SPEED = 0.0055; // rad per ms
+
+                    function updateTrails(elapsed) {
+                        const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
+                        for (let t = 0; t < NUM_TRAILS; t++) {
+                            const inst = instances[trailInstanceIdx[t]];
+
+                            const swirlSpan = inst.settleStart - inst.spawnTime;
+                            const swirlT = Math.max(
+                                0,
+                                Math.min(
+                                    1,
+                                    (elapsed - inst.spawnTime) / swirlSpan,
+                                ),
+                            );
+                            const descE = swirlT * swirlT;
+                            const heightNow =
+                                inst.startHeight +
+                                (inst.y - inst.startHeight) * descE;
+                            const radiusTaper = 1 - swirlT * 0.55;
+                            const angle = cycloneTheta + inst.cyclonePhase;
+                            const r = inst.cycloneRadius * radiusTaper;
+                            const cxp = Math.cos(angle) * r;
+                            const czp = Math.sin(angle) * r;
+
+                            const st =
+                                (elapsed - inst.settleStart) /
+                                inst.settleDuration;
+                            const settle = Math.max(0, Math.min(1, st));
+                            const spawnF = Math.max(
+                                0,
+                                Math.min(1, (elapsed - inst.spawnTime) / 200),
+                            );
+                            const intensity = spawnF * (1 - settle);
+
+                            const trailBase = t * TRAIL_LEN * 3;
+                            // Shift older points back one slot
+                            trailPositions.copyWithin(
+                                trailBase + 3,
+                                trailBase,
+                                trailBase + (TRAIL_LEN - 1) * 3,
+                            );
+                            trailPositions[trailBase] = cxp;
+                            trailPositions[trailBase + 1] = heightNow;
+                            trailPositions[trailBase + 2] = czp;
+
+                            const color = inst.color;
+                            const cr = (((color >> 16) & 0xff) / 255) * 1.7;
+                            const cg = (((color >> 8) & 0xff) / 255) * 1.7;
+                            const cb = ((color & 0xff) / 255) * 1.7;
+
+                            for (let p = 0; p < TRAIL_LEN; p++) {
+                                const fade = 1 - p / (TRAIL_LEN - 1);
+                                const mult = intensity * fade;
+                                const idx = trailBase + p * 3;
+                                trailColorsAttr[idx] = cr * mult;
+                                trailColorsAttr[idx + 1] = cg * mult;
+                                trailColorsAttr[idx + 2] = cb * mult;
+                            }
+                        }
+                        trailGeo.attributes.position.needsUpdate = true;
+                        trailGeo.attributes.color.needsUpdate = true;
+                    }
+
+                    function updateInstances(elapsed) {
+                        const mx = mouseLocal.x;
+                        const my = mouseLocal.y;
+                        const mz = mouseLocal.z;
+                        const explodeActive = mouseActive;
+                        const radiusSq = EXPLODE_RADIUS * EXPLODE_RADIUS;
+                        const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
+                        const bobTime = elapsed * 0.003;
+
+                        for (let i = 0; i < instances.length; i++) {
+                            const inst = instances[i];
+
+                            // Cube materializes in the cyclone
+                            const sp = (elapsed - inst.spawnTime) / 220;
+                            const spawn = Math.max(0, Math.min(1, sp));
+
+                            // Descent progress while in the cyclone (0 → 1 over swirl phase)
+                            const swirlSpan = inst.settleStart - inst.spawnTime;
+                            const swirlT = Math.max(
+                                0,
+                                Math.min(
+                                    1,
+                                    (elapsed - inst.spawnTime) / swirlSpan,
+                                ),
+                            );
+                            const descE = swirlT * swirlT; // accelerating fall
+                            const heightNow =
+                                inst.startHeight +
+                                (inst.y - inst.startHeight) * descE;
+                            // Lean taper: column narrows as cube descends
+                            const radiusTaper = 1 - swirlT * 0.55;
+
+                            // Progress of release from cyclone → final slot
+                            const st =
+                                (elapsed - inst.settleStart) /
+                                inst.settleDuration;
+                            const settle = Math.max(0, Math.min(1, st));
+                            const blend = settle * settle * (3 - 2 * settle);
+
+                            // Shared cyclone position for this cube
+                            const angle = cycloneTheta + inst.cyclonePhase;
+                            const currentR = inst.cycloneRadius * radiusTaper;
+                            const cxp = Math.cos(angle) * currentR;
+                            const czp = Math.sin(angle) * currentR;
+                            const cyp =
+                                heightNow +
+                                Math.sin(bobTime + inst.bobPhase) * inst.bobAmp;
+
+                            // Lerp cyclone → final
+                            const px = cxp + (inst.x - cxp) * blend;
+                            const py = cyp + (inst.y - cyp) * blend;
+                            const pz = czp + (inst.z - czp) * blend;
+
+                            // 3D radial explosion target: cubes near the mouse
+                            // push outward in all axes; cubes outside the radius
+                            // target 0. The z direction is amplified by
+                            // EXPLODE_Z_GAIN because the slab is much thinner
+                            // than the xy footprint.
+                            let tx = 0;
+                            let ty = 0;
+                            let tz = 0;
+                            if (explodeActive && settle >= 1) {
+                                const dx = inst.x - mx;
+                                const dy = inst.y - my;
+                                const dz = inst.z - mz;
+                                const distSq = dx * dx + dy * dy + dz * dz;
+                                if (distSq < radiusSq) {
+                                    const dist = Math.sqrt(distSq);
+                                    const f = 1 - dist / EXPLODE_RADIUS;
+                                    const smooth = f * f * (3 - 2 * f);
+                                    const mag = smooth * EXPLODE_STRENGTH;
+                                    if (dist > 0.0001) {
+                                        const inv = 1 / dist;
+                                        tx = dx * inv * mag;
+                                        ty = dy * inv * mag;
+                                        tz = dz * inv * mag * EXPLODE_Z_GAIN;
+                                    }
+                                }
+                            }
+                            // Smooth per-cube easing toward the target offset
+                            // (eases out when the mouse leaves).
+                            hoverOffsetX[i] +=
+                                (tx - hoverOffsetX[i]) * HOVER_LERP;
+                            hoverOffsetY[i] +=
+                                (ty - hoverOffsetY[i]) * HOVER_LERP;
+                            hoverOffsetZ[i] +=
+                                (tz - hoverOffsetZ[i]) * HOVER_LERP;
+
+                            dummy.position.set(
+                                px + hoverOffsetX[i],
+                                py + hoverOffsetY[i],
+                                pz + hoverOffsetZ[i],
+                            );
+                            dummy.scale.setScalar(spawn);
+                            dummy.updateMatrix();
+                            mesh.setMatrixAt(i, dummy.matrix);
+
+                            // Cube fades from translucent (in the cyclone) to opaque (settled)
+                            alphaArr[i] = spawn * (0.3 + 0.7 * blend);
+                        }
+                        mesh.instanceMatrix.needsUpdate = true;
+                        alphaAttr.needsUpdate = true;
+                    }
+
+                    updateInstances(0);
+                    if (mesh.instanceColor)
+                        mesh.instanceColor.needsUpdate = true;
+
+                    const startTime = performance.now();
+                    const assembleDuration = 4200;
+
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        const elapsed = performance.now() - startTime;
+
+                        const rt =
+                            Math.max(0, elapsed - assembleDuration) * 0.0004;
+                        group.rotation.y = Math.sin(rt) * 0.55;
+                        group.position.y =
+                            GROUP_BASE_Y + Math.sin(rt * 1.4) * 0.04;
+
+                        computeMouseLocal();
+
+                        updateInstances(elapsed);
+                        updateTrails(elapsed);
+                        waveUniforms.uTime.value = elapsed * 0.001;
+
+                        // Pass 1: bloom only the trails (layer 1)
+                        camera.layers.set(BLOOM_LAYER);
+                        bloomComposer.render();
+                        // Pass 2: full scene (layer 0) + mix bloom texture
+                        camera.layers.set(0);
+                        camera.layers.enable(BLOOM_LAYER);
+                        finalComposer.render();
+                    }
+
+                    animate();
+                } catch (err) {
+                    console.error("Hero 3D init failed:", err);
                 }
-            }
 
-            const lineGeo = new THREE.BufferGeometry();
-            lineGeo.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
-            lineGeo.setAttribute("alpha", new THREE.BufferAttribute(lineAlphas, 1));
-
-            const lineMat = new THREE.ShaderMaterial({
-                uniforms: {
-                    uColor: { value: new THREE.Color(0x119fcd) },
-                    uOpacity: { value: lineOpacity(initScale) },
-                },
-                vertexShader: `
-        attribute float alpha;
-        varying float vAlpha;
-        void main() {
-          vAlpha = alpha;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-                fragmentShader: `
-        uniform vec3 uColor;
-        uniform float uOpacity;
-        varying float vAlpha;
-        void main() {
-          gl_FragColor = vec4(uColor, vAlpha * uOpacity);
-        }
-      `,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-            });
-
-            modelGroup.add(new THREE.LineSegments(lineGeo, lineMat));
-
-            /* ── Endpoint nodes ─────────────────────────────────────────────────── */
-
-            const endpointCount = numLines * 2;
-            const epPositions = new Float32Array(endpointCount * 3);
-            const epPhases = new Float32Array(endpointCount);
-            const epSpeeds = new Float32Array(endpointCount);
-
-            for (let i = 0; i < numLines; i++) {
-                const line = lines[i];
-                const last = line.length - 3;
-
-                epPositions[i * 6] = line[0];
-                epPositions[i * 6 + 1] = line[1];
-                epPositions[i * 6 + 2] = line[2];
-                epPositions[i * 6 + 3] = line[last];
-                epPositions[i * 6 + 4] = line[last + 1];
-                epPositions[i * 6 + 5] = line[last + 2];
-
-                epPhases[i * 2] = Math.random() * Math.PI * 2;
-                epPhases[i * 2 + 1] = Math.random() * Math.PI * 2;
-                epSpeeds[i * 2] = 1.0 + Math.random() * 2.0;
-                epSpeeds[i * 2 + 1] = 1.0 + Math.random() * 2.0;
-            }
-
-            const epGeo = new THREE.BufferGeometry();
-            epGeo.setAttribute("position", new THREE.BufferAttribute(epPositions, 3));
-            epGeo.setAttribute("phase", new THREE.BufferAttribute(epPhases, 1));
-            epGeo.setAttribute("speed", new THREE.BufferAttribute(epSpeeds, 1));
-
-            const epMat = new THREE.ShaderMaterial({
-                uniforms: {
-                    uTime: { value: 0 },
-                    uColor: { value: new THREE.Color(0x7dd3fc) },
-                    uPointScale: { value: pointScale(initScale) },
-                },
-                vertexShader: `
-        attribute float phase;
-        attribute float speed;
-        varying float vBrightness;
-        uniform float uTime;
-        uniform float uPointScale;
-        void main() {
-          vBrightness = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * speed + phase));
-          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = (1.6 + vBrightness * 1.6) * (uPointScale / -mvPos.z);
-          gl_Position = projectionMatrix * mvPos;
-        }
-      `,
-                fragmentShader: `
-        uniform vec3 uColor;
-        varying float vBrightness;
-        void main() {
-          float d = length(gl_PointCoord - vec2(0.5));
-          if (d > 0.5) discard;
-          float core = exp(-d * d * 80.0);
-          float halo = exp(-d * 12.0) * 0.3;
-          float intensity = core + halo;
-          vec3 col = mix(uColor, vec3(1.0), core * vBrightness);
-          gl_FragColor = vec4(col * intensity * vBrightness, intensity * vBrightness);
-        }
-      `,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-            });
-
-            modelGroup.add(new THREE.Points(epGeo, epMat));
-
-            /* ── Traveling pulses ───────────────────────────────────────────────── */
-
-            const pulseLineIndices = [];
-            const pulseProgress = new Float32Array(PULSE_COUNT);
-            const pulseSpeed = new Float32Array(PULSE_COUNT);
-            const pulsePositions = new Float32Array(PULSE_COUNT * 3);
-            const pulseDirection = new Int8Array(PULSE_COUNT);
-
-            function assignPulse(i) {
-                pulseLineIndices[i] = Math.floor(Math.random() * numLines);
-                pulseProgress[i] = Math.random();
-                pulseSpeed[i] = 0.15 + Math.random() * 0.35;
-                pulseDirection[i] = Math.random() < 0.5 ? 1 : -1;
-            }
-
-            for (let i = 0; i < PULSE_COUNT; i++) assignPulse(i);
-
-            const pulseGeo = new THREE.BufferGeometry();
-            pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulsePositions, 3));
-
-            const pulseMat = new THREE.ShaderMaterial({
-                uniforms: {
-                    uColor: { value: new THREE.Color(0xaaeeff) },
-                    uPointScale: { value: pointScale(initScale) },
-                },
-                vertexShader: `
-        uniform float uPointScale;
-        void main() {
-          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = 4.5 * (uPointScale / -mvPos.z);
-          gl_Position = projectionMatrix * mvPos;
-        }
-      `,
-                fragmentShader: `
-        uniform vec3 uColor;
-        void main() {
-          float d = length(gl_PointCoord - vec2(0.5));
-          if (d > 0.5) discard;
-          float core = exp(-d * d * 100.0);
-          float halo = exp(-d * 15.0) * 0.2;
-          float intensity = core + halo;
-          vec3 col = mix(uColor, vec3(1.0), core);
-          gl_FragColor = vec4(col * intensity, intensity);
-        }
-      `,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-            });
-
-            modelGroup.add(new THREE.Points(pulseGeo, pulseMat));
-
-            function updatePulses(dt) {
-                const posAttr = pulseGeo.getAttribute("position");
-                for (let i = 0; i < PULSE_COUNT; i++) {
-                    pulseProgress[i] += pulseSpeed[i] * dt * pulseDirection[i];
-                    if (pulseProgress[i] > 1.0 || pulseProgress[i] < 0.0) assignPulse(i);
-
-                    const line = lines[pulseLineIndices[i]];
-                    const t = Math.max(0, Math.min(1, pulseProgress[i]));
-                    const linePtCount = line.length / 3;
-                    const segs = linePtCount - 1;
-                    const seg = Math.min(Math.floor(t * segs), segs - 1);
-                    const frac = t * segs - seg;
-                    const s = seg * 3;
-                    posAttr.array[i * 3] = line[s] + (line[s + 3] - line[s]) * frac;
-                    posAttr.array[i * 3 + 1] = line[s + 1] + (line[s + 4] - line[s + 1]) * frac;
-                    posAttr.array[i * 3 + 2] = line[s + 2] + (line[s + 5] - line[s + 2]) * frac;
-                }
-                posAttr.needsUpdate = true;
-            }
-
-            /* ── Scroll-driven camera ───────────────────────────────────────────── */
-
-            // 8 sections: Hero | What We Do | Why Matters | Our Approach | Orion | Modern Arch | Developers | Footer
-            const maxLookY = spineBottomY * 0.45;
-
-            const camKeyframes = [
-                { posX: 1.5,  lookY: brainCenterY,      camZ: 5,  camYOff: 0.5, rotOff: 0 },           // 0 Hero: brain right
-                { posX: 1.5,  lookY: brainCenterY,      camZ: 6,  camYOff: 0.4, rotOff: 0 },           // 1 What We Do: stay right
-                { posX: -1.5, lookY: brainCenterY * 0.3, camZ: 8, camYOff: 0.3, rotOff: 0 },           // 2 Why Matters: move left
-                { posX: 0,    lookY: 0,                  camZ: 9,  camYOff: 0.2, rotOff: 0 },           // 3 Approach: dimmed, centered
-                { posX: 0,    lookY: spineBottomY * 0.25, camZ: 10, camYOff: 0.1, rotOff: 0 },         // 4 Orion: dimmed, wider
-                { posX: 0,    lookY: maxLookY,           camZ: 10, camYOff: 0.0, rotOff: 0 },           // 5 Modern Arch: dimmed
-                { posX: 2.4,  lookY: brainCenterY * 0.4, camZ: 10, camYOff: 0.3, rotOff: -Math.PI / 2 }, // 6 Developers: right, rotated
-                { posX: 2.4,  lookY: brainCenterY * 0.4, camZ: 10, camYOff: 0.3, rotOff: -Math.PI / 2 }, // 7 Footer: same
-            ];
-
-            function getScrollProgress() {
-                const max = document.body.scrollHeight - innerHeight;
-                return max > 0 ? scrollY / max : 0;
-            }
-            let targetScrollProgress = getScrollProgress();
-            let scrollProgress = targetScrollProgress;
-            addEventListener("scroll", () => {
-                targetScrollProgress = getScrollProgress();
-                document.getElementById("scrollHint").classList.toggle("hidden", scrollY > 80);
-            });
-
-            const heroText = document.getElementById("heroText");
-            const lookTarget = new THREE.Vector3(0, 0, 0);
-            const ease = (t) => t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-
-            function lerpKeyframes(p) {
-                const n = camKeyframes.length - 1;
-                const raw = p * n;
-                const seg = Math.min(Math.floor(raw), n - 1);
-                const t = ease(raw - seg);
-                const a = camKeyframes[seg];
-                const b = camKeyframes[seg + 1];
-                return {
-                    posX: a.posX + (b.posX - a.posX) * t,
-                    lookY: a.lookY + (b.lookY - a.lookY) * t,
-                    camZ: a.camZ + (b.camZ - a.camZ) * t,
-                    camYOff: a.camYOff + (b.camYOff - a.camYOff) * t,
-                    rotOff: a.rotOff + (b.rotOff - a.rotOff) * t,
-                };
-            }
-
-            function updateCamera(p) {
-                const kf = lerpKeyframes(p);
-                modelGroup.position.x = kf.posX;
-                const introT = ease(Math.min(p * 7, 1));
-                const introRot = MODEL_START_ROT * (1 - introT);
-                const scrollRot = p * Math.PI * 2;
-                modelGroup.rotation.y = introRot + scrollRot + kf.rotOff;
-                lookTarget.set(0, kf.lookY, 0);
-                camera.position.set(0, kf.lookY + kf.camYOff, kf.camZ);
-                camera.lookAt(lookTarget);
-            }
-
-            /* ── Resize ──────────────────────────────────────────────────────────── */
-
-            addEventListener("resize", () => {
-                const pr = Math.min(devicePixelRatio, 2);
-                camera.aspect = innerWidth / innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setPixelRatio(pr);
-                renderer.setSize(innerWidth, innerHeight);
-                composer.setSize(innerWidth, innerHeight);
-                const rs = getResScale();
-                const ab = adaptedBloom(rs);
-                bloomPass.strength = ab.strength;
-                bloomPass.radius = ab.radius;
-                epMat.uniforms.uPointScale.value = pointScale(rs);
-                pulseMat.uniforms.uPointScale.value = pointScale(rs);
-                lineMat.uniforms.uOpacity.value = lineOpacity(rs);
-            });
-
-            /* ── Render loop ─────────────────────────────────────────────────────── */
-
-            const clock = new THREE.Clock();
-            (function animate() {
-                requestAnimationFrame(animate);
-                const dt = clock.getDelta();
-                const elapsed = clock.getElapsedTime();
-
-                scrollProgress += (targetScrollProgress - scrollProgress) * 0.05;
-
-                heroText.style.opacity = Math.max(0, 1 - scrollProgress * 4);
-
-                epMat.uniforms.uTime.value = elapsed;
-                updatePulses(dt);
-                updateCamera(scrollProgress);
-
-                composer.render();
+                window.addEventListener("resize", () => {
+                    w = container.clientWidth;
+                    h = container.clientHeight;
+                    if (!w || !h) return;
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(w, h);
+                    bloomComposer.setSize(w, h);
+                    finalComposer.setSize(w, h);
+                    gtaoPass.setSize(w, h);
+                });
             })();
         </script>
     </body>
