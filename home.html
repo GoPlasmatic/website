@@ -2050,7 +2050,7 @@
 
                     // Swirling glow trails
                     const TRAIL_LEN = 14;
-                    const MAX_TRAILS = 1000;
+                    const MAX_TRAILS = 128;
                     const trailStride = Math.max(
                         1,
                         Math.floor(instances.length / MAX_TRAILS),
@@ -2122,24 +2122,17 @@
                     trailLines.layers.enable(BLOOM_LAYER);
                     cubeGroup.add(trailLines);
 
-                    // Mouse hover shockwave-ring state: cubes within
-                    // SWIRL_RADIUS are pushed out to sit on a tilted ring
-                    // around the cursor and orbit along it.
-                    const SWIRL_RADIUS = 0.4; // ring radius in world units
-                    const SWIRL_ANGULAR_SPEED = 0.0045; // rad per ms around ring
-                    // Ring orientation: rotation axis tilted from world +Z
-                    // toward +Y. Tilt = 0 → flat xy ring; π/2 → vertical ring.
-                    const SWIRL_TILT = 0.6; // rad, ~34°
-                    const SWIRL_KY = Math.sin(SWIRL_TILT);
-                    const SWIRL_KZ = Math.cos(SWIRL_TILT);
-                    const HOVER_LERP = 0.18; // per-cube easing rate
+                    // Mouse wobble: cubes within WOBBLE_RADIUS jiggle in
+                    // place with a small time-varying offset. Closest cubes
+                    // wobble most; amplitude falls off smoothly at the rim.
+                    const WOBBLE_RADIUS = 0.45;
+                    const WOBBLE_AMP = 0.05;
+                    const WOBBLE_FREQ = 0.012; // rad per ms
+                    const HOVER_LERP = 0.18;
 
                     const hoverOffsetX = new Float32Array(totalInstances);
                     const hoverOffsetY = new Float32Array(totalInstances);
                     const hoverOffsetZ = new Float32Array(totalInstances);
-                    // Per-cube swirl strength, drives both the offset magnitude
-                    // and the glow trail brightness around the mouse.
-                    const hoverIntensity = new Float32Array(totalInstances);
 
                     let mouseActive = false;
                     const mouseNdc = new THREE.Vector2();
@@ -2205,15 +2198,10 @@
                                 0,
                                 Math.min(1, (elapsed - inst.spawnTime) / 200),
                             );
-                            const entryIntensity = spawnF * (1 - settle);
-                            const intensity = Math.max(
-                                entryIntensity,
-                                hoverIntensity[instIdx],
-                            );
+                            const intensity = spawnF * (1 - settle);
 
                             // Trail follows the cyclone column during entry;
-                            // once settled it tracks the cube's live position
-                            // so the hover swirl paints glow lines around it.
+                            // collapses once the cube settles into place.
                             let px, py, pz;
                             if (settle < 1) {
                                 const descE = swirlT * swirlT;
@@ -2227,9 +2215,9 @@
                                 py = heightNow;
                                 pz = Math.sin(angle) * r;
                             } else {
-                                px = inst.x + hoverOffsetX[instIdx];
-                                py = inst.y + hoverOffsetY[instIdx];
-                                pz = inst.z + hoverOffsetZ[instIdx];
+                                px = inst.x;
+                                py = inst.y;
+                                pz = inst.z;
                             }
 
                             const trailBase = t * TRAIL_LEN * 3;
@@ -2276,15 +2264,9 @@
                     function updateInstances(elapsed) {
                         const mx = mouseLocal.x;
                         const my = mouseLocal.y;
-                        const mz = mouseLocal.z;
-                        const explodeActive = mouseActive;
-                        const radiusSq = SWIRL_RADIUS * SWIRL_RADIUS;
-                        // Shared rotation angle (ms → rad) so every swirled
-                        // cube orbits in lockstep around the cursor.
-                        const swirlAngle = elapsed * SWIRL_ANGULAR_SPEED;
-                        const swirlCa = Math.cos(swirlAngle);
-                        const swirlSa = Math.sin(swirlAngle);
-                        const swirlOneMinusC = 1 - swirlCa;
+                        const wobbleActive = mouseActive;
+                        const radiusSq = WOBBLE_RADIUS * WOBBLE_RADIUS;
+                        const wobbleT = elapsed * WOBBLE_FREQ;
                         const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
                         const bobTime = elapsed * 0.003;
 
@@ -2332,67 +2314,35 @@
                             const py = cyp + (inst.y - cyp) * blend;
                             const pz = czp + (inst.z - czp) * blend;
 
-                            // Shockwave-ring target: project cube onto a
-                            // tilted ring of radius SWIRL_RADIUS around the
-                            // cursor. The unit radial direction from the
-                            // cursor is rotated around the tilted axis by a
-                            // shared swirl angle (so all cubes sweep the ring
-                            // in lockstep), then scaled by SWIRL_RADIUS to get
-                            // the target point. Smooth falloff controls how
-                            // strongly each cube is pulled toward the ring.
+                            // Wobble: cubes within WOBBLE_RADIUS of the cursor
+                            // oscillate with a small time-varying offset,
+                            // amplitude falling off smoothly to 0 at the rim.
                             let tx = 0;
                             let ty = 0;
                             let tz = 0;
-                            let targetIntensity = 0;
-                            if (explodeActive && settle >= 1) {
+                            if (wobbleActive && settle >= 1) {
                                 const dx = inst.x - mx;
                                 const dy = inst.y - my;
                                 const distSq = dx * dx + dy * dy;
-                                if (distSq < radiusSq && distSq > 0.000001) {
-                                    const dist = Math.sqrt(distSq);
-                                    const f = 1 - dist / SWIRL_RADIUS;
+                                if (distSq < radiusSq) {
+                                    const f =
+                                        1 - Math.sqrt(distSq) / WOBBLE_RADIUS;
                                     const smooth = f * f * (3 - 2 * f);
-                                    // Unit radial direction from cursor (xy).
-                                    const ux = dx / dist;
-                                    const uy = dy / dist;
-                                    // Rodrigues rotation of (ux, uy, 0) around
-                                    // k = (0, SWIRL_KY, SWIRL_KZ):
-                                    //   v' = v·c + (k×v)·s + k·(k·v)·(1−c)
-                                    const kDotU = SWIRL_KY * uy;
-                                    const kDotUInv = swirlOneMinusC * kDotU;
-                                    const rotUx =
-                                        ux * swirlCa - SWIRL_KZ * uy * swirlSa;
-                                    const rotUy =
-                                        uy * swirlCa +
-                                        SWIRL_KZ * ux * swirlSa +
-                                        SWIRL_KY * kDotUInv;
-                                    const rotUz =
-                                        -SWIRL_KY * ux * swirlSa +
-                                        SWIRL_KZ * kDotUInv;
-                                    // Target position on the ring, blended
-                                    // with the cube's home by `smooth` so
-                                    // cubes at the rim blend in smoothly.
-                                    const ringX = mx + SWIRL_RADIUS * rotUx;
-                                    const ringY = my + SWIRL_RADIUS * rotUy;
-                                    const ringZ = mz + SWIRL_RADIUS * rotUz;
-                                    tx = (ringX - inst.x) * smooth;
-                                    ty = (ringY - inst.y) * smooth;
-                                    tz = (ringZ - inst.z) * smooth;
-                                    targetIntensity = smooth;
+                                    const a = WOBBLE_AMP * smooth;
+                                    const ph = inst.bobPhase;
+                                    tx = Math.sin(wobbleT * 1.7 + ph) * a;
+                                    ty =
+                                        Math.sin(wobbleT * 2.1 + ph * 1.3) * a;
+                                    tz =
+                                        Math.sin(wobbleT * 1.4 + ph * 0.7) * a;
                                 }
                             }
-                            // Smooth per-cube easing toward target offset and
-                            // glow intensity (both ease back to 0 when the
-                            // mouse leaves the swirl radius).
                             hoverOffsetX[i] +=
                                 (tx - hoverOffsetX[i]) * HOVER_LERP;
                             hoverOffsetY[i] +=
                                 (ty - hoverOffsetY[i]) * HOVER_LERP;
                             hoverOffsetZ[i] +=
                                 (tz - hoverOffsetZ[i]) * HOVER_LERP;
-                            hoverIntensity[i] +=
-                                (targetIntensity - hoverIntensity[i]) *
-                                HOVER_LERP;
 
                             dummy.position.set(
                                 px + hoverOffsetX[i],
