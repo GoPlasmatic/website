@@ -1752,7 +1752,7 @@
                     Math.min(window.devicePixelRatio, 2),
                 );
                 // GTAO (ground-truth ambient occlusion) adds contact darkness
-                // between cubes, under the slab, and around the disc.
+                // between cubes for readable depth in the voxel stack.
                 const gtaoPass = new GTAOPass(scene, camera, w, h);
                 gtaoPass.output = GTAOPass.OUTPUT.Default;
                 gtaoPass.blendIntensity = 1.0;
@@ -1784,7 +1784,7 @@
                 scene.add(rimLight);
 
                 const group = new THREE.Group();
-                const GROUP_BASE_Y = -1.0;
+                const GROUP_BASE_Y = -0.9;
                 // Shift right so the logo + wave centre sit at ~66% of the
                 // full-hero canvas (the right 2/3 column), leaving the left
                 // third clear for hero text. Base Y lowers the whole scene so
@@ -1793,8 +1793,8 @@
                 group.position.y = GROUP_BASE_Y;
                 scene.add(group);
 
-                // Cubes + trails live in a child group that we scale up so the
-                // logo reads ~25% bigger without resizing the disc below.
+                // Cubes + trails live in a child group so the logo can be
+                // scaled independently of the wave below it.
                 const MESH_SCALE = 1.25;
                 const cubeGroup = new THREE.Group();
                 cubeGroup.scale.setScalar(MESH_SCALE);
@@ -1920,20 +1920,16 @@
                     const halfHeight = ((maxGy - minGy) / 2) * step;
                     const bottomY = -halfHeight;
 
-                    // Wave disk: a circular grid of points/lines displaced by
-                    // a sum of sines in a vertex shader. Radial fade gives the
-                    // disk shape (alpha drops to 0 outside the radius) and
-                    // amplitude is also radially attenuated so the rim stays
-                    // flat while the centre ripples most. Electric-blue glow
-                    // comes from routing the mesh onto BLOOM_LAYER so it's
-                    // picked up by the existing UnrealBloomPass.
+                    // Wave disk: a circular grid of lines displaced by a sum
+                    // of sines in a vertex shader. A single smoothstep radial
+                    // factor drives both alpha (disk shape — 0 outside rim)
+                    // and wave amplitude (rim stays flat, centre ripples).
                     const WAVE_RADIUS = 5.4;
                     const WAVE_GRID = 12.2; // extent of underlying square grid
                     const WAVE_RES = 140; // vertices per side
                     const waveVertCount = WAVE_RES * WAVE_RES;
                     const wavePositions = new Float32Array(waveVertCount * 3);
                     const waveFade = new Float32Array(waveVertCount);
-                    const waveRadial = new Float32Array(waveVertCount);
                     for (let r = 0; r < WAVE_RES; r++) {
                         const zNorm = r / (WAVE_RES - 1);
                         const zWorld = (zNorm - 0.5) * WAVE_GRID;
@@ -1947,14 +1943,11 @@
                             const d = Math.sqrt(
                                 xWorld * xWorld + zWorld * zWorld,
                             );
-                            // Smooth radial fall-off: 1 at centre → 0 at rim
                             const t = Math.max(
                                 0,
                                 Math.min(1, 1 - d / WAVE_RADIUS),
                             );
-                            const smooth = t * t * (3 - 2 * t);
-                            waveFade[i] = smooth;
-                            waveRadial[i] = smooth;
+                            waveFade[i] = t * t * (3 - 2 * t);
                         }
                     }
                     // Line indices — only keep segments where BOTH endpoints
@@ -1980,10 +1973,6 @@
                         "aFade",
                         new THREE.BufferAttribute(waveFade, 1),
                     );
-                    waveGeo.setAttribute(
-                        "aRadial",
-                        new THREE.BufferAttribute(waveRadial, 1),
-                    );
                     waveGeo.setIndex(new THREE.BufferAttribute(waveIndices, 1));
 
                     const waveUniforms = {
@@ -1994,7 +1983,6 @@
                     const waveVertex = `
                         uniform float uTime;
                         attribute float aFade;
-                        attribute float aRadial;
                         varying float vFade;
                         varying float vCrest;
                         void main() {
@@ -2003,9 +1991,9 @@
                                 sin(p.x * 2.8 + p.z * 0.7 + uTime * 1.4) * 0.09 +
                                 sin(p.z * 4.2 - p.x * 0.9 + uTime * 1.0) * 0.06 +
                                 sin((p.x + p.z * 1.3) * 1.8 + uTime * 1.6) * 0.04;
-                            // Attenuate amplitude near the disk rim so the edge
-                            // stays flat and only the centre ripples.
-                            p.y = w * aRadial;
+                            // aFade doubles as radial amplitude attenuation:
+                            // rim (fade → 0) stays flat, centre ripples most.
+                            p.y = w * aFade;
                             // Crest factor (0 = trough, 1 = peak) feeds a small
                             // brightness kick in the fragment shader.
                             vCrest = clamp(p.y * 2.2 + 0.5, 0.0, 1.0);
@@ -2105,8 +2093,6 @@
                     );
                     trailLines.layers.enable(BLOOM_LAYER);
                     cubeGroup.add(trailLines);
-
-                    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
                     // Mouse hover explosion state
                     const EXPLODE_RADIUS = 0.9;
