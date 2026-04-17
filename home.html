@@ -2094,15 +2094,24 @@
                     trailLines.layers.enable(BLOOM_LAYER);
                     cubeGroup.add(trailLines);
 
-                    // Mouse hover explosion state
-                    const EXPLODE_RADIUS = 0.9;
-                    const EXPLODE_STRENGTH = 0.5; // world-space push distance
-                    const EXPLODE_Z_GAIN = 3.0; // amplify z direction (slab is thin)
-                    const HOVER_LERP = 0.15; // per-cube easing rate
+                    // Mouse hover shockwave-ring state: cubes within
+                    // SWIRL_RADIUS are pushed out to sit on a tilted ring
+                    // around the cursor and orbit along it.
+                    const SWIRL_RADIUS = 0.4; // ring radius in world units
+                    const SWIRL_ANGULAR_SPEED = 0.0045; // rad per ms around ring
+                    // Ring orientation: rotation axis tilted from world +Z
+                    // toward +Y. Tilt = 0 → flat xy ring; π/2 → vertical ring.
+                    const SWIRL_TILT = 0.6; // rad, ~34°
+                    const SWIRL_KY = Math.sin(SWIRL_TILT);
+                    const SWIRL_KZ = Math.cos(SWIRL_TILT);
+                    const HOVER_LERP = 0.18; // per-cube easing rate
 
                     const hoverOffsetX = new Float32Array(totalInstances);
                     const hoverOffsetY = new Float32Array(totalInstances);
                     const hoverOffsetZ = new Float32Array(totalInstances);
+                    // Per-cube swirl strength, drives both the offset magnitude
+                    // and the glow trail brightness around the mouse.
+                    const hoverIntensity = new Float32Array(totalInstances);
 
                     let mouseActive = false;
                     const mouseNdc = new THREE.Vector2();
@@ -2148,7 +2157,8 @@
                     function updateTrails(elapsed) {
                         const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
                         for (let t = 0; t < NUM_TRAILS; t++) {
-                            const inst = instances[trailInstanceIdx[t]];
+                            const instIdx = trailInstanceIdx[t];
+                            const inst = instances[instIdx];
 
                             const swirlSpan = inst.settleStart - inst.spawnTime;
                             const swirlT = Math.max(
@@ -2158,15 +2168,6 @@
                                     (elapsed - inst.spawnTime) / swirlSpan,
                                 ),
                             );
-                            const descE = swirlT * swirlT;
-                            const heightNow =
-                                inst.startHeight +
-                                (inst.y - inst.startHeight) * descE;
-                            const radiusTaper = 1 - swirlT * 0.55;
-                            const angle = cycloneTheta + inst.cyclonePhase;
-                            const r = inst.cycloneRadius * radiusTaper;
-                            const cxp = Math.cos(angle) * r;
-                            const czp = Math.sin(angle) * r;
 
                             const st =
                                 (elapsed - inst.settleStart) /
@@ -2176,18 +2177,55 @@
                                 0,
                                 Math.min(1, (elapsed - inst.spawnTime) / 200),
                             );
-                            const intensity = spawnF * (1 - settle);
+                            const entryIntensity = spawnF * (1 - settle);
+                            const intensity = Math.max(
+                                entryIntensity,
+                                hoverIntensity[instIdx],
+                            );
+
+                            // Trail follows the cyclone column during entry;
+                            // once settled it tracks the cube's live position
+                            // so the hover swirl paints glow lines around it.
+                            let px, py, pz;
+                            if (settle < 1) {
+                                const descE = swirlT * swirlT;
+                                const heightNow =
+                                    inst.startHeight +
+                                    (inst.y - inst.startHeight) * descE;
+                                const radiusTaper = 1 - swirlT * 0.55;
+                                const angle = cycloneTheta + inst.cyclonePhase;
+                                const r = inst.cycloneRadius * radiusTaper;
+                                px = Math.cos(angle) * r;
+                                py = heightNow;
+                                pz = Math.sin(angle) * r;
+                            } else {
+                                px = inst.x + hoverOffsetX[instIdx];
+                                py = inst.y + hoverOffsetY[instIdx];
+                                pz = inst.z + hoverOffsetZ[instIdx];
+                            }
 
                             const trailBase = t * TRAIL_LEN * 3;
-                            // Shift older points back one slot
-                            trailPositions.copyWithin(
-                                trailBase + 3,
-                                trailBase,
-                                trailBase + (TRAIL_LEN - 1) * 3,
-                            );
-                            trailPositions[trailBase] = cxp;
-                            trailPositions[trailBase + 1] = heightNow;
-                            trailPositions[trailBase + 2] = czp;
+                            if (intensity < 0.02) {
+                                // Collapse trail at the live position while
+                                // invisible, so no stale segments linger for
+                                // the next time hover re-activates.
+                                for (let p = 0; p < TRAIL_LEN; p++) {
+                                    const idx = trailBase + p * 3;
+                                    trailPositions[idx] = px;
+                                    trailPositions[idx + 1] = py;
+                                    trailPositions[idx + 2] = pz;
+                                }
+                            } else {
+                                // Shift older points back one slot
+                                trailPositions.copyWithin(
+                                    trailBase + 3,
+                                    trailBase,
+                                    trailBase + (TRAIL_LEN - 1) * 3,
+                                );
+                                trailPositions[trailBase] = px;
+                                trailPositions[trailBase + 1] = py;
+                                trailPositions[trailBase + 2] = pz;
+                            }
 
                             const color = inst.color;
                             const cr = (((color >> 16) & 0xff) / 255) * 1.7;
@@ -2212,7 +2250,13 @@
                         const my = mouseLocal.y;
                         const mz = mouseLocal.z;
                         const explodeActive = mouseActive;
-                        const radiusSq = EXPLODE_RADIUS * EXPLODE_RADIUS;
+                        const radiusSq = SWIRL_RADIUS * SWIRL_RADIUS;
+                        // Shared rotation angle (ms → rad) so every swirled
+                        // cube orbits in lockstep around the cursor.
+                        const swirlAngle = elapsed * SWIRL_ANGULAR_SPEED;
+                        const swirlCa = Math.cos(swirlAngle);
+                        const swirlSa = Math.sin(swirlAngle);
+                        const swirlOneMinusC = 1 - swirlCa;
                         const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
                         const bobTime = elapsed * 0.003;
 
@@ -2260,40 +2304,67 @@
                             const py = cyp + (inst.y - cyp) * blend;
                             const pz = czp + (inst.z - czp) * blend;
 
-                            // 3D radial explosion target: cubes near the mouse
-                            // push outward in all axes; cubes outside the radius
-                            // target 0. The z direction is amplified by
-                            // EXPLODE_Z_GAIN because the slab is much thinner
-                            // than the xy footprint.
+                            // Shockwave-ring target: project cube onto a
+                            // tilted ring of radius SWIRL_RADIUS around the
+                            // cursor. The unit radial direction from the
+                            // cursor is rotated around the tilted axis by a
+                            // shared swirl angle (so all cubes sweep the ring
+                            // in lockstep), then scaled by SWIRL_RADIUS to get
+                            // the target point. Smooth falloff controls how
+                            // strongly each cube is pulled toward the ring.
                             let tx = 0;
                             let ty = 0;
                             let tz = 0;
+                            let targetIntensity = 0;
                             if (explodeActive && settle >= 1) {
                                 const dx = inst.x - mx;
                                 const dy = inst.y - my;
-                                const dz = inst.z - mz;
-                                const distSq = dx * dx + dy * dy + dz * dz;
-                                if (distSq < radiusSq) {
+                                const distSq = dx * dx + dy * dy;
+                                if (distSq < radiusSq && distSq > 0.000001) {
                                     const dist = Math.sqrt(distSq);
-                                    const f = 1 - dist / EXPLODE_RADIUS;
+                                    const f = 1 - dist / SWIRL_RADIUS;
                                     const smooth = f * f * (3 - 2 * f);
-                                    const mag = smooth * EXPLODE_STRENGTH;
-                                    if (dist > 0.0001) {
-                                        const inv = 1 / dist;
-                                        tx = dx * inv * mag;
-                                        ty = dy * inv * mag;
-                                        tz = dz * inv * mag * EXPLODE_Z_GAIN;
-                                    }
+                                    // Unit radial direction from cursor (xy).
+                                    const ux = dx / dist;
+                                    const uy = dy / dist;
+                                    // Rodrigues rotation of (ux, uy, 0) around
+                                    // k = (0, SWIRL_KY, SWIRL_KZ):
+                                    //   v' = v·c + (k×v)·s + k·(k·v)·(1−c)
+                                    const kDotU = SWIRL_KY * uy;
+                                    const kDotUInv = swirlOneMinusC * kDotU;
+                                    const rotUx =
+                                        ux * swirlCa - SWIRL_KZ * uy * swirlSa;
+                                    const rotUy =
+                                        uy * swirlCa +
+                                        SWIRL_KZ * ux * swirlSa +
+                                        SWIRL_KY * kDotUInv;
+                                    const rotUz =
+                                        -SWIRL_KY * ux * swirlSa +
+                                        SWIRL_KZ * kDotUInv;
+                                    // Target position on the ring, blended
+                                    // with the cube's home by `smooth` so
+                                    // cubes at the rim blend in smoothly.
+                                    const ringX = mx + SWIRL_RADIUS * rotUx;
+                                    const ringY = my + SWIRL_RADIUS * rotUy;
+                                    const ringZ = mz + SWIRL_RADIUS * rotUz;
+                                    tx = (ringX - inst.x) * smooth;
+                                    ty = (ringY - inst.y) * smooth;
+                                    tz = (ringZ - inst.z) * smooth;
+                                    targetIntensity = smooth;
                                 }
                             }
-                            // Smooth per-cube easing toward the target offset
-                            // (eases out when the mouse leaves).
+                            // Smooth per-cube easing toward target offset and
+                            // glow intensity (both ease back to 0 when the
+                            // mouse leaves the swirl radius).
                             hoverOffsetX[i] +=
                                 (tx - hoverOffsetX[i]) * HOVER_LERP;
                             hoverOffsetY[i] +=
                                 (ty - hoverOffsetY[i]) * HOVER_LERP;
                             hoverOffsetZ[i] +=
                                 (tz - hoverOffsetZ[i]) * HOVER_LERP;
+                            hoverIntensity[i] +=
+                                (targetIntensity - hoverIntensity[i]) *
+                                HOVER_LERP;
 
                             dummy.position.set(
                                 px + hoverOffsetX[i],
