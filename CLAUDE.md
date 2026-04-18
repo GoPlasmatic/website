@@ -16,16 +16,70 @@ Visit `http://localhost:8000/` or `http://localhost:8000/product.html`.
 
 **Build minified output** (writes `public/`, git-ignored):
 ```bash
-pip install htmlmin csscompressor rjsmin   # one-time
+pip install htmlmin csscompressor   # one-time
+npm install                         # one-time (installs terser, svgo)
 python tools/build.py
 ```
-The script mirrors `src/` into `public/`, minifying `*.html` / `*.css` / `*.js` and copying everything else verbatim. Serve the build with `python -m http.server 8000 --directory public`.
+The script mirrors `src/` into `public/`, minifying `*.html` / `*.css` / `*.js` / `*.svg` (terser handles JS — mangle + compress, property mangling off so Three.js uniform/attribute string keys stay intact; svgo handles SVG with default preset) and copying everything else verbatim. Serve the build with `python -m http.server 8000 --directory public`.
 
 **Regenerate neural pathway binary** (after editing Blender source):
 ```bash
 python tools/convert_obj.py
 ```
 Requires numpy, open3d. Reads `reference/blender-source/nervous-system.obj`, writes `src/nervous-system.bin`.
+
+## Build Pipeline Conventions
+
+Authored files in `src/` should be readable; the build compresses them. Two source-level conventions exist so the build can reach content that minifiers normally can't touch.
+
+### Tagged-template markers: `html` and `glsl`
+
+Every JS file that embeds HTML or GLSL in a template literal defines a no-op identity tag near the top:
+
+```js
+const html = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
+const glsl = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
+```
+
+Use these tags on any literal whose body should be minified by the build:
+
+```js
+this.innerHTML = html`<nav class="nav">…${links}…</nav>`;
+const vertexShader = glsl`attribute float aT; varying float vT; …`;
+```
+
+`tools/build.py` scans for `` html`…` `` and `` glsl`…` `` *before* handing the source to terser, and replaces the body with a minified version:
+- **`html`** — `${…}` placeholders are stashed, `htmlmin` runs on the scrubbed content, placeholders are restored. Safe for interpolation as long as each `${…}` contains only identifiers/simple calls (nested strings, backticks, or `{`/`}` inside interpolation abort the rewrite for that literal).
+- **`glsl`** — strips `//` and `/* */` comments, collapses whitespace around punctuation/operators. Safe for WebGL1 shaders without `#version` / `#define` directives (which is what Three.js `ShaderMaterial` expects).
+
+If you skip the tag, the template content ships verbatim (big strings full of indentation survive to production). Always tag new shaders and new `innerHTML` templates.
+
+### Terser constraints (important for Three.js)
+
+`tools/build.py` runs terser with `--mangle toplevel --compress passes=2,pure_getters,unsafe_arrows --module`. Property mangling is deliberately **off**, because Three.js reads uniform / attribute keys by their exact string name:
+
+- `ShaderMaterial.uniforms.uColor.value` — `uColor` must match the `uniform vec3 uColor;` declaration in GLSL, and `.value` is Three.js's internal contract.
+- `geom.setAttribute("aT", …)` — `aT` must match the `attribute float aT;` declaration.
+- Three.js APIs (`camera.position`, `.aspect`, `bloomPass.strength`, `.setSize`, …) are all property accesses and must not be renamed.
+
+Guidelines when writing scene code:
+
+1. **Don't wrap tunables in a big `CONFIG` object.** Property names can't be mangled, so `CONFIG.numLines` ships as a readable 9-byte string; `const numLines = 128;` at top level becomes a single letter after terser runs (and is usually inlined at call sites). `home-scene.js` / `product-scene.js` follow this flat pattern — keep it.
+2. **Tight sub-objects are fine when keys are already leaked by Three.js.** `parallax = { x, y, smoothing }` and `bloom = { strength, radius, threshold }` are acceptable because `.x`, `.strength`, etc. appear in the bundle anyway via Three.js call sites.
+3. **Don't introduce properties named after GLSL uniform/attribute names on plain JS objects**, because you then can't enable property mangling later without a rename.
+4. **`customElements.define("site-nav", …)`** — tag names are string literals, safe.
+
+### Pipeline order
+
+```
+src/foo.js  →  rewrite html`…` / glsl`…` bodies  →  terser  →  public/js/foo.js
+src/foo.html  →  htmlmin  →  public/foo.html
+src/foo.css  →  csscompressor  →  public/foo.css
+src/foo.svg  →  svgo  →  public/foo.svg
+anything else  →  copied verbatim
+```
+
+Top-level `await` is used in `product-scene.js`, which is why terser runs with `--module`. Any new top-level `await` or `import`/`export` will keep working.
 
 ## Architecture
 

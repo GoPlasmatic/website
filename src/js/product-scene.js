@@ -8,6 +8,9 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
+// Identity tagged template — marker for the build's GLSL minifier.
+const glsl = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
+
 const PULSE_COUNT = 200;
 const MODEL_START_X = 1.5; // initial rightward offset for hero layout
 
@@ -613,7 +616,7 @@ const lineMat = new THREE.ShaderMaterial({
     uniforms: {
         uOpacity: { value: lineOpacity(initScale) },
     },
-    vertexShader: `
+    vertexShader: glsl`
         attribute float alpha;
         attribute vec3 aColor;
         varying float vAlpha;
@@ -624,7 +627,7 @@ const lineMat = new THREE.ShaderMaterial({
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `,
-    fragmentShader: `
+    fragmentShader: glsl`
         uniform float uOpacity;
         varying float vAlpha;
         varying vec3 vColor;
@@ -685,7 +688,7 @@ const epMat = new THREE.ShaderMaterial({
         uTime: { value: 0 },
         uPointScale: { value: pointScale(initScale) },
     },
-    vertexShader: `
+    vertexShader: glsl`
         attribute float phase;
         attribute float speed;
         attribute vec3 aColor;
@@ -704,7 +707,7 @@ const epMat = new THREE.ShaderMaterial({
           gl_Position = projectionMatrix * mvPos;
         }
     `,
-    fragmentShader: `
+    fragmentShader: glsl`
         varying float vBrightness;
         varying vec3 vColor;
 
@@ -760,7 +763,7 @@ const pulseMat = new THREE.ShaderMaterial({
     uniforms: {
         uPointScale: { value: pointScale(initScale) },
     },
-    vertexShader: `
+    vertexShader: glsl`
         uniform float uPointScale;
         attribute vec3 aColor;
         varying vec3 vColor;
@@ -771,7 +774,7 @@ const pulseMat = new THREE.ShaderMaterial({
           gl_Position = projectionMatrix * mvPos;
         }
     `,
-    fragmentShader: `
+    fragmentShader: glsl`
         varying vec3 vColor;
 
         void main() {

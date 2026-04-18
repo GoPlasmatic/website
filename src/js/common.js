@@ -7,6 +7,9 @@
 // Also auto-injects the scroll-hint, wires the IntersectionObserver for
 // reveal animations, primes scroll-snap, and refreshes Lucide icons.
 
+// Identity tagged template — marker for the build's inline-HTML minifier.
+const html = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
+
 const NAV_ITEMS = [
     { label: "Product", href: "product.html", key: "product" },
     { label: "Docs", href: "#" },
@@ -70,7 +73,7 @@ class SiteNav extends HTMLElement {
             return `<a href="${i.href}"${cur}>${i.label}</a>`;
         }).join("");
 
-        this.innerHTML = `
+        this.innerHTML = html`
             <nav class="nav">
                 <a href="index.html" aria-label="Plasmatic home" class="nav-logo-link">
                     <img
@@ -93,7 +96,7 @@ class SiteFooter extends HTMLElement {
         const variant = this.getAttribute("variant") || "home";
         const data = FOOTER_VARIANTS[variant] || FOOTER_VARIANTS.home;
 
-        this.innerHTML = `
+        this.innerHTML = html`
             <footer class="footer section-dimmed">
                 <div class="section-container">
                     <div class="footer-grid">
