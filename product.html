@@ -1132,11 +1132,12 @@
             }
         </style>
         <script>
-            if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-            window.addEventListener('load', function () {
+            if ("scrollRestoration" in history)
+                history.scrollRestoration = "manual";
+            window.addEventListener("load", function () {
                 window.scrollTo(0, 0);
                 requestAnimationFrame(function () {
-                    document.documentElement.classList.add('snap-ready');
+                    document.documentElement.classList.add("snap-ready");
                 });
             });
         </script>
@@ -1175,8 +1176,12 @@
                     <div class="hero-badge">
                         <span>Introducing Orion</span>
                     </div>
-                    <h1 class="reveal-blur"><span class="gradient-text">Orion</span></h1>
-                    <h1 class="reveal-blur" style="--reveal-delay: 0.12s">The nervous system for modern software.</h1>
+                    <h1 class="reveal-blur">
+                        <span class="gradient-text">Orion</span>
+                    </h1>
+                    <h1 class="reveal-blur" style="--reveal-delay: 0.12s">
+                        The nervous system for modern software.
+                    </h1>
                     <p>
                         AI is accelerating how systems are built. But without
                         coordination, behaviour becomes unpredictable. Orion is
@@ -1330,7 +1335,9 @@
             <section class="section-full section-dimmed">
                 <div class="section-container">
                     <div class="section-header reveal">
-                        <h2 class="reveal-blur">Built like a real nervous system</h2>
+                        <h2 class="reveal-blur">
+                            Built like a real nervous system
+                        </h2>
                         <p>
                             Signals, reflexes, memory, and protection &mdash;
                             the same principles that coordinate biological
@@ -1718,7 +1725,9 @@
             );
 
             document
-                .querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-blur")
+                .querySelectorAll(
+                    ".reveal, .reveal-left, .reveal-right, .reveal-blur",
+                )
                 .forEach((el) => {
                     observer.observe(el);
                 });
@@ -1744,6 +1753,15 @@
             const PULSE_COUNT = 200;
             const MODEL_START_X = 1.5; // initial rightward offset for hero layout
 
+            // Plasma neon palette — shared with home.html hero background
+            const PALETTE = [
+                0xff2d95, // hot pink
+                0xff4570, // red-pink
+                0x9b5cff, // purple
+                0x5a3bff, // violet-blue
+                0xff7a4d, // orange
+            ];
+
             /* ── Seeded PRNG (mulberry32) ───────────────────────────────────────── */
 
             function mulberry32(seed) {
@@ -1760,60 +1778,86 @@
 
             function cubicSplineInterpolate(points, nSamples) {
                 const n = points.length;
-                if (n < 2) return points.map(p => [p[0], p[1], p[2]]);
+                if (n < 2) return points.map((p) => [p[0], p[1], p[2]]);
 
                 const t = new Float64Array(n);
                 for (let i = 1; i < n; i++) {
-                    const dx = points[i][0] - points[i-1][0];
-                    const dy = points[i][1] - points[i-1][1];
-                    const dz = points[i][2] - points[i-1][2];
-                    t[i] = t[i-1] + Math.sqrt(dx*dx + dy*dy + dz*dz);
+                    const dx = points[i][0] - points[i - 1][0];
+                    const dy = points[i][1] - points[i - 1][1];
+                    const dz = points[i][2] - points[i - 1][2];
+                    t[i] = t[i - 1] + Math.sqrt(dx * dx + dy * dy + dz * dz);
                 }
-                if (t[n-1] === 0) return points.map(p => [p[0], p[1], p[2]]);
-                for (let i = 1; i < n; i++) t[i] /= t[n-1];
+                if (t[n - 1] === 0)
+                    return points.map((p) => [p[0], p[1], p[2]]);
+                for (let i = 1; i < n; i++) t[i] /= t[n - 1];
                 for (let i = 1; i < n; i++) {
-                    if (t[i] <= t[i-1]) t[i] = t[i-1] + 1e-10;
+                    if (t[i] <= t[i - 1]) t[i] = t[i - 1] + 1e-10;
                 }
 
                 const h = new Float64Array(n - 1);
-                for (let i = 0; i < n - 1; i++) h[i] = t[i+1] - t[i];
+                for (let i = 0; i < n - 1; i++) h[i] = t[i + 1] - t[i];
 
                 function solveAxis(vals) {
                     const m = n - 2;
                     if (m <= 0) return new Float64Array(n);
-                    const a = new Float64Array(m), b = new Float64Array(m);
-                    const c = new Float64Array(m), d = new Float64Array(m);
+                    const a = new Float64Array(m),
+                        b = new Float64Array(m);
+                    const c = new Float64Array(m),
+                        d = new Float64Array(m);
                     for (let i = 0; i < m; i++) {
                         const ii = i + 1;
-                        a[i] = h[ii-1]; b[i] = 2*(h[ii-1]+h[ii]); c[i] = h[ii];
-                        d[i] = 6*((vals[ii+1]-vals[ii])/h[ii] - (vals[ii]-vals[ii-1])/h[ii-1]);
+                        a[i] = h[ii - 1];
+                        b[i] = 2 * (h[ii - 1] + h[ii]);
+                        c[i] = h[ii];
+                        d[i] =
+                            6 *
+                            ((vals[ii + 1] - vals[ii]) / h[ii] -
+                                (vals[ii] - vals[ii - 1]) / h[ii - 1]);
                     }
                     for (let i = 1; i < m; i++) {
-                        const w = a[i]/b[i-1]; b[i] -= w*c[i-1]; d[i] -= w*d[i-1];
+                        const w = a[i] / b[i - 1];
+                        b[i] -= w * c[i - 1];
+                        d[i] -= w * d[i - 1];
                     }
                     const M = new Float64Array(n);
-                    M[m] = d[m-1]/b[m-1];
-                    for (let i = m-2; i >= 0; i--) M[i+1] = (d[i]-c[i]*M[i+2])/b[i];
+                    M[m] = d[m - 1] / b[m - 1];
+                    for (let i = m - 2; i >= 0; i--)
+                        M[i + 1] = (d[i] - c[i] * M[i + 2]) / b[i];
                     return M;
                 }
 
-                const vx = points.map(p => p[0]), vy = points.map(p => p[1]), vz = points.map(p => p[2]);
-                const Mx = solveAxis(vx), My = solveAxis(vy), Mz = solveAxis(vz);
+                const vx = points.map((p) => p[0]),
+                    vy = points.map((p) => p[1]),
+                    vz = points.map((p) => p[2]);
+                const Mx = solveAxis(vx),
+                    My = solveAxis(vy),
+                    Mz = solveAxis(vz);
 
                 const result = [];
                 for (let s = 0; s < nSamples; s++) {
                     const tEval = s / (nSamples - 1);
                     let seg = 0;
-                    for (let i = 0; i < n-2; i++) { if (tEval >= t[i+1]) seg = i+1; else break; }
-                    if (seg > n-2) seg = n-2;
-                    const dt = tEval - t[seg], hi = h[seg];
+                    for (let i = 0; i < n - 2; i++) {
+                        if (tEval >= t[i + 1]) seg = i + 1;
+                        else break;
+                    }
+                    if (seg > n - 2) seg = n - 2;
+                    const dt = tEval - t[seg],
+                        hi = h[seg];
                     function evalSeg(vals, M, i) {
                         const a = vals[i];
-                        const b = (vals[i+1]-vals[i])/hi - hi*(2*M[i]+M[i+1])/6;
-                        const c = M[i]/2, d = (M[i+1]-M[i])/(6*hi);
-                        return a + b*dt + c*dt*dt + d*dt*dt*dt;
+                        const b =
+                            (vals[i + 1] - vals[i]) / hi -
+                            (hi * (2 * M[i] + M[i + 1])) / 6;
+                        const c = M[i] / 2,
+                            d = (M[i + 1] - M[i]) / (6 * hi);
+                        return a + b * dt + c * dt * dt + d * dt * dt * dt;
                     }
-                    result.push([evalSeg(vx,Mx,seg), evalSeg(vy,My,seg), evalSeg(vz,Mz,seg)]);
+                    result.push([
+                        evalSeg(vx, Mx, seg),
+                        evalSeg(vy, My, seg),
+                        evalSeg(vz, Mz, seg),
+                    ]);
                 }
                 return result;
             }
@@ -1831,13 +1875,21 @@
                 const dists = new Float32Array(n).fill(Infinity);
                 for (let iter = 1; iter < nSamples; iter++) {
                     const last = indices[indices.length - 1];
-                    const lx = verts[last*3], ly = verts[last*3+1], lz = verts[last*3+2];
-                    let maxDist = -1, maxIdx = 0;
+                    const lx = verts[last * 3],
+                        ly = verts[last * 3 + 1],
+                        lz = verts[last * 3 + 2];
+                    let maxDist = -1,
+                        maxIdx = 0;
                     for (let j = 0; j < n; j++) {
-                        const dx = verts[j*3]-lx, dy = verts[j*3+1]-ly, dz = verts[j*3+2]-lz;
-                        const d = dx*dx + dy*dy + dz*dz;
+                        const dx = verts[j * 3] - lx,
+                            dy = verts[j * 3 + 1] - ly,
+                            dz = verts[j * 3 + 2] - lz;
+                        const d = dx * dx + dy * dy + dz * dz;
                         if (d < dists[j]) dists[j] = d;
-                        if (dists[j] > maxDist) { maxDist = dists[j]; maxIdx = j; }
+                        if (dists[j] > maxDist) {
+                            maxDist = dists[j];
+                            maxIdx = j;
+                        }
                     }
                     indices.push(maxIdx);
                 }
@@ -1853,11 +1905,16 @@
                     let sum = 0;
                     for (let j = 0; j < w.length; j++) sum += w[j];
                     if (sum === 0) break;
-                    const invSum = 1/sum, r = rng();
-                    let cumSum = 0, chosen = w.length - 1;
+                    const invSum = 1 / sum,
+                        r = rng();
+                    let cumSum = 0,
+                        chosen = w.length - 1;
                     for (let j = 0; j < w.length; j++) {
-                        cumSum += w[j]*invSum;
-                        if (r <= cumSum) { chosen = j; break; }
+                        cumSum += w[j] * invSum;
+                        if (r <= cumSum) {
+                            chosen = j;
+                            break;
+                        }
                     }
                     result.push(chosen);
                     w[chosen] = 0;
@@ -1929,7 +1986,10 @@
                     for (let k = 0; k < 3; k++) {
                         let delta;
                         if (faceRaw[fi] & 0x80) {
-                            delta = ((faceRaw[fi] & 0x7F) | (faceRaw[fi+1] << 7)) - 8192;
+                            delta =
+                                ((faceRaw[fi] & 0x7f) |
+                                    (faceRaw[fi + 1] << 7)) -
+                                8192;
                             fi += 2;
                         } else {
                             delta = faceRaw[fi] - 64;
@@ -1939,15 +1999,16 @@
                         prev[k] = idx[k];
                     }
                     for (let k = 0; k < 3; k++) {
-                        const a = idx[k], b = idx[(k+1)%3];
-                        edgeSet.add(Math.min(a,b) | (Math.max(a,b) << 16));
+                        const a = idx[k],
+                            b = idx[(k + 1) % 3];
+                        edgeSet.add(Math.min(a, b) | (Math.max(a, b) << 16));
                     }
                 }
                 off += faceDataLen;
 
                 const brainEdges = [];
                 for (const packed of edgeSet) {
-                    brainEdges.push(packed & 0xFFFF, packed >>> 16);
+                    brainEdges.push(packed & 0xffff, packed >>> 16);
                 }
                 const numBrainEdges = edgeSet.size;
 
@@ -1964,18 +2025,30 @@
                 // ── Frontend curve generation ─────────────────────────────────
 
                 // Brain center
-                let bcx = 0, bcy = 0, bcz = 0;
+                let bcx = 0,
+                    bcy = 0,
+                    bcz = 0;
                 for (let i = 0; i < numBrainVerts; i++) {
-                    bcx += brainVerts[i*3]; bcy += brainVerts[i*3+1]; bcz += brainVerts[i*3+2];
+                    bcx += brainVerts[i * 3];
+                    bcy += brainVerts[i * 3 + 1];
+                    bcz += brainVerts[i * 3 + 2];
                 }
-                bcx /= numBrainVerts; bcy /= numBrainVerts; bcz /= numBrainVerts;
+                bcx /= numBrainVerts;
+                bcy /= numBrainVerts;
+                bcz /= numBrainVerts;
                 const brainCenter = [bcx, bcy, bcz];
 
                 // Farthest-point sample brain → 500 surface points
                 const sampleRng = mulberry32(42);
-                const brainSampleIdx = farthestPointSample(brainVerts, 500, sampleRng);
-                const brainSampled = brainSampleIdx.map(i => [
-                    brainVerts[i*3], brainVerts[i*3+1], brainVerts[i*3+2],
+                const brainSampleIdx = farthestPointSample(
+                    brainVerts,
+                    500,
+                    sampleRng,
+                );
+                const brainSampled = brainSampleIdx.map((i) => [
+                    brainVerts[i * 3],
+                    brainVerts[i * 3 + 1],
+                    brainVerts[i * 3 + 2],
                 ]);
 
                 // Generate connections
@@ -1988,8 +2061,9 @@
                     const weights = new Float64Array(spineSampledAll.length);
                     for (let j = 0; j < spineSampledAll.length; j++) {
                         const sp = spineSampledAll[j].pt;
-                        const dx = sp[0]-bp[0], dz = sp[2]-bp[2];
-                        weights[j] = 1.0 / (Math.sqrt(dx*dx + dz*dz) + 0.1);
+                        const dx = sp[0] - bp[0],
+                            dz = sp[2] - bp[2];
+                        weights[j] = 1.0 / (Math.sqrt(dx * dx + dz * dz) + 0.1);
                     }
                     const nConn = connRng() < 0.7 ? 1 : 2;
                     const chosen = weightedChoice(weights, nConn, connRng);
@@ -1999,23 +2073,26 @@
                         const segIdx = spineSampledAll[j].segIdx;
 
                         const bcJ = [
-                            brainCenter[0] + (jitterRng()*2-1)*0.08,
-                            brainCenter[1] + (jitterRng()*2-1)*0.08,
-                            brainCenter[2] + (jitterRng()*2-1)*0.08,
+                            brainCenter[0] + (jitterRng() * 2 - 1) * 0.08,
+                            brainCenter[1] + (jitterRng() * 2 - 1) * 0.08,
+                            brainCenter[2] + (jitterRng() * 2 - 1) * 0.08,
                         ];
 
                         const waypoints = [bp, bcJ];
                         for (let s = 0; s <= segIdx; s++) {
                             const sc = spineCenters[s];
                             waypoints.push([
-                                sc[0] + (jitterRng()*2-1)*0.02,
-                                sc[1] + (jitterRng()*2-1)*0.02,
-                                sc[2] + (jitterRng()*2-1)*0.02,
+                                sc[0] + (jitterRng() * 2 - 1) * 0.02,
+                                sc[1] + (jitterRng() * 2 - 1) * 0.02,
+                                sc[2] + (jitterRng() * 2 - 1) * 0.02,
                             ]);
                         }
                         waypoints.push(sp);
 
-                        const nPts = Math.min(30, 12 + Math.floor((segIdx+1)*1.2));
+                        const nPts = Math.min(
+                            30,
+                            12 + Math.floor((segIdx + 1) * 1.2),
+                        );
                         const pts = cubicSplineInterpolate(waypoints, nPts);
 
                         let startIdx = 0;
@@ -2173,6 +2250,23 @@
             // Brain center is roughly the upper 25% of the model
             const brainCenterY = brainTopY * 0.75;
 
+            /* ── Per-line palette colours ────────────────────────────────────── */
+
+            // One random plasma colour per nerve line, re-used by endpoints and
+            // pulses so every strand reads as one continuous hue.
+            const lineColors = new Float32Array(numLines * 3);
+            {
+                const tmp = new THREE.Color();
+                for (let i = 0; i < numLines; i++) {
+                    tmp.setHex(
+                        PALETTE[Math.floor(Math.random() * PALETTE.length)],
+                    );
+                    lineColors[i * 3] = tmp.r;
+                    lineColors[i * 3 + 1] = tmp.g;
+                    lineColors[i * 3 + 2] = tmp.b;
+                }
+            }
+
             /* ── Model group (for scroll-driven offset) ────────────────────────── */
 
             const MODEL_START_ROT = -Math.PI / 2; // face left in hero
@@ -2204,7 +2298,7 @@
             const brainWireMat = new THREE.LineBasicMaterial({
                 color: 0x119fcd,
                 transparent: true,
-                opacity: 0.10,
+                opacity: 0.1,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             });
@@ -2217,11 +2311,17 @@
             for (const line of lines) totalSegs += line.length / 3 - 1;
             const linePositions = new Float32Array(totalSegs * 2 * 3);
             const lineAlphas = new Float32Array(totalSegs * 2);
+            const lineColorAttr = new Float32Array(totalSegs * 2 * 3);
 
             let li = 0,
-                ai = 0;
+                ai = 0,
+                ci = 0,
+                lineIdx = 0;
             for (const line of lines) {
                 const ptCount = line.length / 3;
+                const cr = lineColors[lineIdx * 3];
+                const cg = lineColors[lineIdx * 3 + 1];
+                const cb = lineColors[lineIdx * 3 + 2];
                 for (let j = 0; j < ptCount - 1; j++) {
                     const s = j * 3;
                     linePositions[li++] = line[s];
@@ -2241,7 +2341,15 @@
                     };
                     lineAlphas[ai++] = fade(t1);
                     lineAlphas[ai++] = fade(t2);
+
+                    lineColorAttr[ci++] = cr;
+                    lineColorAttr[ci++] = cg;
+                    lineColorAttr[ci++] = cb;
+                    lineColorAttr[ci++] = cr;
+                    lineColorAttr[ci++] = cg;
+                    lineColorAttr[ci++] = cb;
                 }
+                lineIdx++;
             }
 
             const lineGeo = new THREE.BufferGeometry();
@@ -2253,26 +2361,32 @@
                 "alpha",
                 new THREE.BufferAttribute(lineAlphas, 1),
             );
+            lineGeo.setAttribute(
+                "aColor",
+                new THREE.BufferAttribute(lineColorAttr, 3),
+            );
 
             const lineMat = new THREE.ShaderMaterial({
                 uniforms: {
-                    uColor: { value: new THREE.Color(0x119fcd) },
                     uOpacity: { value: lineOpacity(initScale) },
                 },
                 vertexShader: `
         attribute float alpha;
+        attribute vec3 aColor;
         varying float vAlpha;
+        varying vec3 vColor;
         void main() {
           vAlpha = alpha;
+          vColor = aColor;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
                 fragmentShader: `
-        uniform vec3 uColor;
         uniform float uOpacity;
         varying float vAlpha;
+        varying vec3 vColor;
         void main() {
-          gl_FragColor = vec4(uColor, vAlpha * uOpacity);
+          gl_FragColor = vec4(vColor, vAlpha * uOpacity);
         }
       `,
                 transparent: true,
@@ -2288,6 +2402,7 @@
             const epPositions = new Float32Array(endpointCount * 3);
             const epPhases = new Float32Array(endpointCount);
             const epSpeeds = new Float32Array(endpointCount);
+            const epColors = new Float32Array(endpointCount * 3);
 
             for (let i = 0; i < numLines; i++) {
                 const line = lines[i];
@@ -2304,6 +2419,16 @@
                 epPhases[i * 2 + 1] = Math.random() * Math.PI * 2;
                 epSpeeds[i * 2] = 1.0 + Math.random() * 2.0;
                 epSpeeds[i * 2 + 1] = 1.0 + Math.random() * 2.0;
+
+                const cr = lineColors[i * 3];
+                const cg = lineColors[i * 3 + 1];
+                const cb = lineColors[i * 3 + 2];
+                epColors[i * 6] = cr;
+                epColors[i * 6 + 1] = cg;
+                epColors[i * 6 + 2] = cb;
+                epColors[i * 6 + 3] = cr;
+                epColors[i * 6 + 4] = cg;
+                epColors[i * 6 + 5] = cb;
             }
 
             const epGeo = new THREE.BufferGeometry();
@@ -2313,23 +2438,29 @@
             );
             epGeo.setAttribute("phase", new THREE.BufferAttribute(epPhases, 1));
             epGeo.setAttribute("speed", new THREE.BufferAttribute(epSpeeds, 1));
+            epGeo.setAttribute(
+                "aColor",
+                new THREE.BufferAttribute(epColors, 3),
+            );
 
             const epMat = new THREE.ShaderMaterial({
                 uniforms: {
                     uTime: { value: 0 },
-                    uColor: { value: new THREE.Color(0x7dd3fc) },
                     uPointScale: { value: pointScale(initScale) },
                 },
                 vertexShader: `
         attribute float phase;
         attribute float speed;
+        attribute vec3 aColor;
         varying float vBrightness;
+        varying vec3 vColor;
 
         uniform float uTime;
         uniform float uPointScale;
 
         void main() {
           vBrightness = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * speed + phase));
+          vColor = aColor;
 
           vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
           gl_PointSize = (1.6 + vBrightness * 1.6) * (uPointScale / -mvPos.z);
@@ -2337,8 +2468,8 @@
         }
       `,
                 fragmentShader: `
-        uniform vec3 uColor;
         varying float vBrightness;
+        varying vec3 vColor;
 
         void main() {
           float d = length(gl_PointCoord - vec2(0.5));
@@ -2348,7 +2479,7 @@
           float halo = exp(-d * 12.0) * 0.3;
 
           float intensity = core + halo;
-          vec3 col = mix(uColor, vec3(1.0), core * vBrightness);
+          vec3 col = mix(vColor, vec3(1.0), core * vBrightness);
 
           gl_FragColor = vec4(col * intensity * vBrightness, intensity * vBrightness);
         }
@@ -2367,12 +2498,17 @@
             const pulseSpeed = new Float32Array(PULSE_COUNT);
             const pulsePositions = new Float32Array(PULSE_COUNT * 3);
             const pulseDirection = new Int8Array(PULSE_COUNT);
+            const pulseColorAttr = new Float32Array(PULSE_COUNT * 3);
 
             function assignPulse(i) {
-                pulseLineIndices[i] = Math.floor(Math.random() * numLines);
+                const lineIdx = Math.floor(Math.random() * numLines);
+                pulseLineIndices[i] = lineIdx;
                 pulseProgress[i] = Math.random();
                 pulseSpeed[i] = 0.15 + Math.random() * 0.35;
                 pulseDirection[i] = Math.random() < 0.5 ? 1 : -1;
+                pulseColorAttr[i * 3] = lineColors[lineIdx * 3];
+                pulseColorAttr[i * 3 + 1] = lineColors[lineIdx * 3 + 1];
+                pulseColorAttr[i * 3 + 2] = lineColors[lineIdx * 3 + 2];
             }
 
             for (let i = 0; i < PULSE_COUNT; i++) {
@@ -2384,22 +2520,28 @@
                 "position",
                 new THREE.BufferAttribute(pulsePositions, 3),
             );
+            pulseGeo.setAttribute(
+                "aColor",
+                new THREE.BufferAttribute(pulseColorAttr, 3),
+            );
 
             const pulseMat = new THREE.ShaderMaterial({
                 uniforms: {
-                    uColor: { value: new THREE.Color(0xaaeeff) },
                     uPointScale: { value: pointScale(initScale) },
                 },
                 vertexShader: `
         uniform float uPointScale;
+        attribute vec3 aColor;
+        varying vec3 vColor;
         void main() {
+          vColor = aColor;
           vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
           gl_PointSize = 4.5 * (uPointScale / -mvPos.z);
           gl_Position = projectionMatrix * mvPos;
         }
       `,
                 fragmentShader: `
-        uniform vec3 uColor;
+        varying vec3 vColor;
 
         void main() {
           float d = length(gl_PointCoord - vec2(0.5));
@@ -2409,7 +2551,7 @@
           float halo = exp(-d * 15.0) * 0.2;
           float intensity = core + halo;
 
-          vec3 col = mix(uColor, vec3(1.0), core);
+          vec3 col = mix(vColor, vec3(1.0), core);
           gl_FragColor = vec4(col * intensity, intensity);
         }
       `,
@@ -2422,12 +2564,15 @@
 
             function updatePulses(dt) {
                 const posAttr = pulseGeo.getAttribute("position");
+                const colAttr = pulseGeo.getAttribute("aColor");
+                let anyReassigned = false;
 
                 for (let i = 0; i < PULSE_COUNT; i++) {
                     pulseProgress[i] += pulseSpeed[i] * dt * pulseDirection[i];
 
                     if (pulseProgress[i] > 1.0 || pulseProgress[i] < 0.0) {
                         assignPulse(i);
+                        anyReassigned = true;
                     }
 
                     const line = lines[pulseLineIndices[i]];
@@ -2447,6 +2592,7 @@
                 }
 
                 posAttr.needsUpdate = true;
+                if (anyReassigned) colAttr.needsUpdate = true;
             }
 
             /* ── Scroll-driven camera (brain → spine journey) ────────────────── */
