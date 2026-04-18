@@ -1,0 +1,2423 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Plasmatic – Systems for modern software</title>
+        <link rel="stylesheet" href="https://use.typekit.net/eef1zhq.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+                    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+                }
+            }
+        </script>
+        <style>
+            :root {
+                --bg-deep: #07111a;
+                --bg-section: #063b4c;
+                --bg-card: #0f2030;
+                --text-heading: #ecf4f8;
+                --text-body: #7fafc0;
+                --text-muted: #3d6b7d;
+                --accent-blue: #119fcd;
+                --accent-green: #06d6a0;
+                --accent-teal: #4cbd97;
+                --accent-yellow: #ffd167;
+                --accent-red: #ef476f;
+                --border-subtle: rgba(17, 159, 205, 0.1);
+                --border-hover: rgba(6, 214, 160, 0.3);
+                --radius-lg: 16px;
+                --radius-md: 12px;
+                --radius-sm: 10px;
+            }
+
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-snap-type: none;
+            }
+            html.snap-ready {
+                scroll-snap-type: y mandatory;
+            }
+
+            body {
+                background: var(--bg-deep);
+                color: var(--text-heading);
+                font-family: "DM Sans", sans-serif;
+                overflow-x: hidden;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+            ul {
+                list-style: none;
+            }
+
+            /* ── Navigation ────────────────────────────────────────────────── */
+
+            .nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 24px 32px;
+                background: rgba(7, 17, 26, 0.8);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--border-subtle);
+                pointer-events: auto;
+            }
+
+            .nav-logo {
+                height: 48px;
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+            }
+
+            .nav-links a {
+                font-size: 14px;
+                color: var(--text-body);
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: white;
+            }
+
+            .btn-nav {
+                padding: 10px 20px;
+                background: var(--accent-green);
+                color: var(--bg-section);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 500;
+                font-size: 14px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: opacity 0.2s;
+            }
+            .btn-nav:hover {
+                opacity: 0.9;
+            }
+
+            /* ── Buttons ────────────────────────────────────────────────────── */
+
+            .btn-primary {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 16px 28px;
+                background: linear-gradient(
+                    193deg,
+                    var(--accent-teal) 15%,
+                    var(--accent-blue) 85%
+                );
+                color: var(--bg-section);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 700;
+                font-size: 15px;
+                letter-spacing: 1px;
+                border: none;
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                transition: opacity 0.2s;
+                text-decoration: none;
+            }
+            .btn-primary:hover {
+                opacity: 0.9;
+            }
+
+            .btn-secondary {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 16px 28px;
+                background: transparent;
+                color: var(--text-body);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 400;
+                font-size: 15px;
+                border: 1px solid rgba(17, 159, 205, 0.22);
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                transition:
+                    border-color 0.2s,
+                    background 0.2s;
+                text-decoration: none;
+            }
+            .btn-secondary:hover {
+                border-color: rgba(17, 159, 205, 0.4);
+                background: rgba(17, 159, 205, 0.1);
+            }
+
+            /* ── Hero ──────────────────────────────────────────────────────── */
+
+            .hero {
+                position: relative;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                padding: 0 clamp(32px, 6vw, 96px);
+                padding-top: 96px;
+                scroll-snap-align: start;
+                background: #000;
+            }
+
+            .hero-text {
+                position: relative;
+                z-index: 2;
+                max-width: 680px;
+                transition: opacity 0.3s;
+            }
+
+            .hero-3d {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .hero-3d canvas {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+
+            .hero-eyebrow {
+                display: inline-block;
+                padding: 6px 14px;
+                border-radius: 999px;
+                border: 1px solid rgba(76, 189, 151, 0.3);
+                background: rgba(76, 189, 151, 0.1);
+                backdrop-filter: blur(4px);
+                margin-bottom: 32px;
+            }
+
+            .hero-eyebrow span {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                color: var(--accent-teal);
+            }
+
+            .hero h1 {
+                font-family: "filson-pro", sans-serif;
+                font-weight: 700;
+                font-size: clamp(36px, 5.5vw, 72px);
+                color: var(--text-heading);
+                line-height: 1.1;
+                letter-spacing: -0.5px;
+                margin-bottom: 24px;
+            }
+
+            .hero-sub {
+                font-size: 19px;
+                font-weight: 300;
+                color: var(--text-body);
+                max-width: 520px;
+                line-height: 1.7;
+                margin-bottom: 16px;
+            }
+
+            .hero-support {
+                font-size: 15px;
+                color: var(--text-muted);
+                max-width: 480px;
+                line-height: 1.6;
+                margin-bottom: 40px;
+            }
+
+            .hero-ctas {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .hero,
+            .section-full,
+            .section-orion,
+            .section-cta {
+                border-bottom: 1px solid transparent;
+                border-image: linear-gradient(
+                        90deg,
+                        transparent 0%,
+                        rgba(6, 214, 160, 0.3) 50%,
+                        transparent 100%
+                    )
+                    1;
+            }
+
+            /* ── Section Layout ────────────────────────────────────────────── */
+
+            .section-full {
+                padding: 128px 32px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                scroll-snap-align: start;
+            }
+
+            .section-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .section-header {
+                text-align: center;
+                margin-bottom: 80px;
+            }
+
+            .section-header h2 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: clamp(32px, 4vw, 56px);
+                color: var(--text-heading);
+                line-height: 1.15;
+                letter-spacing: -0.5px;
+                margin-bottom: 16px;
+            }
+
+            .section-header p {
+                font-size: 20px;
+                color: var(--text-body);
+                max-width: 640px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+            .grid-2col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+                align-items: center;
+            }
+
+            .grid-2x2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+
+            .grid-3col {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 32px;
+            }
+
+            /* ── Gradient Text ──────────────────────────────────────────────── */
+
+            .gradient-text {
+                background: linear-gradient(
+                    to right,
+                    var(--accent-blue),
+                    var(--accent-green)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* ── What We Do Section ─────────────────────────────────────────── */
+
+            .what-content h2 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: clamp(32px, 4vw, 52px);
+                color: var(--text-heading);
+                line-height: 1.15;
+                letter-spacing: -0.5px;
+                margin-bottom: 28px;
+            }
+
+            .section-body {
+                font-size: 20px;
+                color: var(--text-body);
+                line-height: 1.7;
+                margin-bottom: 24px;
+            }
+
+            .callout {
+                padding-left: 24px;
+                border-left: 2px solid var(--accent-green);
+                margin-top: 40px;
+            }
+
+            .callout p {
+                font-size: 18px;
+                color: var(--text-heading);
+                line-height: 1.6;
+            }
+
+            .callout strong {
+                color: white;
+            }
+
+            /* ── Why This Matters ───────────────────────────────────────────── */
+
+            .pain-points {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-bottom: 40px;
+            }
+
+            .pain-point {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .dot {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .dot::after {
+                content: "";
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+            }
+
+            .dot-yellow {
+                background: rgba(255, 209, 103, 0.2);
+            }
+            .dot-yellow::after {
+                background: var(--accent-yellow);
+            }
+            .dot-red {
+                background: rgba(239, 71, 111, 0.2);
+            }
+            .dot-red::after {
+                background: var(--accent-red);
+            }
+
+            .pain-title {
+                font-size: 16px;
+                color: var(--text-heading);
+                font-weight: 500;
+                margin-bottom: 4px;
+            }
+
+            .pain-desc {
+                font-size: 14px;
+                color: var(--text-body);
+            }
+
+            /* ── Approach Cards ─────────────────────────────────────────────── */
+
+            .approach-cards {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-top: 32px;
+            }
+
+            .approach-card {
+                padding: 24px;
+                border-radius: var(--radius-md);
+                border: 1px solid transparent;
+            }
+
+            .approach-card h3 {
+                font-weight: 500;
+                font-size: 16px;
+                color: var(--text-heading);
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .approach-card p {
+                color: var(--text-body);
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            .dot-inline {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                display: inline-block;
+                flex-shrink: 0;
+            }
+
+            .dot-blue {
+                background: var(--accent-blue);
+            }
+            .dot-green {
+                background: var(--accent-green);
+            }
+            .dot-yellow-fill {
+                background: var(--accent-yellow);
+            }
+
+            .approach-card-blue {
+                border-color: rgba(17, 159, 205, 0.2);
+                background: linear-gradient(
+                    to right,
+                    rgba(17, 159, 205, 0.1),
+                    transparent
+                );
+            }
+
+            .approach-card-green {
+                border-color: rgba(6, 214, 160, 0.2);
+                background: linear-gradient(
+                    to right,
+                    rgba(6, 214, 160, 0.1),
+                    transparent
+                );
+            }
+
+            .approach-card-yellow {
+                border-color: rgba(255, 209, 103, 0.2);
+                background: linear-gradient(
+                    to right,
+                    rgba(255, 209, 103, 0.1),
+                    transparent
+                );
+            }
+
+            /* ── Capability Cards ───────────────────────────────────────────── */
+
+            .capability-card {
+                padding: 40px;
+                border-radius: var(--radius-lg);
+                border: 1px solid var(--border-subtle);
+                background: var(--bg-card);
+                transition: border-color 0.3s;
+            }
+
+            .capability-card:hover {
+                border-color: var(--border-hover);
+            }
+
+            .icon-box {
+                width: 56px;
+                height: 56px;
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 24px;
+            }
+
+            .icon-box svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .icon-blue {
+                background: rgba(17, 159, 205, 0.08);
+                color: var(--accent-blue);
+            }
+            .icon-yellow {
+                background: rgba(255, 209, 103, 0.08);
+                color: var(--accent-yellow);
+            }
+            .icon-teal {
+                background: rgba(76, 189, 151, 0.08);
+                color: var(--accent-teal);
+            }
+            .icon-red {
+                background: rgba(239, 71, 111, 0.08);
+                color: var(--accent-red);
+            }
+
+            .capability-card h3 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: 22px;
+                color: var(--text-heading);
+                margin-bottom: 4px;
+            }
+
+            .capability-subtitle {
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-body);
+                margin-bottom: 12px;
+            }
+
+            .capability-card > p:last-child {
+                color: var(--text-body);
+                font-size: 15px;
+                line-height: 1.7;
+            }
+
+            /* ── Orion Product Section ──────────────────────────────────────── */
+
+            .section-orion {
+                padding: 96px 32px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                scroll-snap-align: start;
+            }
+
+            .orion-grid {
+                align-items: start;
+            }
+
+            .orion-label {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: var(--text-muted);
+                line-height: 20px;
+                margin-bottom: 14px;
+            }
+
+            .orion-heading {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: clamp(32px, 3.5vw, 46px);
+                color: var(--text-heading);
+                line-height: 1.15;
+                letter-spacing: -0.5px;
+                margin-bottom: 14px;
+            }
+
+            .orion-desc-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 24px;
+                margin-bottom: 20px;
+            }
+
+            .orion-desc-card p {
+                font-size: 15px;
+                font-weight: 300;
+                color: var(--text-body);
+                line-height: 1.7;
+            }
+
+            .orion-desc-card strong {
+                font-weight: 500;
+                color: var(--text-heading);
+            }
+
+            .orion-feature-list {
+                display: flex;
+                flex-direction: column;
+                gap: 11px;
+            }
+
+            .orion-feature-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 16px 20px 16px 63px;
+                position: relative;
+                min-height: 72px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .orion-feature-icon {
+                position: absolute;
+                left: 17px;
+                top: 16px;
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                background: rgba(17, 159, 205, 0.12);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .orion-feature-icon svg {
+                width: 16px;
+                height: 16px;
+                color: var(--text-heading);
+            }
+
+            .orion-feature-card h4 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: 16px;
+                color: var(--text-heading);
+                margin-bottom: 3px;
+            }
+
+            .orion-feature-card p {
+                font-size: 14px;
+                color: var(--text-body);
+                line-height: 1.5;
+            }
+
+            /* ── CTA Section ────────────────────────────────────────────────── */
+
+            .section-cta {
+                padding: 128px 32px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                scroll-snap-align: start;
+            }
+
+            .cta-inner {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cta-label {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: var(--accent-teal);
+                margin-bottom: 14px;
+            }
+
+            .section-cta h2 {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 800;
+                font-size: clamp(32px, 3.5vw, 46px);
+                color: var(--text-heading);
+                letter-spacing: -0.5px;
+                margin-bottom: 14px;
+            }
+
+            .cta-desc {
+                font-size: 16px;
+                color: var(--text-body);
+                line-height: 1.6;
+                margin-bottom: 32px;
+                max-width: 480px;
+            }
+
+            .dev-links {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                margin-bottom: 32px;
+            }
+
+            .dev-link-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-md);
+                padding: 18px 20px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                transition: border-color 0.2s;
+            }
+
+            .dev-link-card:hover {
+                border-color: var(--border-hover);
+            }
+
+            .dev-link-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                background: rgba(17, 159, 205, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                color: var(--accent-blue);
+            }
+
+            .dev-link-icon svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .dev-link-body {
+                flex: 1;
+            }
+
+            .dev-link-body h4 {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text-heading);
+                margin-bottom: 2px;
+            }
+
+            .dev-link-body p {
+                font-size: 13px;
+                color: var(--text-body);
+            }
+
+            .dev-link-arrow {
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                color: var(--accent-blue);
+            }
+
+            .cta-buttons {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            /* ── Footer ─────────────────────────────────────────────────────── */
+
+            .footer {
+                border-top: 1px solid var(--border-subtle);
+                padding: 64px 32px;
+                scroll-snap-align: start;
+            }
+
+            .footer-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+                gap: 48px;
+                margin-bottom: 48px;
+            }
+
+            .footer-logo {
+                height: 52px;
+                margin-bottom: 16px;
+            }
+
+            .footer-brand p {
+                font-size: 14px;
+                color: var(--text-body);
+                line-height: 1.6;
+            }
+
+            .footer-col h4 {
+                font-weight: 500;
+                font-size: 15px;
+                color: var(--text-heading);
+                margin-bottom: 16px;
+            }
+
+            .footer-col li {
+                margin-bottom: 8px;
+            }
+
+            .footer-col a {
+                font-size: 14px;
+                color: var(--text-body);
+                transition: color 0.2s;
+            }
+            .footer-col a:hover {
+                color: var(--text-heading);
+            }
+
+            .footer-bottom {
+                padding-top: 32px;
+                border-top: 1px solid var(--border-subtle);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 14px;
+                color: var(--text-body);
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 24px;
+            }
+
+            .footer-links a {
+                color: var(--text-body);
+                transition: color 0.2s;
+            }
+            .footer-links a:hover {
+                color: var(--text-heading);
+            }
+
+            /* ── Scroll Hint ────────────────────────────────────────────────── */
+
+            .scroll-hint {
+                position: fixed;
+                bottom: 48px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 10;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                opacity: 0.4;
+                transition: opacity 0.5s;
+                pointer-events: auto;
+            }
+            .scroll-hint.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+            .scroll-hint span {
+                font-size: 14px;
+                color: var(--text-body);
+            }
+            .scroll-hint .arrow {
+                width: 16px;
+                height: 16px;
+                border-right: 2px solid var(--text-body);
+                border-bottom: 2px solid var(--text-body);
+                transform: rotate(45deg);
+                animation: bounce 1.5s infinite;
+            }
+            @keyframes bounce {
+                0%,
+                20%,
+                50%,
+                80%,
+                100% {
+                    transform: rotate(45deg) translateY(0);
+                }
+                40% {
+                    transform: rotate(45deg) translateY(6px);
+                }
+                60% {
+                    transform: rotate(45deg) translateY(3px);
+                }
+            }
+
+            /* ── Section Dimming Overlay ──────────────────────────────────── */
+
+            .section-dimmed {
+                position: relative;
+            }
+
+            .section-dimmed::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(7, 17, 26, 0.7);
+                z-index: -1;
+                pointer-events: none;
+            }
+
+            /* ── Scroll Reveal Animations ─────────────────────────────────── */
+
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                will-change: opacity, transform;
+                transition:
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .reveal-left {
+                opacity: 0;
+                transform: translateX(-30px);
+                will-change: opacity, transform;
+                transition:
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal-left.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .reveal-right {
+                opacity: 0;
+                transform: translateX(30px);
+                will-change: opacity, transform;
+                transition:
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal-right.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            /* ── Headline blur-in ─────────────────────────────────────────── */
+
+            .reveal-blur {
+                opacity: 0;
+                filter: blur(10px);
+                transform: translateY(20px);
+                will-change: opacity, filter, transform;
+                transition:
+                    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+                transition-delay: var(--reveal-delay, 0s);
+            }
+            .reveal-blur.visible {
+                opacity: 1;
+                filter: blur(0px);
+                transform: translateY(0);
+            }
+
+            /* ── Responsive ─────────────────────────────────────────────────── */
+
+            @media (max-width: 1024px) {
+                .grid-2col {
+                    grid-template-columns: 1fr;
+                    gap: 48px;
+                }
+                .grid-2x2 {
+                    grid-template-columns: 1fr;
+                }
+                .grid-3col {
+                    grid-template-columns: 1fr;
+                }
+                .footer-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .nav-links a {
+                    display: none;
+                }
+                .hero-3d {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .hero-ctas {
+                    flex-direction: column;
+                }
+                .hero-ctas .btn-primary,
+                .hero-ctas .btn-secondary {
+                    width: 100%;
+                    justify-content: center;
+                }
+                .footer-grid {
+                    grid-template-columns: 1fr;
+                }
+                .footer-bottom {
+                    flex-direction: column;
+                    gap: 16px;
+                    text-align: center;
+                }
+                .cta-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+        </style>
+        <script>
+            if ("scrollRestoration" in history)
+                history.scrollRestoration = "manual";
+            window.addEventListener("load", function () {
+                window.scrollTo(0, 0);
+                requestAnimationFrame(function () {
+                    document.documentElement.classList.add("snap-ready");
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="nav">
+            <img
+                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
+                alt="Plasmatic"
+                class="nav-logo"
+            />
+            <div class="nav-links">
+                <a href="product.html">Product</a>
+                <a href="#">Docs</a>
+                <a href="#">Community</a>
+                <a href="#">GitHub</a>
+                <button class="btn-nav">Get started</button>
+            </div>
+        </nav>
+
+        <!-- Scroll Hint -->
+        <div class="scroll-hint" id="scrollHint">
+            <span>Scroll to explore</span>
+            <div class="arrow"></div>
+        </div>
+
+        <div class="content">
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- HERO                                                          -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="hero">
+                <div class="hero-text" id="heroText">
+                    <div class="hero-eyebrow">
+                        <span>Modern infrastructure</span>
+                    </div>
+                    <h1 class="reveal-blur">Plasmatic builds systems</h1>
+                    <h1 class="reveal-blur" style="--reveal-delay: 0.12s">
+                        for <span class="gradient-text">modern software.</span>
+                    </h1>
+                    <p class="hero-sub">
+                        We design and develop infrastructure that defines,
+                        executes and governs how complex systems behave.
+                    </p>
+                    <p class="hero-support">
+                        Our flagship product, Orion, is a business runtime
+                        engine for real-time system execution.
+                    </p>
+                    <div class="hero-ctas">
+                        <a href="product.html" class="btn-primary"
+                            >Explore Orion &rarr;</a
+                        >
+                        <a href="#" class="btn-secondary">
+                            <i
+                                data-lucide="github"
+                                style="width: 16px; height: 16px"
+                            ></i>
+                            View on GitHub
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-3d" id="hero3d"></div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- WHAT WE DO                                                    -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full">
+                <div class="section-container">
+                    <div class="grid-2col">
+                        <div class="what-content reveal-left">
+                            <h2 class="reveal-blur">
+                                Infrastructure at the
+                                <span class="gradient-text"
+                                    >core of modern systems.</span
+                                >
+                            </h2>
+                            <p class="section-body">
+                                Plasmatic builds infrastructure that sits at the
+                                core of modern systems.
+                            </p>
+                            <p class="section-body">
+                                We focus on how systems define behaviour,
+                                execute logic and maintain control at scale.
+                            </p>
+                            <div class="callout">
+                                <p>
+                                    Our work enables organisations to move
+                                    faster
+                                    <strong
+                                        >without losing consistency or
+                                        governance.</strong
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- WHY THIS MATTERS                                              -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full">
+                <div class="section-container">
+                    <div class="grid-2col">
+                        <div></div>
+                        <div class="reveal-right">
+                            <h2
+                                class="reveal-blur"
+                                style="
+                                    font-family:
+                                        &quot;Montserrat&quot;, sans-serif;
+                                    font-weight: 700;
+                                    font-size: clamp(32px, 4vw, 52px);
+                                    color: var(--text-heading);
+                                    line-height: 1.15;
+                                    letter-spacing: -0.5px;
+                                    margin-bottom: 28px;
+                                "
+                            >
+                                Organisations are no longer limited by
+                                <span class="gradient-text">speed.</span>
+                            </h2>
+                            <p class="section-body">
+                                Software development has accelerated rapidly. AI
+                                is generating code. Teams are shipping faster
+                                than ever.
+                            </p>
+                            <div class="pain-points">
+                                <div class="pain-point">
+                                    <div class="dot dot-yellow"></div>
+                                    <div>
+                                        <p class="pain-title">
+                                            AI is generating code
+                                        </p>
+                                        <p class="pain-desc">
+                                            Development velocity has never been
+                                            higher
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="pain-point">
+                                    <div class="dot dot-yellow"></div>
+                                    <div>
+                                        <p class="pain-title">
+                                            Teams are shipping faster than ever
+                                        </p>
+                                        <p class="pain-desc">
+                                            Release cycles are compressing
+                                            across the industry
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="pain-point">
+                                    <div class="dot dot-red"></div>
+                                    <div>
+                                        <p class="pain-title">
+                                            Behaviour becomes inconsistent
+                                        </p>
+                                        <p class="pain-desc">
+                                            Services fragment, governance
+                                            becomes harder to enforce
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="callout">
+                                <p>
+                                    They are limited by
+                                    <strong>control.</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- OUR APPROACH                                                  -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full section-dimmed">
+                <div class="section-container">
+                    <div class="section-header reveal">
+                        <h2 class="reveal-blur">A better way to build.</h2>
+                        <p>
+                            System behaviour should not be tied to release
+                            cycles or embedded across fragmented services.
+                        </p>
+                    </div>
+                    <div class="grid-3col">
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-blue">
+                                <i data-lucide="pen-line"></i>
+                            </div>
+                            <h3>Define clearly</h3>
+                            <p class="capability-subtitle">
+                                Single source of truth
+                            </p>
+                            <p>
+                                Behaviour described once, in a central layer —
+                                not scattered across dozens of services and
+                                deployment pipelines.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-teal">
+                                <i data-lucide="zap"></i>
+                            </div>
+                            <h3>Execute dynamically</h3>
+                            <p class="capability-subtitle">Real-time runtime</p>
+                            <p>
+                                Changes activate instantly across all services.
+                                No rebuilds, no deployments, no downtime.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-yellow">
+                                <i data-lucide="shield-check"></i>
+                            </div>
+                            <h3>Govern centrally</h3>
+                            <p class="capability-subtitle">Control at scale</p>
+                            <p>
+                                Enforce policies consistently. Systems can
+                                evolve continuously while maintaining control
+                                and consistency.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- ORION                                                         -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-orion section-dimmed">
+                <div class="section-container">
+                    <div class="grid-2col orion-grid">
+                        <div class="reveal-left">
+                            <div class="orion-label">
+                                Orion &mdash; Business Runtime Engine
+                            </div>
+                            <h2 class="orion-heading reveal-blur">
+                                Define what should happen.<br />
+                                Orion runs it
+                                <span class="gradient-text">instantly.</span>
+                            </h2>
+                            <div class="orion-desc-card">
+                                <p>
+                                    Instead of building and deploying
+                                    microservices for every change, teams
+                                    <strong>define what should happen</strong>
+                                    and Orion runs it — through governed,
+                                    versioned workflows with full traceability.
+                                </p>
+                            </div>
+                            <a href="product.html" class="btn-primary"
+                                >Explore Orion &rarr;</a
+                            >
+                        </div>
+                        <div class="orion-feature-list reveal-right">
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="zap"></i>
+                                </div>
+                                <h4>Real-time execution</h4>
+                                <p>
+                                    Deploy logic changes instantly. No
+                                    engineering cycles, no PRs, no release
+                                    schedules.
+                                </p>
+                            </div>
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="shield"></i>
+                                </div>
+                                <h4>Built-in governance</h4>
+                                <p>
+                                    Every behaviour change is versioned,
+                                    auditable and policy-enforced from a central
+                                    layer.
+                                </p>
+                            </div>
+                            <div class="orion-feature-card">
+                                <div class="orion-feature-icon">
+                                    <i data-lucide="trending-down"></i>
+                                </div>
+                                <h4>Reduced engineering overhead</h4>
+                                <p>
+                                    Logic lives in the runtime, not inside
+                                    microservices. Easier to own, faster to
+                                    evolve.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- BUILT FOR MODERN ARCHITECTURES                                -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-full section-dimmed">
+                <div class="section-container">
+                    <div class="section-header reveal">
+                        <h2 class="reveal-blur">
+                            Built for modern architectures.
+                        </h2>
+                        <p>
+                            Open, high-performance, and designed to work with
+                            how distributed systems are actually built today.
+                        </p>
+                    </div>
+                    <div class="grid-2x2">
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-teal">
+                                <i data-lucide="github"></i>
+                            </div>
+                            <h3>Open source foundation</h3>
+                            <p class="capability-subtitle">Community-driven</p>
+                            <p>
+                                Built in the open. Inspect the core, contribute,
+                                and build on a foundation the community can
+                                trust.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-blue">
+                                <i data-lucide="gauge"></i>
+                            </div>
+                            <h3>High-performance runtime</h3>
+                            <p class="capability-subtitle">
+                                Scale without compromise
+                            </p>
+                            <p>
+                                Designed for throughput at scale. Execute
+                                millions of governed workflows without
+                                performance trade-offs.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-yellow">
+                                <i data-lucide="network"></i>
+                            </div>
+                            <h3>Distributed systems native</h3>
+                            <p class="capability-subtitle">
+                                Built for the real world
+                            </p>
+                            <p>
+                                Designed from the ground up for distributed
+                                architectures — microservices, event-driven, and
+                                everything in between.
+                            </p>
+                        </div>
+                        <div class="capability-card reveal">
+                            <div class="icon-box icon-red">
+                                <i data-lucide="terminal"></i>
+                            </div>
+                            <h3>API-first &amp; developer-friendly</h3>
+                            <p class="capability-subtitle">
+                                Integrate anywhere
+                            </p>
+                            <p>
+                                Every capability exposed via clean APIs. Works
+                                with your existing stack, language, and tooling.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- DEVELOPERS CTA                                                -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <section class="section-cta">
+                <div class="section-container">
+                    <div class="grid-2col">
+                        <div class="cta-inner reveal-left">
+                            <div class="cta-label">For developers</div>
+                            <h2 class="reveal-blur">
+                                Start building with Plasmatic.
+                            </h2>
+                            <p class="cta-desc">
+                                Explore Orion, access documentation and start
+                                building with Plasmatic tools.
+                            </p>
+                            <div class="dev-links">
+                                <a href="#" class="dev-link-card">
+                                    <div class="dev-link-icon">
+                                        <i data-lucide="book-open"></i>
+                                    </div>
+                                    <div class="dev-link-body">
+                                        <h4>View documentation</h4>
+                                        <p>
+                                            Guides, API reference and
+                                            integration docs
+                                        </p>
+                                    </div>
+                                    <span class="dev-link-arrow">&rarr;</span>
+                                </a>
+                                <a href="#" class="dev-link-card">
+                                    <div class="dev-link-icon">
+                                        <i data-lucide="github"></i>
+                                    </div>
+                                    <div class="dev-link-body">
+                                        <h4>GitHub</h4>
+                                        <p>Explore the source and contribute</p>
+                                    </div>
+                                    <span class="dev-link-arrow">&rarr;</span>
+                                </a>
+                                <a href="#" class="dev-link-card">
+                                    <div class="dev-link-icon">
+                                        <i data-lucide="rocket"></i>
+                                    </div>
+                                    <div class="dev-link-body">
+                                        <h4>Quickstart</h4>
+                                        <p>
+                                            Get Orion running in under five
+                                            minutes
+                                        </p>
+                                    </div>
+                                    <span class="dev-link-arrow">&rarr;</span>
+                                </a>
+                            </div>
+                            <div class="cta-buttons">
+                                <a href="product.html" class="btn-primary"
+                                    >Explore Orion &rarr;</a
+                                >
+                                <a href="#" class="btn-secondary"
+                                    >View on GitHub</a
+                                >
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- FOOTER                                                        -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <footer class="footer section-dimmed">
+                <div class="section-container">
+                    <div class="footer-grid">
+                        <div class="footer-brand">
+                            <img
+                                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
+                                alt="Plasmatic"
+                                class="footer-logo"
+                            />
+                            <p>
+                                A software company focused on building
+                                infrastructure for modern systems.
+                            </p>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Product</h4>
+                            <ul>
+                                <li><a href="product.html">Orion</a></li>
+                                <li><a href="#">Documentation</a></li>
+                                <li><a href="#">Changelog</a></li>
+                                <li><a href="#">GitHub</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Guides</a></li>
+                                <li><a href="#">Quickstart</a></li>
+                                <li><a href="#">Community</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-col">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li>
+                                    <a href="mailto:enquiries@goplasmatic.io"
+                                        >Enquiries</a
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>&copy; 2026 Plasmatic. All rights reserved.</p>
+                        <div class="footer-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Scroll reveal observer -->
+        <script>
+            lucide.createIcons();
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                        }
+                    });
+                },
+                { threshold: 0.1 },
+            );
+
+            document
+                .querySelectorAll(
+                    ".reveal, .reveal-left, .reveal-right, .reveal-blur",
+                )
+                .forEach((el) => observer.observe(el));
+
+            const scrollHint = document.getElementById("scrollHint");
+            addEventListener("scroll", () => {
+                scrollHint.classList.toggle("hidden", scrollY > 80);
+            });
+        </script>
+
+        <!-- Hero 3D voxel logo -->
+        <script type="module">
+            import * as THREE from "three";
+            import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+            import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+            import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+            import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+            import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+            import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js";
+            import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+            (async function initHero3D() {
+                const container = document.getElementById("hero3d");
+                if (!container) return;
+
+                const PALETTE = [
+                    { hex: 0x4cbd97, r: 76, g: 189, b: 151 },
+                    { hex: 0x063b4c, r: 6, g: 59, b: 76 },
+                    { hex: 0xef476f, r: 239, g: 71, b: 111 },
+                    { hex: 0x119fcd, r: 17, g: 159, b: 205 },
+                    { hex: 0xffd167, r: 255, g: 209, b: 103 },
+                ];
+
+                function snapColor(r, g, b) {
+                    let best = PALETTE[0],
+                        bd = Infinity;
+                    for (const p of PALETTE) {
+                        const dr = r - p.r,
+                            dg = g - p.g,
+                            db = b - p.b;
+                        const d = dr * dr + dg * dg + db * db;
+                        if (d < bd) {
+                            bd = d;
+                            best = p;
+                        }
+                    }
+                    return best.hex;
+                }
+
+                async function loadSvgImage(url, size) {
+                    const res = await fetch(url);
+                    let text = await res.text();
+                    if (!/\swidth="/.test(text)) {
+                        text = text.replace(
+                            "<svg",
+                            '<svg width="' + size + '" height="' + size + '"',
+                        );
+                    }
+                    const blob = new Blob([text], { type: "image/svg+xml" });
+                    const objectUrl = URL.createObjectURL(blob);
+                    const img = new Image(size, size);
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = objectUrl;
+                    });
+                    URL.revokeObjectURL(objectUrl);
+                    return img;
+                }
+
+                function voxelize(img, gridSize) {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = gridSize;
+                    canvas.height = gridSize;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, gridSize, gridSize);
+                    const data = ctx.getImageData(
+                        0,
+                        0,
+                        gridSize,
+                        gridSize,
+                    ).data;
+                    const voxels = [];
+                    for (let y = 0; y < gridSize; y++) {
+                        for (let x = 0; x < gridSize; x++) {
+                            const i = (y * gridSize + x) * 4;
+                            if (data[i + 3] > 180) {
+                                voxels.push({
+                                    gx: x,
+                                    gy: y,
+                                    color: snapColor(
+                                        data[i],
+                                        data[i + 1],
+                                        data[i + 2],
+                                    ),
+                                });
+                            }
+                        }
+                    }
+                    return voxels;
+                }
+
+                let w = container.clientWidth || 1;
+                let h = container.clientHeight || 1;
+
+                const scene = new THREE.Scene();
+
+                const camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
+                camera.position.set(0, 1.2, 7.2);
+                camera.lookAt(0, -0.3, 0);
+
+                const renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                    alpha: true,
+                });
+                renderer.setSize(w, h);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                // Canvas is fully transparent so the page's own --bg-deep
+                // shows through (tone mapping would otherwise shift an opaque
+                // clear color off from the page bg).
+                renderer.setClearColor(0x000000, 0);
+                // Cinematic color response: ACESFilmic tonemap + sRGB output
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.0;
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+                container.appendChild(renderer.domElement);
+
+                // Image-based lighting: procedural studio env via RoomEnvironment.
+                // Gives MeshStandardMaterial realistic reflections / highlights
+                // without shipping an HDR asset.
+                const pmrem = new THREE.PMREMGenerator(renderer);
+                scene.environment = pmrem.fromScene(
+                    new RoomEnvironment(),
+                    0.04,
+                ).texture;
+                // Rotate env so its brightest zone sits above the logo (which
+                // is shifted +X), matching the key-light direction set below.
+                scene.environmentRotation = new THREE.Euler(0, -Math.PI / 6, 0);
+
+                const BLOOM_LAYER = 1;
+
+                // Bloom pass renders onto a transparent bg so it doesn't brighten empty areas
+                const bloomRenderPass = new RenderPass(scene, camera);
+                bloomRenderPass.clearColor = new THREE.Color(0x000000);
+                bloomRenderPass.clearAlpha = 0;
+
+                const finalRenderPass = new RenderPass(scene, camera);
+                finalRenderPass.clearAlpha = 0;
+
+                const bloomPass = new UnrealBloomPass(
+                    new THREE.Vector2(w, h),
+                    0.85, // strength
+                    0.55, // radius
+                    0.0, // threshold (anything on the bloom layer glows)
+                );
+
+                // Bloom composer renders ONLY the bloom layer → texture
+                const bloomComposer = new EffectComposer(renderer);
+                bloomComposer.renderToScreen = false;
+                bloomComposer.setSize(w, h);
+                bloomComposer.setPixelRatio(
+                    Math.min(window.devicePixelRatio, 2),
+                );
+                bloomComposer.addPass(bloomRenderPass);
+                bloomComposer.addPass(bloomPass);
+
+                // Mix pass adds the bloom texture on top of the main render
+                const mixPass = new ShaderPass(
+                    new THREE.ShaderMaterial({
+                        uniforms: {
+                            baseTexture: { value: null },
+                            bloomTexture: {
+                                value: bloomComposer.renderTarget2.texture,
+                            },
+                        },
+                        vertexShader: `
+                            varying vec2 vUv;
+                            void main() {
+                                vUv = uv;
+                                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                            }
+                        `,
+                        fragmentShader: `
+                            uniform sampler2D baseTexture;
+                            uniform sampler2D bloomTexture;
+                            varying vec2 vUv;
+                            void main() {
+                                gl_FragColor = texture2D(baseTexture, vUv) + texture2D(bloomTexture, vUv);
+                            }
+                        `,
+                        defines: {},
+                    }),
+                    "baseTexture",
+                );
+                mixPass.needsSwap = true;
+
+                // Final composer: full scene + bloom overlay → screen
+                const finalComposer = new EffectComposer(renderer);
+                finalComposer.setSize(w, h);
+                finalComposer.setPixelRatio(
+                    Math.min(window.devicePixelRatio, 2),
+                );
+                // GTAO (ground-truth ambient occlusion) adds contact darkness
+                // between cubes for readable depth in the voxel stack.
+                const gtaoPass = new GTAOPass(scene, camera, w, h);
+                gtaoPass.output = GTAOPass.OUTPUT.Default;
+                gtaoPass.blendIntensity = 1.0;
+                gtaoPass.updateGtaoMaterial({
+                    radius: 0.18,
+                    distanceExponent: 1.6,
+                    thickness: 0.6,
+                    scale: 1.0,
+                    samples: 16,
+                });
+
+                finalComposer.addPass(finalRenderPass);
+                finalComposer.addPass(gtaoPass);
+                finalComposer.addPass(mixPass);
+                finalComposer.addPass(new OutputPass());
+
+                scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+
+                // Logo centre in world space (group.position.x + cubeGroup.y
+                // offset below). Lights target this point so highlights land
+                // on the voxel logo itself, not the scene origin.
+                const LOGO_CENTER = new THREE.Vector3(1.5, -0.6, 0);
+                function aimAt(light, target) {
+                    light.target.position.copy(target);
+                    scene.add(light.target);
+                }
+
+                const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
+                keyLight.position.set(
+                    LOGO_CENTER.x + 0.6,
+                    LOGO_CENTER.y + 8,
+                    LOGO_CENTER.z + 3,
+                );
+                aimAt(keyLight, LOGO_CENTER);
+                scene.add(keyLight);
+
+                const fillLight = new THREE.DirectionalLight(0x119fcd, 0.55);
+                fillLight.position.set(
+                    LOGO_CENTER.x - 5,
+                    LOGO_CENTER.y + 2,
+                    LOGO_CENTER.z + 4,
+                );
+                aimAt(fillLight, LOGO_CENTER);
+                scene.add(fillLight);
+
+                const rimLight = new THREE.DirectionalLight(0x4cbd97, 0.4);
+                rimLight.position.set(
+                    LOGO_CENTER.x,
+                    LOGO_CENTER.y + 2,
+                    LOGO_CENTER.z - 6,
+                );
+                aimAt(rimLight, LOGO_CENTER);
+                scene.add(rimLight);
+
+                const group = new THREE.Group();
+                const GROUP_BASE_Y = -0.9;
+                // Shift right so the logo + wave centre sit at ~66% of the
+                // full-hero canvas (the right 2/3 column), leaving the left
+                // third clear for hero text. Base Y lowers the whole scene so
+                // the logo isn't clipped by the fixed navigation bar.
+                group.position.x = 1.5;
+                group.position.y = GROUP_BASE_Y;
+                scene.add(group);
+
+                // Idle sway: the whole group rocks around Y and bobs on Y
+                // after the assemble animation finishes.
+                const ROT_TIME_SCALE = 0.0002; // ms → rad for the sway driver
+                const ROT_Y_AMPLITUDE = 0.55; // peak yaw in radians (~31°)
+                const BOB_FREQ_MULT = 1.4; // bob freq relative to sway
+                const BOB_AMPLITUDE = 0.04; // peak vertical bob (world units)
+
+                // Cubes + trails live in a child group so the logo can be
+                // scaled independently of the wave below it.
+                const MESH_SCALE = 1.25;
+                const cubeGroup = new THREE.Group();
+                cubeGroup.scale.setScalar(MESH_SCALE);
+                cubeGroup.position.y = 0.3;
+                group.add(cubeGroup);
+
+                try {
+                    // === Voxel grid config ===
+                    // Change gridSize for finer/coarser cubes.
+                    // step, cubeSize, and depth derive from fixed world-space
+                    // targets so the logo's overall size and slab thickness
+                    // stay constant regardless of gridSize.
+                    const gridSize = 128;
+                    const LOGO_WIDTH = 4.1; // world-space width of voxel footprint
+                    const SLAB_THICKNESS = 0.42; // world-space depth of the slab
+                    const CUBE_FILL = 0.95; // cubeSize / step (leaves a tiny gap)
+
+                    const img = await loadSvgImage("assets/logo.svg", 400);
+                    const voxels = voxelize(img, gridSize);
+                    if (!voxels.length) return;
+
+                    let minGx = Infinity,
+                        maxGx = -Infinity,
+                        minGy = Infinity,
+                        maxGy = -Infinity;
+                    for (const v of voxels) {
+                        if (v.gx < minGx) minGx = v.gx;
+                        if (v.gx > maxGx) maxGx = v.gx;
+                        if (v.gy < minGy) minGy = v.gy;
+                        if (v.gy > maxGy) maxGy = v.gy;
+                    }
+                    const cx = (minGx + maxGx) / 2;
+                    const cy = (minGy + maxGy) / 2;
+
+                    const step = LOGO_WIDTH / gridSize;
+                    const cubeSize = step * CUBE_FILL;
+                    // Match Z spacing to X/Y so CUBE_FILL leaves the same gap
+                    // along the slab depth as it does across its face.
+                    const depthStep = step;
+                    const depth = Math.max(
+                        2,
+                        Math.round(SLAB_THICKNESS / depthStep),
+                    );
+                    const geo = new THREE.BoxGeometry(
+                        cubeSize,
+                        cubeSize,
+                        cubeSize,
+                    );
+                    const mat = new THREE.MeshStandardMaterial({
+                        roughness: 0.22,
+                        metalness: 0.9,
+                        envMapIntensity: 1.8,
+                        transparent: true,
+                        alphaTest: 0.01,
+                    });
+
+                    // Inject a per-instance alpha attribute (aAlpha) into the
+                    // standard material so each cube can independently fade in.
+                    mat.onBeforeCompile = (shader) => {
+                        shader.vertexShader = shader.vertexShader.replace(
+                            "void main() {",
+                            `attribute float aAlpha;
+                                varying float vAlpha;
+                                void main() {
+                                    vAlpha = aAlpha;`,
+                        );
+                        shader.fragmentShader = shader.fragmentShader
+                            .replace(
+                                "void main() {",
+                                `varying float vAlpha;
+                                void main() {`,
+                            )
+                            .replace(
+                                "#include <colorspace_fragment>",
+                                `#include <colorspace_fragment>
+                                gl_FragColor.a *= vAlpha;`,
+                            );
+                    };
+
+                    const totalInstances = voxels.length * depth;
+                    const alphaArr = new Float32Array(totalInstances);
+                    const alphaAttr = new THREE.InstancedBufferAttribute(
+                        alphaArr,
+                        1,
+                    );
+                    geo.setAttribute("aAlpha", alphaAttr);
+
+                    const mesh = new THREE.InstancedMesh(
+                        geo,
+                        mat,
+                        totalInstances,
+                    );
+
+                    const instances = [];
+                    for (const v of voxels) {
+                        for (let dz = 0; dz < depth; dz++) {
+                            const spawnTime = Math.random() * 1100;
+                            const swirlDuration = 800 + Math.random() * 1500;
+                            instances.push({
+                                x: (v.gx - cx) * step,
+                                y: -(v.gy - cy) * step,
+                                z: (dz - (depth - 1) / 2) * depthStep,
+                                color: v.color,
+                                spawnTime,
+                                settleStart: spawnTime + swirlDuration,
+                                settleDuration: 550 + Math.random() * 300,
+                                cycloneRadius: 0.55 + Math.random() * 0.55,
+                                cyclonePhase: Math.random() * Math.PI * 2,
+                                startHeight: 1.6 + Math.random() * 1.2,
+                                bobAmp: 0.05 + Math.random() * 0.1,
+                                bobPhase: Math.random() * Math.PI * 2,
+                            });
+                        }
+                    }
+
+                    const dummy = new THREE.Object3D();
+                    const color = new THREE.Color();
+                    instances.forEach((inst, i) => {
+                        color.setHex(inst.color);
+                        mesh.setColorAt(i, color);
+                    });
+
+                    cubeGroup.add(mesh);
+
+                    const halfWidth = ((maxGx - minGx) / 2) * step;
+                    const halfHeight = ((maxGy - minGy) / 2) * step;
+                    const bottomY = -halfHeight;
+
+                    // Wave disk: a circular grid of lines displaced by a sum
+                    // of sines in a vertex shader. A single smoothstep radial
+                    // factor drives both alpha (disk shape — 0 outside rim)
+                    // and wave amplitude (rim stays flat, centre ripples).
+                    const WAVE_RADIUS = 5.4;
+                    const WAVE_GRID = 12.2; // extent of underlying square grid
+                    const WAVE_RES = 140; // vertices per side
+                    const waveVertCount = WAVE_RES * WAVE_RES;
+                    const wavePositions = new Float32Array(waveVertCount * 3);
+                    const waveFade = new Float32Array(waveVertCount);
+                    for (let r = 0; r < WAVE_RES; r++) {
+                        const zNorm = r / (WAVE_RES - 1);
+                        const zWorld = (zNorm - 0.5) * WAVE_GRID;
+                        for (let c = 0; c < WAVE_RES; c++) {
+                            const i = r * WAVE_RES + c;
+                            const xNorm = c / (WAVE_RES - 1);
+                            const xWorld = (xNorm - 0.5) * WAVE_GRID;
+                            wavePositions[i * 3] = xWorld;
+                            wavePositions[i * 3 + 1] = 0;
+                            wavePositions[i * 3 + 2] = zWorld;
+                            const d = Math.sqrt(
+                                xWorld * xWorld + zWorld * zWorld,
+                            );
+                            const t = Math.max(
+                                0,
+                                Math.min(1, 1 - d / WAVE_RADIUS),
+                            );
+                            waveFade[i] = t * t * (3 - 2 * t);
+                        }
+                    }
+                    // Line indices — only keep segments where BOTH endpoints
+                    // have non-zero fade, so the rim of the disk ends cleanly
+                    // instead of showing stubs in the corners of the grid.
+                    const segList = [];
+                    for (let r = 0; r < WAVE_RES; r++) {
+                        for (let c = 0; c < WAVE_RES - 1; c++) {
+                            const a = r * WAVE_RES + c;
+                            const b = r * WAVE_RES + c + 1;
+                            if (waveFade[a] > 0.001 && waveFade[b] > 0.001) {
+                                segList.push(a, b);
+                            }
+                        }
+                    }
+                    const waveIndices = new Uint32Array(segList);
+                    const waveGeo = new THREE.BufferGeometry();
+                    waveGeo.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(wavePositions, 3),
+                    );
+                    waveGeo.setAttribute(
+                        "aFade",
+                        new THREE.BufferAttribute(waveFade, 1),
+                    );
+                    waveGeo.setIndex(new THREE.BufferAttribute(waveIndices, 1));
+
+                    const waveUniforms = {
+                        uTime: { value: 0 },
+                        uColor: { value: new THREE.Color(0x4cc9ff) },
+                    };
+
+                    const waveVertex = `
+                        uniform float uTime;
+                        attribute float aFade;
+                        varying float vFade;
+                        varying float vCrest;
+                        void main() {
+                            vec3 p = position;
+                            float w =
+                                sin(p.x * 2.8 + p.z * 0.7 + uTime * 1.4) * 0.09 +
+                                sin(p.z * 4.2 - p.x * 0.9 + uTime * 1.0) * 0.06 +
+                                sin((p.x + p.z * 1.3) * 1.8 + uTime * 1.6) * 0.04;
+                            // aFade doubles as radial amplitude attenuation:
+                            // rim (fade → 0) stays flat, centre ripples most.
+                            p.y = w * aFade;
+                            // Crest factor (0 = trough, 1 = peak) feeds a small
+                            // brightness kick in the fragment shader.
+                            vCrest = clamp(p.y * 2.2 + 0.5, 0.0, 1.0);
+                            vFade = aFade;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+                        }
+                    `;
+                    const waveMat = new THREE.ShaderMaterial({
+                        uniforms: waveUniforms,
+                        transparent: true,
+                        depthWrite: false,
+                        vertexShader: waveVertex,
+                        fragmentShader: `
+                            uniform vec3 uColor;
+                            varying float vFade;
+                            varying float vCrest;
+                            void main() {
+                                vec3 c = uColor * (0.55 + vCrest * 0.5);
+                                gl_FragColor = vec4(c, vFade * 0.7);
+                            }
+                        `,
+                    });
+                    const waveMesh = new THREE.LineSegments(waveGeo, waveMat);
+                    waveMesh.position.y = bottomY * MESH_SCALE - 0.15;
+                    group.add(waveMesh);
+
+                    // Swirling glow trails
+                    const TRAIL_LEN = 14;
+                    const MAX_TRAILS = 128;
+                    const trailStride = Math.max(
+                        1,
+                        Math.floor(instances.length / MAX_TRAILS),
+                    );
+                    const trailInstanceIdx = [];
+                    for (let i = 0; i < instances.length; i += trailStride) {
+                        trailInstanceIdx.push(i);
+                    }
+                    const NUM_TRAILS = trailInstanceIdx.length;
+
+                    const trailPositions = new Float32Array(
+                        NUM_TRAILS * TRAIL_LEN * 3,
+                    );
+                    const trailColorsAttr = new Float32Array(
+                        NUM_TRAILS * TRAIL_LEN * 3,
+                    );
+                    const trailIndices = new Uint32Array(
+                        NUM_TRAILS * (TRAIL_LEN - 1) * 2,
+                    );
+                    for (let t = 0; t < NUM_TRAILS; t++) {
+                        const base = t * TRAIL_LEN;
+                        for (let s = 0; s < TRAIL_LEN - 1; s++) {
+                            const ii = (t * (TRAIL_LEN - 1) + s) * 2;
+                            trailIndices[ii] = base + s;
+                            trailIndices[ii + 1] = base + s + 1;
+                        }
+                    }
+                    // Seed positions at each cube's starting cyclone point so the first
+                    // frames don't draw segments from origin.
+                    for (let t = 0; t < NUM_TRAILS; t++) {
+                        const inst = instances[trailInstanceIdx[t]];
+                        const seedX =
+                            Math.cos(inst.cyclonePhase) * inst.cycloneRadius;
+                        const seedZ =
+                            Math.sin(inst.cyclonePhase) * inst.cycloneRadius;
+                        const seedY = inst.startHeight;
+                        const base = t * TRAIL_LEN * 3;
+                        for (let p = 0; p < TRAIL_LEN; p++) {
+                            trailPositions[base + p * 3] = seedX;
+                            trailPositions[base + p * 3 + 1] = seedY;
+                            trailPositions[base + p * 3 + 2] = seedZ;
+                        }
+                    }
+
+                    const trailGeo = new THREE.BufferGeometry();
+                    trailGeo.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(trailPositions, 3),
+                    );
+                    trailGeo.setAttribute(
+                        "color",
+                        new THREE.BufferAttribute(trailColorsAttr, 3),
+                    );
+                    trailGeo.setIndex(
+                        new THREE.BufferAttribute(trailIndices, 1),
+                    );
+
+                    const trailMat = new THREE.LineBasicMaterial({
+                        vertexColors: true,
+                        transparent: true,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false,
+                    });
+
+                    const trailLines = new THREE.LineSegments(
+                        trailGeo,
+                        trailMat,
+                    );
+                    trailLines.layers.enable(BLOOM_LAYER);
+                    cubeGroup.add(trailLines);
+
+                    // Mouse wobble: cubes within WOBBLE_RADIUS jiggle in
+                    // place with a small time-varying offset. Closest cubes
+                    // wobble most; amplitude falls off smoothly at the rim.
+                    const WOBBLE_RADIUS = 0.45;
+                    const WOBBLE_AMP = 0.05;
+                    const WOBBLE_FREQ = 0.006; // rad per ms
+                    const HOVER_LERP = 0.18;
+
+                    const hoverOffsetX = new Float32Array(totalInstances);
+                    const hoverOffsetY = new Float32Array(totalInstances);
+                    const hoverOffsetZ = new Float32Array(totalInstances);
+
+                    let mouseActive = false;
+                    const mouseNdc = new THREE.Vector2();
+                    const raycaster = new THREE.Raycaster();
+                    const hoverPlane = new THREE.Plane(
+                        new THREE.Vector3(0, 0, 1),
+                        0,
+                    );
+                    const mouseHit = new THREE.Vector3();
+                    const mouseLocal = new THREE.Vector3();
+
+                    window.addEventListener("pointermove", (e) => {
+                        const rect = container.getBoundingClientRect();
+                        const inside =
+                            e.clientX >= rect.left &&
+                            e.clientX <= rect.right &&
+                            e.clientY >= rect.top &&
+                            e.clientY <= rect.bottom;
+                        if (!inside) {
+                            mouseActive = false;
+                            return;
+                        }
+                        mouseNdc.x =
+                            ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                        mouseNdc.y =
+                            -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                        mouseActive = true;
+                    });
+
+                    function computeMouseLocal() {
+                        if (!mouseActive) return false;
+                        cubeGroup.updateMatrixWorld();
+                        raycaster.setFromCamera(mouseNdc, camera);
+                        if (!raycaster.ray.intersectPlane(hoverPlane, mouseHit))
+                            return false;
+                        mouseLocal.copy(mouseHit);
+                        cubeGroup.worldToLocal(mouseLocal);
+                        return true;
+                    }
+
+                    const CYCLONE_ANGULAR_SPEED = 0.0055; // rad per ms
+
+                    function updateTrails(elapsed) {
+                        const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
+                        for (let t = 0; t < NUM_TRAILS; t++) {
+                            const instIdx = trailInstanceIdx[t];
+                            const inst = instances[instIdx];
+
+                            const swirlSpan = inst.settleStart - inst.spawnTime;
+                            const swirlT = Math.max(
+                                0,
+                                Math.min(
+                                    1,
+                                    (elapsed - inst.spawnTime) / swirlSpan,
+                                ),
+                            );
+
+                            const st =
+                                (elapsed - inst.settleStart) /
+                                inst.settleDuration;
+                            const settle = Math.max(0, Math.min(1, st));
+                            const spawnF = Math.max(
+                                0,
+                                Math.min(1, (elapsed - inst.spawnTime) / 200),
+                            );
+                            const intensity = spawnF * (1 - settle);
+
+                            // Trail follows the cyclone column during entry;
+                            // collapses once the cube settles into place.
+                            let px, py, pz;
+                            if (settle < 1) {
+                                const descE = swirlT * swirlT;
+                                const heightNow =
+                                    inst.startHeight +
+                                    (inst.y - inst.startHeight) * descE;
+                                const radiusTaper = 1 - swirlT * 0.55;
+                                const angle = cycloneTheta + inst.cyclonePhase;
+                                const r = inst.cycloneRadius * radiusTaper;
+                                px = Math.cos(angle) * r;
+                                py = heightNow;
+                                pz = Math.sin(angle) * r;
+                            } else {
+                                px = inst.x;
+                                py = inst.y;
+                                pz = inst.z;
+                            }
+
+                            const trailBase = t * TRAIL_LEN * 3;
+                            if (intensity < 0.02) {
+                                // Collapse trail at the live position while
+                                // invisible, so no stale segments linger for
+                                // the next time hover re-activates.
+                                for (let p = 0; p < TRAIL_LEN; p++) {
+                                    const idx = trailBase + p * 3;
+                                    trailPositions[idx] = px;
+                                    trailPositions[idx + 1] = py;
+                                    trailPositions[idx + 2] = pz;
+                                }
+                            } else {
+                                // Shift older points back one slot
+                                trailPositions.copyWithin(
+                                    trailBase + 3,
+                                    trailBase,
+                                    trailBase + (TRAIL_LEN - 1) * 3,
+                                );
+                                trailPositions[trailBase] = px;
+                                trailPositions[trailBase + 1] = py;
+                                trailPositions[trailBase + 2] = pz;
+                            }
+
+                            const color = inst.color;
+                            const cr = (((color >> 16) & 0xff) / 255) * 1.7;
+                            const cg = (((color >> 8) & 0xff) / 255) * 1.7;
+                            const cb = ((color & 0xff) / 255) * 1.7;
+
+                            for (let p = 0; p < TRAIL_LEN; p++) {
+                                const fade = 1 - p / (TRAIL_LEN - 1);
+                                const mult = intensity * fade;
+                                const idx = trailBase + p * 3;
+                                trailColorsAttr[idx] = cr * mult;
+                                trailColorsAttr[idx + 1] = cg * mult;
+                                trailColorsAttr[idx + 2] = cb * mult;
+                            }
+                        }
+                        trailGeo.attributes.position.needsUpdate = true;
+                        trailGeo.attributes.color.needsUpdate = true;
+                    }
+
+                    function updateInstances(elapsed) {
+                        const mx = mouseLocal.x;
+                        const my = mouseLocal.y;
+                        const wobbleActive = mouseActive;
+                        const radiusSq = WOBBLE_RADIUS * WOBBLE_RADIUS;
+                        const wobbleT = elapsed * WOBBLE_FREQ;
+                        const cycloneTheta = elapsed * CYCLONE_ANGULAR_SPEED;
+                        const bobTime = elapsed * 0.003;
+
+                        for (let i = 0; i < instances.length; i++) {
+                            const inst = instances[i];
+
+                            // Cube materializes in the cyclone
+                            const sp = (elapsed - inst.spawnTime) / 220;
+                            const spawn = Math.max(0, Math.min(1, sp));
+
+                            // Descent progress while in the cyclone (0 → 1 over swirl phase)
+                            const swirlSpan = inst.settleStart - inst.spawnTime;
+                            const swirlT = Math.max(
+                                0,
+                                Math.min(
+                                    1,
+                                    (elapsed - inst.spawnTime) / swirlSpan,
+                                ),
+                            );
+                            const descE = swirlT * swirlT; // accelerating fall
+                            const heightNow =
+                                inst.startHeight +
+                                (inst.y - inst.startHeight) * descE;
+                            // Lean taper: column narrows as cube descends
+                            const radiusTaper = 1 - swirlT * 0.55;
+
+                            // Progress of release from cyclone → final slot
+                            const st =
+                                (elapsed - inst.settleStart) /
+                                inst.settleDuration;
+                            const settle = Math.max(0, Math.min(1, st));
+                            const blend = settle * settle * (3 - 2 * settle);
+
+                            // Shared cyclone position for this cube
+                            const angle = cycloneTheta + inst.cyclonePhase;
+                            const currentR = inst.cycloneRadius * radiusTaper;
+                            const cxp = Math.cos(angle) * currentR;
+                            const czp = Math.sin(angle) * currentR;
+                            const cyp =
+                                heightNow +
+                                Math.sin(bobTime + inst.bobPhase) * inst.bobAmp;
+
+                            // Lerp cyclone → final
+                            const px = cxp + (inst.x - cxp) * blend;
+                            const py = cyp + (inst.y - cyp) * blend;
+                            const pz = czp + (inst.z - czp) * blend;
+
+                            // Wobble: cubes within WOBBLE_RADIUS of the cursor
+                            // oscillate with a small time-varying offset,
+                            // amplitude falling off smoothly to 0 at the rim.
+                            let tx = 0;
+                            let ty = 0;
+                            let tz = 0;
+                            if (wobbleActive && settle >= 1) {
+                                const dx = inst.x - mx;
+                                const dy = inst.y - my;
+                                const distSq = dx * dx + dy * dy;
+                                if (distSq < radiusSq) {
+                                    const f =
+                                        1 - Math.sqrt(distSq) / WOBBLE_RADIUS;
+                                    const smooth = f * f * (3 - 2 * f);
+                                    const a = WOBBLE_AMP * smooth;
+                                    const ph = inst.bobPhase;
+                                    tx = Math.sin(wobbleT * 1.7 + ph) * a;
+                                    ty = Math.sin(wobbleT * 2.1 + ph * 1.3) * a;
+                                    tz = Math.sin(wobbleT * 1.4 + ph * 0.7) * a;
+                                }
+                            }
+                            hoverOffsetX[i] +=
+                                (tx - hoverOffsetX[i]) * HOVER_LERP;
+                            hoverOffsetY[i] +=
+                                (ty - hoverOffsetY[i]) * HOVER_LERP;
+                            hoverOffsetZ[i] +=
+                                (tz - hoverOffsetZ[i]) * HOVER_LERP;
+
+                            dummy.position.set(
+                                px + hoverOffsetX[i],
+                                py + hoverOffsetY[i],
+                                pz + hoverOffsetZ[i],
+                            );
+                            dummy.scale.setScalar(spawn);
+                            dummy.updateMatrix();
+                            mesh.setMatrixAt(i, dummy.matrix);
+
+                            // Cube fades from translucent (in the cyclone) to opaque (settled)
+                            alphaArr[i] = spawn * (0.3 + 0.7 * blend);
+                        }
+                        mesh.instanceMatrix.needsUpdate = true;
+                        alphaAttr.needsUpdate = true;
+                    }
+
+                    updateInstances(0);
+                    if (mesh.instanceColor)
+                        mesh.instanceColor.needsUpdate = true;
+
+                    const startTime = performance.now();
+                    const assembleDuration = 4200;
+
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        const elapsed = performance.now() - startTime;
+
+                        const rt =
+                            Math.max(0, elapsed - assembleDuration) *
+                            ROT_TIME_SCALE;
+                        group.rotation.y = Math.sin(rt) * ROT_Y_AMPLITUDE;
+                        group.position.y =
+                            GROUP_BASE_Y +
+                            Math.sin(rt * BOB_FREQ_MULT) * BOB_AMPLITUDE;
+
+                        computeMouseLocal();
+
+                        updateInstances(elapsed);
+                        updateTrails(elapsed);
+                        waveUniforms.uTime.value = elapsed * 0.001;
+
+                        // Pass 1: bloom only the trails (layer 1)
+                        camera.layers.set(BLOOM_LAYER);
+                        bloomComposer.render();
+                        // Pass 2: full scene (layer 0) + mix bloom texture
+                        camera.layers.set(0);
+                        camera.layers.enable(BLOOM_LAYER);
+                        finalComposer.render();
+                    }
+
+                    animate();
+                } catch (err) {
+                    console.error("Hero 3D init failed:", err);
+                }
+
+                window.addEventListener("resize", () => {
+                    w = container.clientWidth;
+                    h = container.clientHeight;
+                    if (!w || !h) return;
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(w, h);
+                    bloomComposer.setSize(w, h);
+                    finalComposer.setSize(w, h);
+                    gtaoPass.setSize(w, h);
+                });
+            })();
+        </script>
+    </body>
+</html>
