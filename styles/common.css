@@ -196,6 +196,44 @@ site-footer {
     flex-wrap: wrap;
 }
 
+/* Pill badge that sits above the hero headline. */
+.eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(76, 189, 151, 0.3);
+    background: rgba(76, 189, 151, 0.1);
+    backdrop-filter: blur(4px);
+    margin-bottom: 32px;
+}
+
+.eyebrow span {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-teal);
+}
+
+/* Lead paragraph sized for hero copy. */
+.lead {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-body);
+    max-width: 520px;
+    line-height: 1.7;
+}
+
+/* Smaller muted line that follows a .lead — used for secondary
+   supporting copy under the hero headline. */
+.hero-support {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
 /* Section divider hairline shared by every snap section */
 .hero,
 .section-full,
@@ -248,6 +286,19 @@ site-footer {
     max-width: 640px;
     margin: 0 auto;
     line-height: 1.6;
+}
+
+/* Heading sized for the side-of-grid variant — when one column of a
+   2-col layout holds prose with its own h2 (vs. the centered
+   .section-header pattern above). */
+.col-content h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 56px);
+    color: var(--text-heading);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
 }
 
 .grid-2col {
@@ -365,18 +416,76 @@ site-footer {
     color: var(--text-body);
 }
 
+/* ── Card surface primitives ─────────────────────────────────────── */
+
+/* Base surface used by capability/orion/dev-link/audience/step cards.
+   Modifiers compose on top: .card-elevated for the larger radius,
+   .card-hoverable for the border-color hover treatment. */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+}
+
+.card-elevated {
+    border-radius: var(--radius-lg);
+}
+
+.card-hoverable {
+    transition: border-color 0.3s;
+}
+
+.card-hoverable:hover {
+    border-color: var(--border-hover);
+}
+
+/* Small icon container (rounded square with a tinted background and
+   a centered SVG). Used by orion-feature-icon and dev-link-icon. */
+.icon-chip {
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(17, 159, 205, 0.1);
+}
+
+/* Mono caption typography. Add .label-mono-upper for uppercase
+   variants. Color/margin/etc. stay on the page-level class. */
+.label-mono {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+}
+
+.label-mono-upper {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Inline solid accent dots, sized to sit next to text. The pain-point
+   .dot pattern (halo + ::after) lives separately above. */
+.dot-inline {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.dot-inline.dot-blue {
+    background: var(--accent-blue);
+}
+.dot-inline.dot-green {
+    background: var(--accent-green);
+}
+.dot-inline.dot-yellow {
+    background: var(--accent-yellow);
+}
+
 /* ── Capability cards ────────────────────────────────────────────── */
 
 .capability-card {
     padding: 40px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-card);
-    transition: border-color 0.3s;
-}
-
-.capability-card:hover {
-    border-color: var(--border-hover);
 }
 
 .icon-box {
@@ -448,8 +557,6 @@ site-footer {
 }
 
 .orion-label {
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
     color: var(--text-muted);
     line-height: 20px;
     margin-bottom: 14px;
@@ -466,9 +573,6 @@ site-footer {
 }
 
 .orion-desc-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
     padding: 24px;
     margin-bottom: 20px;
 }
@@ -492,9 +596,6 @@ site-footer {
 }
 
 .orion-feature-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
     padding: 16px 20px 16px 63px;
     position: relative;
     min-height: 72px;
@@ -509,11 +610,6 @@ site-footer {
     top: 16px;
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    background: rgba(17, 159, 205, 0.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .orion-feature-icon svg {
@@ -553,8 +649,6 @@ site-footer {
 }
 
 .cta-label {
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
     color: var(--accent-teal);
     margin-bottom: 14px;
 }
@@ -580,6 +674,278 @@ site-footer {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+/* ── Solution feature cards (color-accented stack) ───────────────── */
+
+.feature-cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.feature-card {
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+}
+
+.feature-card h3 {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--text-heading);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature-card p {
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.feature-card-blue {
+    border-color: rgba(17, 159, 205, 0.2);
+    background: linear-gradient(
+        to right,
+        rgba(17, 159, 205, 0.1),
+        transparent
+    );
+}
+
+.feature-card-green {
+    border-color: rgba(6, 214, 160, 0.2);
+    background: linear-gradient(to right, rgba(6, 214, 160, 0.1), transparent);
+}
+
+.feature-card-yellow {
+    border-color: rgba(255, 209, 103, 0.2);
+    background: linear-gradient(
+        to right,
+        rgba(255, 209, 103, 0.1),
+        transparent
+    );
+}
+
+/* ── Before/after comparison cards ───────────────────────────────── */
+
+.comparison-grid {
+    margin-bottom: 48px;
+    align-items: stretch;
+}
+
+.comparison-card {
+    padding: 48px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.before-card {
+    border: 1px solid rgba(239, 71, 111, 0.2);
+}
+
+.after-card {
+    border: 1px solid var(--border-hover);
+    background: linear-gradient(
+        135deg,
+        rgba(6, 214, 160, 0.1),
+        var(--bg-card),
+        var(--bg-card)
+    );
+}
+
+.comparison-label {
+    color: var(--text-body);
+    margin-bottom: 12px;
+}
+
+.comparison-label-green {
+    color: var(--accent-green);
+}
+
+.comparison-card h3 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--text-heading);
+    margin-bottom: 32px;
+}
+
+.comparison-points {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comparison-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.comparison-point .dot-sm {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 7px;
+}
+
+.comparison-point p {
+    font-size: 15px;
+    color: var(--text-body);
+    line-height: 1.6;
+}
+
+.after-card .comparison-point p {
+    color: var(--text-heading);
+}
+
+/* ── Numbered step cards ─────────────────────────────────────────── */
+
+.steps-grid {
+    margin-top: 0;
+}
+
+/* Surface from .card .card-elevated .card-hoverable; .step-card adds
+   only the gradient halo overlay and number stack on top. */
+.step-card {
+    padding: 32px;
+    position: relative;
+}
+
+.step-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+        to right,
+        var(--accent-blue),
+        var(--accent-green)
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+}
+
+.step-card:hover::before {
+    opacity: 0.1;
+}
+
+.step-num {
+    font-size: 40px;
+    font-weight: 300;
+    color: rgba(127, 175, 192, 0.3);
+    margin-bottom: 16px;
+}
+
+.step-card h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-heading);
+    margin-bottom: 12px;
+}
+
+.step-card p {
+    font-size: 15px;
+    color: var(--text-body);
+    line-height: 1.6;
+}
+
+/* ── Audience cards (CTA descriptive stat cards) ─────────────────── */
+
+.audience-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+/* Surface from .card; .audience-card adds layout + content typography. */
+.audience-card {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.audience-card h4 {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-heading);
+    margin-bottom: 4px;
+}
+
+.audience-card p {
+    font-size: 14px;
+    color: var(--text-body);
+    line-height: 1.6;
+    flex: 1;
+}
+
+.audience-card a {
+    color: var(--accent-blue);
+    margin-top: 16px;
+    transition: opacity 0.2s;
+}
+.audience-card a:hover {
+    opacity: 0.8;
+}
+
+/* ── Developer link cards (CTA horizontal links) ─────────────────── */
+
+.dev-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+/* Surface from .card .card-hoverable; .dev-link-card adds layout. */
+.dev-link-card {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Sizing/colour for the .icon-chip wrapper around the lucide icon. */
+.dev-link-icon {
+    width: 36px;
+    height: 36px;
+    color: var(--accent-blue);
+}
+
+.dev-link-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.dev-link-body {
+    flex: 1;
+}
+
+.dev-link-body h4 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-heading);
+    margin-bottom: 2px;
+}
+
+.dev-link-body p {
+    font-size: 13px;
+    color: var(--text-body);
+}
+
+.dev-link-arrow {
+    color: var(--accent-blue);
 }
 
 /* ── Footer ──────────────────────────────────────────────────────── */
@@ -783,6 +1149,9 @@ site-footer {
         grid-template-columns: 1fr;
     }
     .grid-3col {
+        grid-template-columns: 1fr;
+    }
+    .audience-grid {
         grid-template-columns: 1fr;
     }
     .footer-grid {

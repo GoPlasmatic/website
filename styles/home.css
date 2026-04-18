@@ -1,6 +1,10 @@
-/* Home-specific styles. Loaded after common.css. */
+/* Home-specific styles. Loaded after common.css.
+ *
+ * Anything in here is either (a) page-unique (the WebGL hero canvas
+ * positioning) or (b) an override of a value defined in common.css.
+ * All design patterns live in common.css. */
 
-/* ── Hero (with WebGL background) ────────────────────────────────── */
+/* ── Hero (WebGL canvas mounted behind hero-text) ────────────────── */
 
 .hero {
     position: relative;
@@ -18,119 +22,16 @@
     display: block;
 }
 
+/* Hero text sits above the canvas. Narrower than the common default
+   so the lead copy doesn't intrude on the ribbon background. */
 .hero-text {
     position: relative;
     z-index: 2;
     max-width: 680px;
 }
 
-.hero-eyebrow {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(76, 189, 151, 0.3);
-    background: rgba(76, 189, 151, 0.1);
-    backdrop-filter: blur(4px);
-    margin-bottom: 32px;
-}
-
-.hero-eyebrow span {
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--accent-teal);
-}
-
+/* The .lead default leaves 0 margin-bottom; on home it's followed by
+   .hero-support, so tighten the gap. */
 .hero-sub {
-    font-size: 19px;
-    font-weight: 300;
-    color: var(--text-body);
-    max-width: 520px;
-    line-height: 1.7;
     margin-bottom: 16px;
-}
-
-.hero-support {
-    font-size: 15px;
-    color: var(--text-muted);
-    max-width: 480px;
-    line-height: 1.6;
-    margin-bottom: 40px;
-}
-
-/* ── "What we do" / "Why this matters" sections ──────────────────── */
-
-.what-content h2 {
-    font-family: "Montserrat", sans-serif;
-    font-weight: 700;
-    font-size: clamp(32px, 4vw, 52px);
-    color: var(--text-heading);
-    line-height: 1.15;
-    letter-spacing: -0.5px;
-    margin-bottom: 28px;
-}
-
-/* ── Developer CTA cards ─────────────────────────────────────────── */
-
-.dev-links {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    margin-bottom: 32px;
-}
-
-.dev-link-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    transition: border-color 0.2s;
-}
-
-.dev-link-card:hover {
-    border-color: var(--border-hover);
-}
-
-.dev-link-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(17, 159, 205, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--accent-blue);
-}
-
-.dev-link-icon svg {
-    width: 18px;
-    height: 18px;
-}
-
-.dev-link-body {
-    flex: 1;
-}
-
-.dev-link-body h4 {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-heading);
-    margin-bottom: 2px;
-}
-
-.dev-link-body p {
-    font-size: 13px;
-    color: var(--text-body);
-}
-
-.dev-link-arrow {
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
-    color: var(--accent-blue);
 }

@@ -36,7 +36,7 @@
             <!-- HERO ────────────────────────────────────────────── -->
             <section class="hero">
                 <div class="hero-text" id="heroText">
-                    <div class="hero-badge">
+                    <div class="eyebrow">
                         <span>Introducing Orion</span>
                     </div>
                     <h1 class="reveal-blur">
@@ -45,7 +45,7 @@
                     <h1 class="reveal-blur" style="--reveal-delay: 0.12s">
                         The nervous system for modern software.
                     </h1>
-                    <p>
+                    <p class="lead">
                         AI is accelerating how systems are built. But without
                         coordination, behaviour becomes unpredictable. Orion is
                         the runtime that makes systems work as one.
@@ -65,7 +65,7 @@
             <section class="section-full">
                 <div class="section-container">
                     <div class="grid-2col">
-                        <div class="problem-content reveal-left">
+                        <div class="col-content reveal-left">
                             <h2 class="reveal-blur">
                                 Systems are growing faster than they can
                                 coordinate.
@@ -132,7 +132,7 @@
                 <div class="section-container">
                     <div class="grid-2col">
                         <div></div>
-                        <div class="solution-content reveal-right">
+                        <div class="col-content reveal-right">
                             <h2 class="reveal-blur">
                                 What's missing is a
                                 <span class="gradient-text"
@@ -202,7 +202,7 @@
                         </p>
                     </div>
                     <div class="grid-2x2">
-                        <div class="capability-card reveal">
+                        <div class="card card-elevated card-hoverable capability-card reveal">
                             <div class="icon-box icon-blue">
                                 <i data-lucide="git-branch"></i>
                             </div>
@@ -216,7 +216,7 @@
                                 workflows that span multiple services.
                             </p>
                         </div>
-                        <div class="capability-card reveal">
+                        <div class="card card-elevated card-hoverable capability-card reveal">
                             <div class="icon-box icon-yellow">
                                 <i data-lucide="zap"></i>
                             </div>
@@ -228,7 +228,7 @@
                                 deployments, no downtime.
                             </p>
                         </div>
-                        <div class="capability-card reveal">
+                        <div class="card card-elevated card-hoverable capability-card reveal">
                             <div class="icon-box icon-teal">
                                 <i data-lucide="database"></i>
                             </div>
@@ -240,7 +240,7 @@
                                 why.
                             </p>
                         </div>
-                        <div class="capability-card reveal">
+                        <div class="card card-elevated card-hoverable capability-card reveal">
                             <div class="icon-box icon-red">
                                 <i data-lucide="shield"></i>
                             </div>
@@ -271,7 +271,9 @@
                     </div>
                     <div class="grid-2col comparison-grid">
                         <div class="comparison-card before-card reveal-left">
-                            <div class="comparison-label">Before Orion</div>
+                            <div class="label-mono label-mono-upper comparison-label">
+                                Before Orion
+                            </div>
                             <h3>Scattered signals</h3>
                             <div class="comparison-points">
                                 <div class="comparison-point">
@@ -299,7 +301,7 @@
                         </div>
                         <div class="comparison-card after-card reveal-right">
                             <div
-                                class="comparison-label comparison-label-green"
+                                class="label-mono label-mono-upper comparison-label comparison-label-green"
                             >
                                 With Orion
                             </div>
@@ -330,7 +332,7 @@
                         </div>
                     </div>
                     <div class="grid-3col steps-grid">
-                        <div class="step-card reveal">
+                        <div class="card card-elevated card-hoverable step-card reveal">
                             <div class="step-num">01</div>
                             <h3>Define behaviour</h3>
                             <p>
@@ -338,7 +340,7 @@
                                 routing, transformation, orchestration
                             </p>
                         </div>
-                        <div class="step-card reveal">
+                        <div class="card card-elevated card-hoverable step-card reveal">
                             <div class="step-num">02</div>
                             <h3>Deploy instantly</h3>
                             <p>
@@ -346,7 +348,7 @@
                                 rebuilding or redeploying
                             </p>
                         </div>
-                        <div class="step-card reveal">
+                        <div class="card card-elevated card-hoverable step-card reveal">
                             <div class="step-num">03</div>
                             <h3>Observe &amp; govern</h3>
                             <p>
@@ -363,14 +365,14 @@
                 <div class="section-container">
                     <div class="grid-2col orion-grid">
                         <div class="reveal-left">
-                            <div class="orion-label">
+                            <div class="label-mono orion-label">
                                 Orion &mdash; Business Runtime Platform
                             </div>
                             <h2 class="orion-heading reveal-blur">
                                 Control how your systems behave. Without
                                 touching code.
                             </h2>
-                            <div class="orion-desc-card">
+                            <div class="card orion-desc-card">
                                 <p>
                                     Business logic buried inside microservices
                                     means every change needs an engineer, a PR,
@@ -388,8 +390,8 @@
                             >
                         </div>
                         <div class="orion-feature-list reveal-right">
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
+                            <div class="card orion-feature-card">
+                                <div class="icon-chip orion-feature-icon">
                                     <i data-lucide="zap"></i>
                                 </div>
                                 <h4>Instant system changes</h4>
@@ -399,8 +401,8 @@
                                     schedules.
                                 </p>
                             </div>
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
+                            <div class="card orion-feature-card">
+                                <div class="icon-chip orion-feature-icon">
                                     <i data-lucide="building-2"></i>
                                 </div>
                                 <h4>Governance at scale</h4>
@@ -410,8 +412,8 @@
                                     automatically.
                                 </p>
                             </div>
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
+                            <div class="card orion-feature-card">
+                                <div class="icon-chip orion-feature-icon">
                                     <i data-lucide="search"></i>
                                 </div>
                                 <h4>Full traceability</h4>
@@ -420,8 +422,8 @@
                                     Know exactly what ran, when, and why.
                                 </p>
                             </div>
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
+                            <div class="card orion-feature-card">
+                                <div class="icon-chip orion-feature-icon">
                                     <i data-lucide="link-2"></i>
                                 </div>
                                 <h4>Decoupled from services</h4>
@@ -430,8 +432,8 @@
                                     microservices. Easier to own and evolve.
                                 </p>
                             </div>
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
+                            <div class="card orion-feature-card">
+                                <div class="icon-chip orion-feature-icon">
                                     <i data-lucide="bot"></i>
                                 </div>
                                 <h4>Ready for AI systems</h4>
@@ -451,7 +453,7 @@
                 <div class="section-container">
                     <div class="grid-2col">
                         <div class="cta-inner reveal-left">
-                            <div class="cta-label">Get involved</div>
+                            <div class="label-mono cta-label">Get involved</div>
                             <h2 class="reveal-blur">Shape what comes next.</h2>
                             <p class="cta-desc">
                                 Plasmatic is building in the open. Whether
@@ -460,31 +462,35 @@
                                 journey.
                             </p>
                             <div class="audience-grid">
-                                <div class="audience-card">
+                                <div class="card audience-card">
                                     <h4>Organisations</h4>
                                     <p>
                                         Early access to Orion for platform and
                                         engineering teams building at scale.
                                     </p>
-                                    <a href="mailto:enquiries@goplasmatic.io"
+                                    <a
+                                        href="mailto:enquiries@goplasmatic.io"
+                                        class="label-mono"
                                         >enquiries@goplasmatic.io &rarr;</a
                                     >
                                 </div>
-                                <div class="audience-card">
+                                <div class="card audience-card">
                                     <h4>Investors</h4>
                                     <p>
                                         Redefining how distributed systems are
                                         governed, controlled and evolved.
                                     </p>
-                                    <a href="#">Get in touch &rarr;</a>
+                                    <a href="#" class="label-mono"
+                                        >Get in touch &rarr;</a
+                                    >
                                 </div>
-                                <div class="audience-card">
+                                <div class="card audience-card">
                                     <h4>Developers</h4>
                                     <p>
                                         Explore repos, contribute, and shape the
                                         platform alongside the core team.
                                     </p>
-                                    <a href="#"
+                                    <a href="#" class="label-mono"
                                         >github.com/GoPlasmatic &rarr;</a
                                     >
                                 </div>
