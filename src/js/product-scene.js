@@ -11,7 +11,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 const PULSE_COUNT = 200;
 const MODEL_START_X = 1.5; // initial rightward offset for hero layout
 
-// Plasma neon palette — shared with home.html hero background
+// Plasma neon palette — shared with index.html hero background
 const PALETTE = [
     0xff2d95, // hot pink
     0xff4570, // red-pink

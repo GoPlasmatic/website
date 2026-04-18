@@ -1,4 +1,4 @@
-// Hero background for home.html — a swept curtain of neon ribbons curving
+// Hero background for index.html — a swept curtain of neon ribbons curving
 // from floor to wall, with travelling pulses and bloom.
 
 import * as THREE from "three";

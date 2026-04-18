@@ -78,6 +78,11 @@ site-footer {
     pointer-events: auto;
 }
 
+.nav-logo-link {
+    display: inline-flex;
+    align-items: center;
+}
+
 .nav-logo {
     height: 48px;
 }

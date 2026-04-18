@@ -72,9 +72,9 @@ class SiteNav extends HTMLElement {
 
         this.innerHTML = `
             <nav class="nav">
-                <a href="home.html">
+                <a href="index.html" aria-label="Plasmatic home" class="nav-logo-link">
                     <img
-                        src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
+                        src="assets/plasmatic-logo.svg"
                         alt="Plasmatic"
                         class="nav-logo"
                     />
@@ -99,7 +99,7 @@ class SiteFooter extends HTMLElement {
                     <div class="footer-grid">
                         <div class="footer-brand">
                             <img
-                                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
+                                src="assets/plasmatic-logo.svg"
                                 alt="Plasmatic"
                                 class="footer-logo"
                             />
