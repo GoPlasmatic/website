@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Plasmatic – Systems for modern software</title>
+
         <link rel="stylesheet" href="https://use.typekit.net/eef1zhq.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +12,11 @@
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono&display=swap"
             rel="stylesheet"
         />
+        <link rel="stylesheet" href="styles/common.css" />
+        <link rel="stylesheet" href="styles/home.css" />
+
         <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+        <script defer src="js/common.js"></script>
         <script type="importmap">
             {
                 "imports": {
@@ -20,1835 +25,381 @@
                 }
             }
         </script>
-        <style>
-            :root {
-                --bg-deep: #07111a;
-                --bg-section: #063b4c;
-                --bg-card: #0f2030;
-                --text-heading: #ecf4f8;
-                --text-body: #7fafc0;
-                --text-muted: #3d6b7d;
-                --accent-blue: #119fcd;
-                --accent-green: #06d6a0;
-                --accent-teal: #4cbd97;
-                --accent-yellow: #ffd167;
-                --accent-red: #ef476f;
-                --border-subtle: rgba(17, 159, 205, 0.1);
-                --border-hover: rgba(6, 214, 160, 0.3);
-                --radius-lg: 16px;
-                --radius-md: 12px;
-                --radius-sm: 10px;
-            }
-
-            *,
-            *::before,
-            *::after {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            html {
-                scroll-snap-type: none;
-            }
-            html.snap-ready {
-                scroll-snap-type: y mandatory;
-            }
-
-            body {
-                background: var(--bg-deep);
-                color: var(--text-heading);
-                font-family: "DM Sans", sans-serif;
-                overflow-x: hidden;
-            }
-
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
-            ul {
-                list-style: none;
-            }
-
-            /* ── Navigation ────────────────────────────────────────────────── */
-
-            .nav {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 50;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 24px 32px;
-                background: rgba(7, 17, 26, 0.8);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border-bottom: 1px solid var(--border-subtle);
-                pointer-events: auto;
-            }
-
-            .nav-logo {
-                height: 48px;
-            }
-
-            .nav-links {
-                display: flex;
-                align-items: center;
-                gap: 32px;
-            }
-
-            .nav-links a {
-                font-size: 14px;
-                color: var(--text-body);
-                transition: color 0.2s;
-            }
-            .nav-links a:hover {
-                color: white;
-            }
-
-            .btn-nav {
-                padding: 10px 20px;
-                background: var(--accent-green);
-                color: var(--bg-section);
-                font-family: "DM Sans", sans-serif;
-                font-weight: 500;
-                font-size: 14px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: opacity 0.2s;
-            }
-            .btn-nav:hover {
-                opacity: 0.9;
-            }
-
-            /* ── Buttons ────────────────────────────────────────────────────── */
-
-            .btn-primary {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 16px 28px;
-                background: linear-gradient(
-                    193deg,
-                    var(--accent-teal) 15%,
-                    var(--accent-blue) 85%
-                );
-                color: var(--bg-section);
-                font-family: "DM Sans", sans-serif;
-                font-weight: 700;
-                font-size: 15px;
-                letter-spacing: 1px;
-                border: none;
-                border-radius: var(--radius-sm);
-                cursor: pointer;
-                transition: opacity 0.2s;
-                text-decoration: none;
-            }
-            .btn-primary:hover {
-                opacity: 0.9;
-            }
-
-            .btn-secondary {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 16px 28px;
-                background: transparent;
-                color: var(--text-body);
-                font-family: "DM Sans", sans-serif;
-                font-weight: 400;
-                font-size: 15px;
-                border: 1px solid rgba(17, 159, 205, 0.22);
-                border-radius: var(--radius-sm);
-                cursor: pointer;
-                transition:
-                    border-color 0.2s,
-                    background 0.2s;
-                text-decoration: none;
-            }
-            .btn-secondary:hover {
-                border-color: rgba(17, 159, 205, 0.4);
-                background: rgba(17, 159, 205, 0.1);
-            }
-
-            /* ── Hero ──────────────────────────────────────────────────────── */
-
-            .hero {
-                position: relative;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                padding: 0 clamp(32px, 6vw, 96px);
-                padding-top: 96px;
-                scroll-snap-align: start;
-                background: #000;
-                overflow: hidden;
-            }
-
-            .hero-bg {
-                position: absolute;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 1;
-                pointer-events: none;
-                display: block;
-            }
-
-            .hero-text {
-                position: relative;
-                z-index: 2;
-                max-width: 680px;
-                transition: opacity 0.3s;
-            }
-
-            .hero-eyebrow {
-                display: inline-block;
-                padding: 6px 14px;
-                border-radius: 999px;
-                border: 1px solid rgba(76, 189, 151, 0.3);
-                background: rgba(76, 189, 151, 0.1);
-                backdrop-filter: blur(4px);
-                margin-bottom: 32px;
-            }
-
-            .hero-eyebrow span {
-                font-family: "DM Mono", monospace;
-                font-size: 12px;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                color: var(--accent-teal);
-            }
-
-            .hero h1 {
-                font-family: "filson-pro", sans-serif;
-                font-weight: 700;
-                font-size: clamp(36px, 5.5vw, 72px);
-                color: var(--text-heading);
-                line-height: 1.1;
-                letter-spacing: -0.5px;
-                margin-bottom: 24px;
-            }
-
-            .hero-sub {
-                font-size: 19px;
-                font-weight: 300;
-                color: var(--text-body);
-                max-width: 520px;
-                line-height: 1.7;
-                margin-bottom: 16px;
-            }
-
-            .hero-support {
-                font-size: 15px;
-                color: var(--text-muted);
-                max-width: 480px;
-                line-height: 1.6;
-                margin-bottom: 40px;
-            }
-
-            .hero-ctas {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                flex-wrap: wrap;
-            }
-
-            .hero,
-            .section-full,
-            .section-orion,
-            .section-cta {
-                border-bottom: 1px solid transparent;
-                border-image: linear-gradient(
-                        90deg,
-                        transparent 0%,
-                        rgba(6, 214, 160, 0.3) 50%,
-                        transparent 100%
-                    )
-                    1;
-            }
-
-            /* ── Section Layout ────────────────────────────────────────────── */
-
-            .section-full {
-                padding: 128px 32px;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                scroll-snap-align: start;
-            }
-
-            .section-container {
-                max-width: 1200px;
-                margin: 0 auto;
-                width: 100%;
-            }
-
-            .section-header {
-                text-align: center;
-                margin-bottom: 80px;
-            }
-
-            .section-header h2 {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 700;
-                font-size: clamp(32px, 4vw, 56px);
-                color: var(--text-heading);
-                line-height: 1.15;
-                letter-spacing: -0.5px;
-                margin-bottom: 16px;
-            }
-
-            .section-header p {
-                font-size: 20px;
-                color: var(--text-body);
-                max-width: 640px;
-                margin: 0 auto;
-                line-height: 1.6;
-            }
-
-            .grid-2col {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 80px;
-                align-items: center;
-            }
-
-            .grid-2x2 {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 32px;
-            }
-
-            .grid-3col {
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 32px;
-            }
-
-            /* ── Gradient Text ──────────────────────────────────────────────── */
-
-            .gradient-text {
-                background: linear-gradient(
-                    to right,
-                    var(--accent-blue),
-                    var(--accent-green)
-                );
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            /* ── What We Do Section ─────────────────────────────────────────── */
-
-            .what-content h2 {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 700;
-                font-size: clamp(32px, 4vw, 52px);
-                color: var(--text-heading);
-                line-height: 1.15;
-                letter-spacing: -0.5px;
-                margin-bottom: 28px;
-            }
-
-            .section-body {
-                font-size: 20px;
-                color: var(--text-body);
-                line-height: 1.7;
-                margin-bottom: 24px;
-            }
-
-            .callout {
-                padding-left: 24px;
-                border-left: 2px solid var(--accent-green);
-                margin-top: 40px;
-            }
-
-            .callout p {
-                font-size: 18px;
-                color: var(--text-heading);
-                line-height: 1.6;
-            }
-
-            .callout strong {
-                color: white;
-            }
-
-            /* ── Why This Matters ───────────────────────────────────────────── */
-
-            .pain-points {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                margin-bottom: 40px;
-            }
-
-            .pain-point {
-                display: flex;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .dot {
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-                margin-top: 2px;
-            }
-
-            .dot::after {
-                content: "";
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-            }
-
-            .dot-yellow {
-                background: rgba(255, 209, 103, 0.2);
-            }
-            .dot-yellow::after {
-                background: var(--accent-yellow);
-            }
-            .dot-red {
-                background: rgba(239, 71, 111, 0.2);
-            }
-            .dot-red::after {
-                background: var(--accent-red);
-            }
-
-            .pain-title {
-                font-size: 16px;
-                color: var(--text-heading);
-                font-weight: 500;
-                margin-bottom: 4px;
-            }
-
-            .pain-desc {
-                font-size: 14px;
-                color: var(--text-body);
-            }
-
-            /* ── Approach Cards ─────────────────────────────────────────────── */
-
-            .approach-cards {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                margin-top: 32px;
-            }
-
-            .approach-card {
-                padding: 24px;
-                border-radius: var(--radius-md);
-                border: 1px solid transparent;
-            }
-
-            .approach-card h3 {
-                font-weight: 500;
-                font-size: 16px;
-                color: var(--text-heading);
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-
-            .approach-card p {
-                color: var(--text-body);
-                font-size: 15px;
-                line-height: 1.6;
-            }
-
-            .dot-inline {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                display: inline-block;
-                flex-shrink: 0;
-            }
-
-            .dot-blue {
-                background: var(--accent-blue);
-            }
-            .dot-green {
-                background: var(--accent-green);
-            }
-            .dot-yellow-fill {
-                background: var(--accent-yellow);
-            }
-
-            .approach-card-blue {
-                border-color: rgba(17, 159, 205, 0.2);
-                background: linear-gradient(
-                    to right,
-                    rgba(17, 159, 205, 0.1),
-                    transparent
-                );
-            }
-
-            .approach-card-green {
-                border-color: rgba(6, 214, 160, 0.2);
-                background: linear-gradient(
-                    to right,
-                    rgba(6, 214, 160, 0.1),
-                    transparent
-                );
-            }
-
-            .approach-card-yellow {
-                border-color: rgba(255, 209, 103, 0.2);
-                background: linear-gradient(
-                    to right,
-                    rgba(255, 209, 103, 0.1),
-                    transparent
-                );
-            }
-
-            /* ── Capability Cards ───────────────────────────────────────────── */
-
-            .capability-card {
-                padding: 40px;
-                border-radius: var(--radius-lg);
-                border: 1px solid var(--border-subtle);
-                background: var(--bg-card);
-                transition: border-color 0.3s;
-            }
-
-            .capability-card:hover {
-                border-color: var(--border-hover);
-            }
-
-            .icon-box {
-                width: 56px;
-                height: 56px;
-                border-radius: var(--radius-md);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 24px;
-            }
-
-            .icon-box svg {
-                width: 28px;
-                height: 28px;
-            }
-
-            .icon-blue {
-                background: rgba(17, 159, 205, 0.08);
-                color: var(--accent-blue);
-            }
-            .icon-yellow {
-                background: rgba(255, 209, 103, 0.08);
-                color: var(--accent-yellow);
-            }
-            .icon-teal {
-                background: rgba(76, 189, 151, 0.08);
-                color: var(--accent-teal);
-            }
-            .icon-red {
-                background: rgba(239, 71, 111, 0.08);
-                color: var(--accent-red);
-            }
-
-            .capability-card h3 {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 700;
-                font-size: 22px;
-                color: var(--text-heading);
-                margin-bottom: 4px;
-            }
-
-            .capability-subtitle {
-                font-size: 13px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                color: var(--text-body);
-                margin-bottom: 12px;
-            }
-
-            .capability-card > p:last-child {
-                color: var(--text-body);
-                font-size: 15px;
-                line-height: 1.7;
-            }
-
-            /* ── Orion Product Section ──────────────────────────────────────── */
-
-            .section-orion {
-                padding: 96px 32px;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                scroll-snap-align: start;
-            }
-
-            .orion-grid {
-                align-items: start;
-            }
-
-            .orion-label {
-                font-family: "DM Mono", monospace;
-                font-size: 12px;
-                color: var(--text-muted);
-                line-height: 20px;
-                margin-bottom: 14px;
-            }
-
-            .orion-heading {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 700;
-                font-size: clamp(32px, 3.5vw, 46px);
-                color: var(--text-heading);
-                line-height: 1.15;
-                letter-spacing: -0.5px;
-                margin-bottom: 14px;
-            }
-
-            .orion-desc-card {
-                background: var(--bg-card);
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-md);
-                padding: 24px;
-                margin-bottom: 20px;
-            }
-
-            .orion-desc-card p {
-                font-size: 15px;
-                font-weight: 300;
-                color: var(--text-body);
-                line-height: 1.7;
-            }
-
-            .orion-desc-card strong {
-                font-weight: 500;
-                color: var(--text-heading);
-            }
-
-            .orion-feature-list {
-                display: flex;
-                flex-direction: column;
-                gap: 11px;
-            }
-
-            .orion-feature-card {
-                background: var(--bg-card);
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-md);
-                padding: 16px 20px 16px 63px;
-                position: relative;
-                min-height: 72px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-
-            .orion-feature-icon {
-                position: absolute;
-                left: 17px;
-                top: 16px;
-                width: 32px;
-                height: 32px;
-                border-radius: 8px;
-                background: rgba(17, 159, 205, 0.12);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .orion-feature-icon svg {
-                width: 16px;
-                height: 16px;
-                color: var(--text-heading);
-            }
-
-            .orion-feature-card h4 {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 700;
-                font-size: 16px;
-                color: var(--text-heading);
-                margin-bottom: 3px;
-            }
-
-            .orion-feature-card p {
-                font-size: 14px;
-                color: var(--text-body);
-                line-height: 1.5;
-            }
-
-            /* ── CTA Section ────────────────────────────────────────────────── */
-
-            .section-cta {
-                padding: 128px 32px;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                scroll-snap-align: start;
-            }
-
-            .cta-inner {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .cta-label {
-                font-family: "DM Mono", monospace;
-                font-size: 12px;
-                color: var(--accent-teal);
-                margin-bottom: 14px;
-            }
-
-            .section-cta h2 {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 800;
-                font-size: clamp(32px, 3.5vw, 46px);
-                color: var(--text-heading);
-                letter-spacing: -0.5px;
-                margin-bottom: 14px;
-            }
-
-            .cta-desc {
-                font-size: 16px;
-                color: var(--text-body);
-                line-height: 1.6;
-                margin-bottom: 32px;
-                max-width: 480px;
-            }
-
-            .dev-links {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                width: 100%;
-                margin-bottom: 32px;
-            }
-
-            .dev-link-card {
-                background: var(--bg-card);
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-md);
-                padding: 18px 20px;
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                transition: border-color 0.2s;
-            }
-
-            .dev-link-card:hover {
-                border-color: var(--border-hover);
-            }
-
-            .dev-link-icon {
-                width: 36px;
-                height: 36px;
-                border-radius: 8px;
-                background: rgba(17, 159, 205, 0.1);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-                color: var(--accent-blue);
-            }
-
-            .dev-link-icon svg {
-                width: 18px;
-                height: 18px;
-            }
-
-            .dev-link-body {
-                flex: 1;
-            }
-
-            .dev-link-body h4 {
-                font-size: 14px;
-                font-weight: 500;
-                color: var(--text-heading);
-                margin-bottom: 2px;
-            }
-
-            .dev-link-body p {
-                font-size: 13px;
-                color: var(--text-body);
-            }
-
-            .dev-link-arrow {
-                font-family: "DM Mono", monospace;
-                font-size: 12px;
-                color: var(--accent-blue);
-            }
-
-            .cta-buttons {
-                display: flex;
-                gap: 12px;
-                flex-wrap: wrap;
-            }
-
-            /* ── Footer ─────────────────────────────────────────────────────── */
-
-            .footer {
-                border-top: 1px solid var(--border-subtle);
-                padding: 64px 32px;
-                scroll-snap-align: start;
-            }
-
-            .footer-grid {
-                display: grid;
-                grid-template-columns: 2fr 1fr 1fr 1fr;
-                gap: 48px;
-                margin-bottom: 48px;
-            }
-
-            .footer-logo {
-                height: 52px;
-                margin-bottom: 16px;
-            }
-
-            .footer-brand p {
-                font-size: 14px;
-                color: var(--text-body);
-                line-height: 1.6;
-            }
-
-            .footer-col h4 {
-                font-weight: 500;
-                font-size: 15px;
-                color: var(--text-heading);
-                margin-bottom: 16px;
-            }
-
-            .footer-col li {
-                margin-bottom: 8px;
-            }
-
-            .footer-col a {
-                font-size: 14px;
-                color: var(--text-body);
-                transition: color 0.2s;
-            }
-            .footer-col a:hover {
-                color: var(--text-heading);
-            }
-
-            .footer-bottom {
-                padding-top: 32px;
-                border-top: 1px solid var(--border-subtle);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                font-size: 14px;
-                color: var(--text-body);
-            }
-
-            .footer-links {
-                display: flex;
-                gap: 24px;
-            }
-
-            .footer-links a {
-                color: var(--text-body);
-                transition: color 0.2s;
-            }
-            .footer-links a:hover {
-                color: var(--text-heading);
-            }
-
-            /* ── Scroll Hint ────────────────────────────────────────────────── */
-
-            .scroll-hint {
-                position: fixed;
-                bottom: 48px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 10;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-                opacity: 0.4;
-                transition: opacity 0.5s;
-                pointer-events: auto;
-            }
-            .scroll-hint.hidden {
-                opacity: 0;
-                pointer-events: none;
-            }
-            .scroll-hint span {
-                font-size: 14px;
-                color: var(--text-body);
-            }
-            .scroll-hint .arrow {
-                width: 16px;
-                height: 16px;
-                border-right: 2px solid var(--text-body);
-                border-bottom: 2px solid var(--text-body);
-                transform: rotate(45deg);
-                animation: bounce 1.5s infinite;
-            }
-            @keyframes bounce {
-                0%,
-                20%,
-                50%,
-                80%,
-                100% {
-                    transform: rotate(45deg) translateY(0);
-                }
-                40% {
-                    transform: rotate(45deg) translateY(6px);
-                }
-                60% {
-                    transform: rotate(45deg) translateY(3px);
-                }
-            }
-
-            /* ── Section Dimming Overlay ──────────────────────────────────── */
-
-            .section-dimmed {
-                position: relative;
-            }
-
-            .section-dimmed::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: rgba(7, 17, 26, 0.7);
-                z-index: -1;
-                pointer-events: none;
-            }
-
-            /* ── Scroll Reveal Animations ─────────────────────────────────── */
-
-            .reveal {
-                opacity: 0;
-                transform: translateY(30px);
-                will-change: opacity, transform;
-                transition:
-                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .reveal.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            .reveal-left {
-                opacity: 0;
-                transform: translateX(-30px);
-                will-change: opacity, transform;
-                transition:
-                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .reveal-left.visible {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            .reveal-right {
-                opacity: 0;
-                transform: translateX(30px);
-                will-change: opacity, transform;
-                transition:
-                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .reveal-right.visible {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            /* ── Headline blur-in ─────────────────────────────────────────── */
-
-            .reveal-blur {
-                opacity: 0;
-                filter: blur(10px);
-                transform: translateY(20px);
-                will-change: opacity, filter, transform;
-                transition:
-                    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
-                    filter 0.95s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
-                transition-delay: var(--reveal-delay, 0s);
-            }
-            .reveal-blur.visible {
-                opacity: 1;
-                filter: blur(0px);
-                transform: translateY(0);
-            }
-
-            /* ── Responsive ─────────────────────────────────────────────────── */
-
-            @media (max-width: 1024px) {
-                .grid-2col {
-                    grid-template-columns: 1fr;
-                    gap: 48px;
-                }
-                .grid-2x2 {
-                    grid-template-columns: 1fr;
-                }
-                .grid-3col {
-                    grid-template-columns: 1fr;
-                }
-                .footer-grid {
-                    grid-template-columns: 1fr 1fr;
-                }
-                .nav-links a {
-                    display: none;
-                }
-            }
-
-            @media (max-width: 640px) {
-                .hero-ctas {
-                    flex-direction: column;
-                }
-                .hero-ctas .btn-primary,
-                .hero-ctas .btn-secondary {
-                    width: 100%;
-                    justify-content: center;
-                }
-                .footer-grid {
-                    grid-template-columns: 1fr;
-                }
-                .footer-bottom {
-                    flex-direction: column;
-                    gap: 16px;
-                    text-align: center;
-                }
-                .cta-buttons {
-                    flex-direction: column;
-                    align-items: center;
-                }
-            }
-        </style>
-        <script>
-            if ("scrollRestoration" in history)
-                history.scrollRestoration = "manual";
-            window.addEventListener("load", function () {
-                window.scrollTo(0, 0);
-                requestAnimationFrame(function () {
-                    document.documentElement.classList.add("snap-ready");
-                });
-            });
-        </script>
+        <script type="module" src="js/home-scene.js"></script>
     </head>
     <body>
-        <!-- Navigation -->
-        <nav class="nav">
-            <img
-                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
-                alt="Plasmatic"
-                class="nav-logo"
-            />
-            <div class="nav-links">
-                <a href="product.html">Product</a>
-                <a href="#">Docs</a>
-                <a href="#">Community</a>
-                <a href="#">GitHub</a>
-                <button class="btn-nav">Get started</button>
+        <site-nav active="home"></site-nav>
+
+        <!-- HERO ────────────────────────────────────────────────── -->
+        <section class="hero">
+            <canvas id="hero-bg" class="hero-bg"></canvas>
+            <div class="hero-text" id="heroText">
+                <div class="hero-eyebrow">
+                    <span>Modern infrastructure</span>
+                </div>
+                <h1 class="reveal-blur">Plasmatic builds systems</h1>
+                <h1 class="reveal-blur" style="--reveal-delay: 0.12s">
+                    for <span class="gradient-text">modern software.</span>
+                </h1>
+                <p class="hero-sub">
+                    We design and develop infrastructure that defines, executes
+                    and governs how complex systems behave.
+                </p>
+                <p class="hero-support">
+                    Our flagship product, Orion, is a business runtime engine
+                    for real-time system execution.
+                </p>
+                <div class="hero-ctas">
+                    <a href="product.html" class="btn-primary"
+                        >Explore Orion &rarr;</a
+                    >
+                    <a href="#" class="btn-secondary">
+                        <i
+                            data-lucide="github"
+                            style="width: 16px; height: 16px"
+                        ></i>
+                        View on GitHub
+                    </a>
+                </div>
             </div>
-        </nav>
+        </section>
 
-        <!-- Scroll Hint -->
-        <div class="scroll-hint" id="scrollHint">
-            <span>Scroll to explore</span>
-            <div class="arrow"></div>
-        </div>
-
-        <div class="content">
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- HERO                                                          -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="hero">
-                <canvas id="hero-bg" class="hero-bg"></canvas>
-                <div class="hero-text" id="heroText">
-                    <div class="hero-eyebrow">
-                        <span>Modern infrastructure</span>
+        <!-- WHAT WE DO ──────────────────────────────────────────── -->
+        <section class="section-full">
+            <div class="section-container">
+                <div class="grid-2col">
+                    <div class="what-content reveal-left">
+                        <h2 class="reveal-blur">
+                            Infrastructure at the
+                            <span class="gradient-text"
+                                >core of modern systems.</span
+                            >
+                        </h2>
+                        <p class="section-body">
+                            Plasmatic builds infrastructure that sits at the
+                            core of modern systems.
+                        </p>
+                        <p class="section-body">
+                            We focus on how systems define behaviour, execute
+                            logic and maintain control at scale.
+                        </p>
+                        <div class="callout">
+                            <p>
+                                Our work enables organisations to move faster
+                                <strong
+                                    >without losing consistency or
+                                    governance.</strong
+                                >
+                            </p>
+                        </div>
                     </div>
-                    <h1 class="reveal-blur">Plasmatic builds systems</h1>
-                    <h1 class="reveal-blur" style="--reveal-delay: 0.12s">
-                        for <span class="gradient-text">modern software.</span>
-                    </h1>
-                    <p class="hero-sub">
-                        We design and develop infrastructure that defines,
-                        executes and governs how complex systems behave.
+                    <div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY THIS MATTERS ────────────────────────────────────── -->
+        <section class="section-full">
+            <div class="section-container">
+                <div class="grid-2col">
+                    <div></div>
+                    <div class="what-content reveal-right">
+                        <h2 class="reveal-blur">
+                            Organisations are no longer limited by
+                            <span class="gradient-text">speed.</span>
+                        </h2>
+                        <p class="section-body">
+                            Software development has accelerated rapidly. AI is
+                            generating code. Teams are shipping faster than
+                            ever.
+                        </p>
+                        <div class="pain-points">
+                            <div class="pain-point">
+                                <div class="dot dot-yellow"></div>
+                                <div>
+                                    <p class="pain-title">
+                                        AI is generating code
+                                    </p>
+                                    <p class="pain-desc">
+                                        Development velocity has never been
+                                        higher
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="pain-point">
+                                <div class="dot dot-yellow"></div>
+                                <div>
+                                    <p class="pain-title">
+                                        Teams are shipping faster than ever
+                                    </p>
+                                    <p class="pain-desc">
+                                        Release cycles are compressing across
+                                        the industry
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="pain-point">
+                                <div class="dot dot-red"></div>
+                                <div>
+                                    <p class="pain-title">
+                                        Behaviour becomes inconsistent
+                                    </p>
+                                    <p class="pain-desc">
+                                        Services fragment, governance becomes
+                                        harder to enforce
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="callout">
+                            <p>They are limited by <strong>control.</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OUR APPROACH ────────────────────────────────────────── -->
+        <section class="section-full section-dimmed">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <h2 class="reveal-blur">A better way to build.</h2>
+                    <p>
+                        System behaviour should not be tied to release cycles or
+                        embedded across fragmented services.
                     </p>
-                    <p class="hero-support">
-                        Our flagship product, Orion, is a business runtime
-                        engine for real-time system execution.
-                    </p>
-                    <div class="hero-ctas">
+                </div>
+                <div class="grid-3col">
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-blue">
+                            <i data-lucide="pen-line"></i>
+                        </div>
+                        <h3>Define clearly</h3>
+                        <p class="capability-subtitle">
+                            Single source of truth
+                        </p>
+                        <p>
+                            Behaviour described once, in a central layer — not
+                            scattered across dozens of services and deployment
+                            pipelines.
+                        </p>
+                    </div>
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-teal">
+                            <i data-lucide="zap"></i>
+                        </div>
+                        <h3>Execute dynamically</h3>
+                        <p class="capability-subtitle">Real-time runtime</p>
+                        <p>
+                            Changes activate instantly across all services. No
+                            rebuilds, no deployments, no downtime.
+                        </p>
+                    </div>
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-yellow">
+                            <i data-lucide="shield-check"></i>
+                        </div>
+                        <h3>Govern centrally</h3>
+                        <p class="capability-subtitle">Control at scale</p>
+                        <p>
+                            Enforce policies consistently. Systems can evolve
+                            continuously while maintaining control and
+                            consistency.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ORION ───────────────────────────────────────────────── -->
+        <section class="section-orion section-dimmed">
+            <div class="section-container">
+                <div class="grid-2col orion-grid">
+                    <div class="reveal-left">
+                        <div class="orion-label">
+                            Orion &mdash; Business Runtime Engine
+                        </div>
+                        <h2 class="orion-heading reveal-blur">
+                            Define what should happen.<br />
+                            Orion runs it
+                            <span class="gradient-text">instantly.</span>
+                        </h2>
+                        <div class="orion-desc-card">
+                            <p>
+                                Instead of building and deploying microservices
+                                for every change, teams
+                                <strong>define what should happen</strong>
+                                and Orion runs it — through governed, versioned
+                                workflows with full traceability.
+                            </p>
+                        </div>
                         <a href="product.html" class="btn-primary"
                             >Explore Orion &rarr;</a
                         >
-                        <a href="#" class="btn-secondary">
-                            <i
-                                data-lucide="github"
-                                style="width: 16px; height: 16px"
-                            ></i>
-                            View on GitHub
-                        </a>
                     </div>
-                </div>
-            </section>
-
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- WHAT WE DO                                                    -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="section-full">
-                <div class="section-container">
-                    <div class="grid-2col">
-                        <div class="what-content reveal-left">
-                            <h2 class="reveal-blur">
-                                Infrastructure at the
-                                <span class="gradient-text"
-                                    >core of modern systems.</span
-                                >
-                            </h2>
-                            <p class="section-body">
-                                Plasmatic builds infrastructure that sits at the
-                                core of modern systems.
-                            </p>
-                            <p class="section-body">
-                                We focus on how systems define behaviour,
-                                execute logic and maintain control at scale.
-                            </p>
-                            <div class="callout">
-                                <p>
-                                    Our work enables organisations to move
-                                    faster
-                                    <strong
-                                        >without losing consistency or
-                                        governance.</strong
-                                    >
-                                </p>
-                            </div>
-                        </div>
-                        <div></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- WHY THIS MATTERS                                              -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="section-full">
-                <div class="section-container">
-                    <div class="grid-2col">
-                        <div></div>
-                        <div class="reveal-right">
-                            <h2
-                                class="reveal-blur"
-                                style="
-                                    font-family:
-                                        &quot;Montserrat&quot;, sans-serif;
-                                    font-weight: 700;
-                                    font-size: clamp(32px, 4vw, 52px);
-                                    color: var(--text-heading);
-                                    line-height: 1.15;
-                                    letter-spacing: -0.5px;
-                                    margin-bottom: 28px;
-                                "
-                            >
-                                Organisations are no longer limited by
-                                <span class="gradient-text">speed.</span>
-                            </h2>
-                            <p class="section-body">
-                                Software development has accelerated rapidly. AI
-                                is generating code. Teams are shipping faster
-                                than ever.
-                            </p>
-                            <div class="pain-points">
-                                <div class="pain-point">
-                                    <div class="dot dot-yellow"></div>
-                                    <div>
-                                        <p class="pain-title">
-                                            AI is generating code
-                                        </p>
-                                        <p class="pain-desc">
-                                            Development velocity has never been
-                                            higher
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="pain-point">
-                                    <div class="dot dot-yellow"></div>
-                                    <div>
-                                        <p class="pain-title">
-                                            Teams are shipping faster than ever
-                                        </p>
-                                        <p class="pain-desc">
-                                            Release cycles are compressing
-                                            across the industry
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="pain-point">
-                                    <div class="dot dot-red"></div>
-                                    <div>
-                                        <p class="pain-title">
-                                            Behaviour becomes inconsistent
-                                        </p>
-                                        <p class="pain-desc">
-                                            Services fragment, governance
-                                            becomes harder to enforce
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="callout">
-                                <p>
-                                    They are limited by
-                                    <strong>control.</strong>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- OUR APPROACH                                                  -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="section-full section-dimmed">
-                <div class="section-container">
-                    <div class="section-header reveal">
-                        <h2 class="reveal-blur">A better way to build.</h2>
-                        <p>
-                            System behaviour should not be tied to release
-                            cycles or embedded across fragmented services.
-                        </p>
-                    </div>
-                    <div class="grid-3col">
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-blue">
-                                <i data-lucide="pen-line"></i>
-                            </div>
-                            <h3>Define clearly</h3>
-                            <p class="capability-subtitle">
-                                Single source of truth
-                            </p>
-                            <p>
-                                Behaviour described once, in a central layer —
-                                not scattered across dozens of services and
-                                deployment pipelines.
-                            </p>
-                        </div>
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-teal">
+                    <div class="orion-feature-list reveal-right">
+                        <div class="orion-feature-card">
+                            <div class="orion-feature-icon">
                                 <i data-lucide="zap"></i>
                             </div>
-                            <h3>Execute dynamically</h3>
-                            <p class="capability-subtitle">Real-time runtime</p>
+                            <h4>Real-time execution</h4>
                             <p>
-                                Changes activate instantly across all services.
-                                No rebuilds, no deployments, no downtime.
+                                Deploy logic changes instantly. No engineering
+                                cycles, no PRs, no release schedules.
                             </p>
                         </div>
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-yellow">
-                                <i data-lucide="shield-check"></i>
+                        <div class="orion-feature-card">
+                            <div class="orion-feature-icon">
+                                <i data-lucide="shield"></i>
                             </div>
-                            <h3>Govern centrally</h3>
-                            <p class="capability-subtitle">Control at scale</p>
+                            <h4>Built-in governance</h4>
                             <p>
-                                Enforce policies consistently. Systems can
-                                evolve continuously while maintaining control
-                                and consistency.
+                                Every behaviour change is versioned, auditable
+                                and policy-enforced from a central layer.
+                            </p>
+                        </div>
+                        <div class="orion-feature-card">
+                            <div class="orion-feature-icon">
+                                <i data-lucide="trending-down"></i>
+                            </div>
+                            <h4>Reduced engineering overhead</h4>
+                            <p>
+                                Logic lives in the runtime, not inside
+                                microservices. Easier to own, faster to evolve.
                             </p>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- ORION                                                         -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="section-orion section-dimmed">
-                <div class="section-container">
-                    <div class="grid-2col orion-grid">
-                        <div class="reveal-left">
-                            <div class="orion-label">
-                                Orion &mdash; Business Runtime Engine
-                            </div>
-                            <h2 class="orion-heading reveal-blur">
-                                Define what should happen.<br />
-                                Orion runs it
-                                <span class="gradient-text">instantly.</span>
-                            </h2>
-                            <div class="orion-desc-card">
-                                <p>
-                                    Instead of building and deploying
-                                    microservices for every change, teams
-                                    <strong>define what should happen</strong>
-                                    and Orion runs it — through governed,
-                                    versioned workflows with full traceability.
-                                </p>
-                            </div>
+        <!-- BUILT FOR MODERN ARCHITECTURES ──────────────────────── -->
+        <section class="section-full section-dimmed">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <h2 class="reveal-blur">Built for modern architectures.</h2>
+                    <p>
+                        Open, high-performance, and designed to work with how
+                        distributed systems are actually built today.
+                    </p>
+                </div>
+                <div class="grid-2x2">
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-teal">
+                            <i data-lucide="github"></i>
+                        </div>
+                        <h3>Open source foundation</h3>
+                        <p class="capability-subtitle">Community-driven</p>
+                        <p>
+                            Built in the open. Inspect the core, contribute, and
+                            build on a foundation the community can trust.
+                        </p>
+                    </div>
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-blue">
+                            <i data-lucide="gauge"></i>
+                        </div>
+                        <h3>High-performance runtime</h3>
+                        <p class="capability-subtitle">
+                            Scale without compromise
+                        </p>
+                        <p>
+                            Designed for throughput at scale. Execute millions
+                            of governed workflows without performance
+                            trade-offs.
+                        </p>
+                    </div>
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-yellow">
+                            <i data-lucide="network"></i>
+                        </div>
+                        <h3>Distributed systems native</h3>
+                        <p class="capability-subtitle">
+                            Built for the real world
+                        </p>
+                        <p>
+                            Designed from the ground up for distributed
+                            architectures — microservices, event-driven, and
+                            everything in between.
+                        </p>
+                    </div>
+                    <div class="capability-card reveal">
+                        <div class="icon-box icon-red">
+                            <i data-lucide="terminal"></i>
+                        </div>
+                        <h3>API-first &amp; developer-friendly</h3>
+                        <p class="capability-subtitle">Integrate anywhere</p>
+                        <p>
+                            Every capability exposed via clean APIs. Works with
+                            your existing stack, language, and tooling.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEVELOPERS CTA ──────────────────────────────────────── -->
+        <section class="section-cta">
+            <div class="section-container">
+                <div class="grid-2col">
+                    <div class="cta-inner reveal-left">
+                        <div class="cta-label">For developers</div>
+                        <h2 class="reveal-blur">
+                            Start building with Plasmatic.
+                        </h2>
+                        <p class="cta-desc">
+                            Explore Orion, access documentation and start
+                            building with Plasmatic tools.
+                        </p>
+                        <div class="dev-links">
+                            <a href="#" class="dev-link-card">
+                                <div class="dev-link-icon">
+                                    <i data-lucide="book-open"></i>
+                                </div>
+                                <div class="dev-link-body">
+                                    <h4>View documentation</h4>
+                                    <p>
+                                        Guides, API reference and integration
+                                        docs
+                                    </p>
+                                </div>
+                                <span class="dev-link-arrow">&rarr;</span>
+                            </a>
+                            <a href="#" class="dev-link-card">
+                                <div class="dev-link-icon">
+                                    <i data-lucide="github"></i>
+                                </div>
+                                <div class="dev-link-body">
+                                    <h4>GitHub</h4>
+                                    <p>Explore the source and contribute</p>
+                                </div>
+                                <span class="dev-link-arrow">&rarr;</span>
+                            </a>
+                            <a href="#" class="dev-link-card">
+                                <div class="dev-link-icon">
+                                    <i data-lucide="rocket"></i>
+                                </div>
+                                <div class="dev-link-body">
+                                    <h4>Quickstart</h4>
+                                    <p>
+                                        Get Orion running in under five minutes
+                                    </p>
+                                </div>
+                                <span class="dev-link-arrow">&rarr;</span>
+                            </a>
+                        </div>
+                        <div class="cta-buttons">
                             <a href="product.html" class="btn-primary"
                                 >Explore Orion &rarr;</a
                             >
-                        </div>
-                        <div class="orion-feature-list reveal-right">
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
-                                    <i data-lucide="zap"></i>
-                                </div>
-                                <h4>Real-time execution</h4>
-                                <p>
-                                    Deploy logic changes instantly. No
-                                    engineering cycles, no PRs, no release
-                                    schedules.
-                                </p>
-                            </div>
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
-                                    <i data-lucide="shield"></i>
-                                </div>
-                                <h4>Built-in governance</h4>
-                                <p>
-                                    Every behaviour change is versioned,
-                                    auditable and policy-enforced from a central
-                                    layer.
-                                </p>
-                            </div>
-                            <div class="orion-feature-card">
-                                <div class="orion-feature-icon">
-                                    <i data-lucide="trending-down"></i>
-                                </div>
-                                <h4>Reduced engineering overhead</h4>
-                                <p>
-                                    Logic lives in the runtime, not inside
-                                    microservices. Easier to own, faster to
-                                    evolve.
-                                </p>
-                            </div>
+                            <a href="#" class="btn-secondary">View on GitHub</a>
                         </div>
                     </div>
+                    <div></div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- BUILT FOR MODERN ARCHITECTURES                                -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="section-full section-dimmed">
-                <div class="section-container">
-                    <div class="section-header reveal">
-                        <h2 class="reveal-blur">
-                            Built for modern architectures.
-                        </h2>
-                        <p>
-                            Open, high-performance, and designed to work with
-                            how distributed systems are actually built today.
-                        </p>
-                    </div>
-                    <div class="grid-2x2">
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-teal">
-                                <i data-lucide="github"></i>
-                            </div>
-                            <h3>Open source foundation</h3>
-                            <p class="capability-subtitle">Community-driven</p>
-                            <p>
-                                Built in the open. Inspect the core, contribute,
-                                and build on a foundation the community can
-                                trust.
-                            </p>
-                        </div>
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-blue">
-                                <i data-lucide="gauge"></i>
-                            </div>
-                            <h3>High-performance runtime</h3>
-                            <p class="capability-subtitle">
-                                Scale without compromise
-                            </p>
-                            <p>
-                                Designed for throughput at scale. Execute
-                                millions of governed workflows without
-                                performance trade-offs.
-                            </p>
-                        </div>
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-yellow">
-                                <i data-lucide="network"></i>
-                            </div>
-                            <h3>Distributed systems native</h3>
-                            <p class="capability-subtitle">
-                                Built for the real world
-                            </p>
-                            <p>
-                                Designed from the ground up for distributed
-                                architectures — microservices, event-driven, and
-                                everything in between.
-                            </p>
-                        </div>
-                        <div class="capability-card reveal">
-                            <div class="icon-box icon-red">
-                                <i data-lucide="terminal"></i>
-                            </div>
-                            <h3>API-first &amp; developer-friendly</h3>
-                            <p class="capability-subtitle">
-                                Integrate anywhere
-                            </p>
-                            <p>
-                                Every capability exposed via clean APIs. Works
-                                with your existing stack, language, and tooling.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- DEVELOPERS CTA                                                -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <section class="section-cta">
-                <div class="section-container">
-                    <div class="grid-2col">
-                        <div class="cta-inner reveal-left">
-                            <div class="cta-label">For developers</div>
-                            <h2 class="reveal-blur">
-                                Start building with Plasmatic.
-                            </h2>
-                            <p class="cta-desc">
-                                Explore Orion, access documentation and start
-                                building with Plasmatic tools.
-                            </p>
-                            <div class="dev-links">
-                                <a href="#" class="dev-link-card">
-                                    <div class="dev-link-icon">
-                                        <i data-lucide="book-open"></i>
-                                    </div>
-                                    <div class="dev-link-body">
-                                        <h4>View documentation</h4>
-                                        <p>
-                                            Guides, API reference and
-                                            integration docs
-                                        </p>
-                                    </div>
-                                    <span class="dev-link-arrow">&rarr;</span>
-                                </a>
-                                <a href="#" class="dev-link-card">
-                                    <div class="dev-link-icon">
-                                        <i data-lucide="github"></i>
-                                    </div>
-                                    <div class="dev-link-body">
-                                        <h4>GitHub</h4>
-                                        <p>Explore the source and contribute</p>
-                                    </div>
-                                    <span class="dev-link-arrow">&rarr;</span>
-                                </a>
-                                <a href="#" class="dev-link-card">
-                                    <div class="dev-link-icon">
-                                        <i data-lucide="rocket"></i>
-                                    </div>
-                                    <div class="dev-link-body">
-                                        <h4>Quickstart</h4>
-                                        <p>
-                                            Get Orion running in under five
-                                            minutes
-                                        </p>
-                                    </div>
-                                    <span class="dev-link-arrow">&rarr;</span>
-                                </a>
-                            </div>
-                            <div class="cta-buttons">
-                                <a href="product.html" class="btn-primary"
-                                    >Explore Orion &rarr;</a
-                                >
-                                <a href="#" class="btn-secondary"
-                                    >View on GitHub</a
-                                >
-                            </div>
-                        </div>
-                        <div></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- FOOTER                                                        -->
-            <!-- ═══════════════════════════════════════════════════════════════ -->
-            <footer class="footer section-dimmed">
-                <div class="section-container">
-                    <div class="footer-grid">
-                        <div class="footer-brand">
-                            <img
-                                src="assets/Plasmatic_Logo_4C_Dark_Landscape.svg"
-                                alt="Plasmatic"
-                                class="footer-logo"
-                            />
-                            <p>
-                                A software company focused on building
-                                infrastructure for modern systems.
-                            </p>
-                        </div>
-                        <div class="footer-col">
-                            <h4>Product</h4>
-                            <ul>
-                                <li><a href="product.html">Orion</a></li>
-                                <li><a href="#">Documentation</a></li>
-                                <li><a href="#">Changelog</a></li>
-                                <li><a href="#">GitHub</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-col">
-                            <h4>Resources</h4>
-                            <ul>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Guides</a></li>
-                                <li><a href="#">Quickstart</a></li>
-                                <li><a href="#">Community</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-col">
-                            <h4>Company</h4>
-                            <ul>
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Contact</a></li>
-                                <li>
-                                    <a href="mailto:enquiries@goplasmatic.io"
-                                        >Enquiries</a
-                                    >
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="footer-bottom">
-                        <p>&copy; 2026 Plasmatic. All rights reserved.</p>
-                        <div class="footer-links">
-                            <a href="#">Privacy Policy</a>
-                            <a href="#">Terms of Service</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
-
-        <!-- Scroll reveal observer -->
-        <script>
-            lucide.createIcons();
-
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add("visible");
-                        }
-                    });
-                },
-                { threshold: 0.1 },
-            );
-
-            document
-                .querySelectorAll(
-                    ".reveal, .reveal-left, .reveal-right, .reveal-blur",
-                )
-                .forEach((el) => observer.observe(el));
-
-            const scrollHint = document.getElementById("scrollHint");
-            addEventListener("scroll", () => {
-                scrollHint.classList.toggle("hidden", scrollY > 80);
-            });
-        </script>
-
-        <!-- Hero 3D background -->
-        <script type="module">
-            import * as THREE from "three";
-            import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-            import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-            import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-            import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-
-            const canvas = document.getElementById("hero-bg");
-            const hero = canvas.parentElement;
-
-            // ── Config ─────────────────────────────────────────────────
-            const CONFIG = {
-                numLines: 128,
-                xMin: -22,
-                xMax: 14,
-                zNear: 32, // start well behind the camera so line ends are off-screen
-                zWall: -72, // wall plane (furthest from camera) — 3x further from camera (was -18)
-                rBend: 10.0, // fillet radius at floor/wall corner (3x of 1.8)
-                yTop: 90, // how high wall lines extend — scaled so wall top stays above frame at new distance
-                divisions: 280, // path samples per line
-                cameraPos: [-3, 2.2, 9],
-                cameraLookAt: [-10, 2.5, -6],
-                fov: 50,
-                // Colour grouping: every Nth line picks a fresh anchor from the
-                // palette; lines in between are gradient-lerped between anchors.
-                colorGroupSize: 10,
-                // Neon palette sampled from the reference slide
-                palette: [
-                    0xff2d95, // hot pink
-                    0xff4570, // red-pink
-                    0x9b5cff, // purple
-                    0x5a3bff, // violet-blue
-                    0xff7a4d, // orange
-                ],
-                // Per-line random base glow — bimodal so most lines are dim
-                // with occasional bright pops. Full range spans 1% → 100%.
-                brightProbability: 0.22, // fraction of lines that are "bright"
-                dimGlowMin: 0.01,
-                dimGlowMax: 0.3,
-                brightGlowMin: 0.5,
-                brightGlowMax: 1.0,
-                // Pulse travel: fraction of lines that get a moving pulse, and
-                // speed / tail length ranges. Pulse phase is randomised per line.
-                pulseProbability: 0.55,
-                pulseSpeedMin: 0.1, // cycles per second along the path
-                pulseSpeedMax: 0.4,
-                pulseTailMin: 0.22, // as fraction of the total path length
-                pulseTailMax: 0.55,
-                pulseHeadBoost: 12.0,
-                pulseTailBoost: 2.5,
-                // Mouse parallax — how far the camera drifts with the cursor
-                parallax: { x: 1.2, y: 0.45, smoothing: 0.06 },
-                // Random horizontal jitter on line placement (fraction of the
-                // nominal spacing). 0 = perfectly equidistant, 1 = ±half spacing.
-                xJitter: 0.75,
-                // Coefficient controlling pulse-head sharpness. Lower = softer
-                // leading edge that tapers symmetrically to the tail.
-                pulseHeadFalloff: 40.0,
-                // Stronger bloom with a tight radius → bright, concentrated
-                // halo hugging each line instead of a soft wide wash.
-                bloom: { strength: 0.6, radius: 0.28, threshold: 0.0 },
-            };
-            // ───────────────────────────────────────────────────────────
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(CONFIG.fov, 1, 0.1, 400);
-            camera.position.set(...CONFIG.cameraPos);
-            camera.lookAt(...CONFIG.cameraLookAt);
-
-            const renderer = new THREE.WebGLRenderer({
-                canvas,
-                antialias: true,
-                alpha: true,
-            });
-            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-            renderer.setClearColor(0x000000, 0);
-
-            // Post-processing: bloom gives the neon glow, OutputPass handles
-            // the final colour-space conversion.
-            const composer = new EffectComposer(renderer);
-            composer.addPass(new RenderPass(scene, camera));
-            const bloomPass = new UnrealBloomPass(
-                new THREE.Vector2(1, 1),
-                CONFIG.bloom.strength,
-                CONFIG.bloom.radius,
-                CONFIG.bloom.threshold,
-            );
-            composer.addPass(bloomPass);
-            composer.addPass(new OutputPass());
-
-            function resize() {
-                const w = hero.clientWidth;
-                const h = hero.clientHeight;
-                renderer.setSize(w, h, false);
-                composer.setSize(w, h);
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-            }
-            resize();
-            addEventListener("resize", resize);
-
-            // Path: floor (−Z travel) → quarter-arc fillet → wall (+Y travel).
-            // Fillet centered at (rBend, zWall + rBend) so tangents meet the
-            // straight floor/wall segments smoothly.
-            const { zNear, zWall, rBend, yTop } = CONFIG;
-            const zFloorEnd = zWall + rBend;
-            const floorLen = zNear - zFloorEnd;
-            const arcLen = (rBend * Math.PI) / 2;
-            const wallLen = yTop - rBend;
-            const totalLen = floorLen + arcLen + wallLen;
-
-            function pathPoint(t) {
-                let s = t * totalLen;
-                if (s < floorLen) return [0, zNear - s];
-                s -= floorLen;
-                if (s < arcLen) {
-                    const theta = Math.PI + (s / arcLen) * (Math.PI / 2);
-                    return [
-                        rBend + rBend * Math.cos(theta),
-                        zWall + rBend + rBend * Math.sin(theta),
-                    ];
-                }
-                s -= arcLen;
-                return [rBend + s, zWall];
-            }
-
-            // Shared shader — each line gets its own uniforms but the same code.
-            // `aT` is a per-vertex path parameter (0 → 1) used by the fragment
-            // shader to position pulses along the line.
-            const vertexShader = /* glsl */ `
-                attribute float aT;
-                varying float vT;
-                void main() {
-                    vT = aT;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `;
-            const fragmentShader = /* glsl */ `
-                uniform vec3 uColor;
-                uniform float uBaseGlow;
-                uniform float uTime;
-                uniform float uHasPulse;
-                uniform float uPulseSpeed;
-                uniform float uPulseOffset;
-                uniform float uPulseTailLen;
-                uniform float uPulseHead;
-                uniform float uPulseTail;
-                uniform float uPulseHeadFalloff;
-                varying float vT;
-
-                void main() {
-                    float intensity = uBaseGlow;
-
-                    if (uHasPulse > 0.5) {
-                        // phase ∈ [0,1) sweeps the pulse head along the line
-                        float phase = fract(uTime * uPulseSpeed + uPulseOffset);
-                        // Distance behind the pulse head, wrapped so the tail
-                        // keeps decaying smoothly across cycle boundaries.
-                        float d1 = phase - vT;
-                        float d = d1 >= 0.0 ? d1 : d1 + 1.0;
-                        float tail = exp(-d / uPulseTailLen) * uPulseTail;
-                        // Halo around the head. Falloff matches the tail feel
-                        // so the leading edge tapers as smoothly as the trail.
-                        float head = exp(-abs(d1) * uPulseHeadFalloff) * uPulseHead;
-                        intensity += tail + head;
-                    }
-
-                    gl_FragColor = vec4(uColor * intensity, 1.0);
-                }
-            `;
-
-            function randRange(min, max) {
-                return min + Math.random() * (max - min);
-            }
-
-            // Shared aT attribute — identical across every line.
-            const tArr = new Float32Array(CONFIG.divisions + 1);
-            for (let j = 0; j <= CONFIG.divisions; j++) {
-                tArr[j] = j / CONFIG.divisions;
-            }
-
-            // Pre-sample anchor colours every `colorGroupSize` lines; in-between
-            // lines lerp between the bracketing anchors for a smooth gradient.
-            const anchorStep = Math.max(1, CONFIG.colorGroupSize);
-            const numAnchors =
-                Math.ceil((CONFIG.numLines - 1) / anchorStep) + 1;
-            const anchorColors = [];
-            for (let a = 0; a < numAnchors; a++) {
-                anchorColors.push(
-                    new THREE.Color(
-                        CONFIG.palette[
-                            Math.floor(Math.random() * CONFIG.palette.length)
-                        ],
-                    ),
-                );
-            }
-
-            const allUniforms = [];
-            const group = new THREE.Group();
-
-            const spacing = (CONFIG.xMax - CONFIG.xMin) / (CONFIG.numLines - 1);
-            for (let i = 0; i < CONFIG.numLines; i++) {
-                const jitter = (Math.random() - 0.5) * spacing * CONFIG.xJitter;
-                const x = CONFIG.xMin + i * spacing + jitter;
-
-                const pts = new Array(CONFIG.divisions + 1);
-                for (let j = 0; j <= CONFIG.divisions; j++) {
-                    const [y, z] = pathPoint(j / CONFIG.divisions);
-                    pts[j] = new THREE.Vector3(x, y, z);
-                }
-                const geom = new THREE.BufferGeometry().setFromPoints(pts);
-                geom.setAttribute("aT", new THREE.BufferAttribute(tArr, 1));
-
-                const frac = i / anchorStep;
-                const loIdx = Math.floor(frac);
-                const hiIdx = Math.min(loIdx + 1, numAnchors - 1);
-                const color = anchorColors[loIdx]
-                    .clone()
-                    .lerp(anchorColors[hiIdx], frac - loIdx);
-
-                const isBright = Math.random() < CONFIG.brightProbability;
-                const baseGlow = isBright
-                    ? randRange(CONFIG.brightGlowMin, CONFIG.brightGlowMax)
-                    : randRange(CONFIG.dimGlowMin, CONFIG.dimGlowMax);
-                const uniforms = {
-                    uColor: { value: color },
-                    uBaseGlow: { value: baseGlow },
-                    uTime: { value: 0 },
-                    uHasPulse: {
-                        value: Math.random() < CONFIG.pulseProbability ? 1 : 0,
-                    },
-                    uPulseSpeed: {
-                        value: randRange(
-                            CONFIG.pulseSpeedMin,
-                            CONFIG.pulseSpeedMax,
-                        ),
-                    },
-                    uPulseOffset: { value: Math.random() },
-                    uPulseTailLen: {
-                        value: randRange(
-                            CONFIG.pulseTailMin,
-                            CONFIG.pulseTailMax,
-                        ),
-                    },
-                    uPulseHead: { value: CONFIG.pulseHeadBoost },
-                    uPulseTail: { value: CONFIG.pulseTailBoost },
-                    uPulseHeadFalloff: { value: CONFIG.pulseHeadFalloff },
-                };
-                allUniforms.push(uniforms);
-
-                const material = new THREE.ShaderMaterial({
-                    uniforms,
-                    vertexShader,
-                    fragmentShader,
-                    transparent: true,
-                    blending: THREE.AdditiveBlending,
-                    depthWrite: false,
-                });
-
-                group.add(new THREE.Line(geom, material));
-            }
-
-            scene.add(group);
-
-            // Mouse parallax — track normalized cursor, lerp camera each frame
-            const basePos = new THREE.Vector3(...CONFIG.cameraPos);
-            const baseLookAt = new THREE.Vector3(...CONFIG.cameraLookAt);
-            const targetPos = basePos.clone();
-            let mouseX = 0;
-            let mouseY = 0;
-            addEventListener("mousemove", (e) => {
-                mouseX = (e.clientX / innerWidth) * 2 - 1;
-                mouseY = (e.clientY / innerHeight) * 2 - 1;
-            });
-
-            const clock = new THREE.Clock();
-            (function animate() {
-                requestAnimationFrame(animate);
-                const t = clock.getElapsedTime();
-                for (const u of allUniforms) u.uTime.value = t;
-
-                targetPos.set(
-                    basePos.x - mouseX * CONFIG.parallax.x,
-                    basePos.y + mouseY * CONFIG.parallax.y,
-                    basePos.z,
-                );
-                camera.position.lerp(targetPos, CONFIG.parallax.smoothing);
-                camera.lookAt(baseLookAt);
-
-                composer.render();
-            })();
-        </script>
+        <site-footer variant="home"></site-footer>
     </body>
 </html>
