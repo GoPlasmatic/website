@@ -1143,6 +1143,37 @@ site-footer {
     transform: translateY(0);
 }
 
+/* ── <section-graphic> ───────────────────────────────────────────── */
+
+section-graphic {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+}
+section-graphic canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+section-graphic[position="background"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    z-index: 0;
+    pointer-events: none;
+}
+section:has(> section-graphic[position="background"]) {
+    position: relative;
+    overflow: hidden;
+}
+section:has(> section-graphic[position="background"]) > .section-container {
+    position: relative;
+    z-index: 1;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {

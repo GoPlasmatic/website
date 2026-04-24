@@ -2,13 +2,15 @@
 // from floor to wall, with travelling pulses and bloom.
 
 import * as THREE from "three";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-
-// Identity tagged template — marker for the build's GLSL minifier.
-const glsl = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
+import {
+    adaptBloom,
+    buildLineGeometry,
+    buildPalette,
+    createBloomComposer,
+    createNeonLineMaterial,
+    getResScale,
+    sampleLineUniforms,
+} from "./neon-line.js";
 
 /* ── Tunables ──────────────────────────────────────────────────────── */
 
@@ -37,23 +39,22 @@ const palette = [
 
 // Per-line random base glow — bimodal so most lines are dim with
 // occasional bright pops. Full range spans 1% → 100%.
-const brightProbability = 0.22;
-const dimGlowMin = 0.01;
-const dimGlowMax = 0.3;
-const brightGlowMin = 0.5;
-const brightGlowMax = 1.0;
-
-// Pulse travel: fraction of lines that get a moving pulse, plus
-// speed / tail length ranges. Pulse phase is randomised per line.
-const pulseProbability = 0.55;
-const pulseSpeedMin = 0.1;
-const pulseSpeedMax = 0.4;
-const pulseTailMin = 0.22;
-const pulseTailMax = 0.55;
-const pulseHeadBoost = 12.0;
-const pulseTailBoost = 2.5;
-// Lower = softer leading edge tapering symmetrically into the tail.
-const pulseHeadFalloff = 40.0;
+const lineCfg = {
+    brightProbability: 0.22,
+    dimGlowMin: 0.01,
+    dimGlowMax: 0.3,
+    brightGlowMin: 0.5,
+    brightGlowMax: 1.0,
+    pulseProbability: 0.55,
+    pulseSpeedMin: 0.1,
+    pulseSpeedMax: 0.4,
+    pulseTailMin: 0.22,
+    pulseTailMax: 0.55,
+    pulseHead: 12.0,
+    pulseTail: 2.5,
+    // Lower = softer leading edge tapering symmetrically into the tail.
+    pulseHeadFalloff: 40.0,
+};
 
 // Random horizontal jitter on line placement (fraction of nominal
 // spacing). 0 = perfectly equidistant, 1 = ±half spacing.
@@ -80,40 +81,14 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setClearColor(0x000000, 0);
 
-// MSAA target keeps line edges smooth — the renderer's `antialias: true`
-// is bypassed once the composer renders to its own framebuffer.
-const renderTarget = new THREE.WebGLRenderTarget(1, 1, {
-    samples: 4,
-    type: THREE.HalfFloatType,
-});
-const composer = new EffectComposer(renderer, renderTarget);
-composer.addPass(new RenderPass(scene, camera));
-
-// Resolution-adaptive bloom: UnrealBloomPass strength/radius are
-// pixel-dependent, so the same values produce thicker glow on low-res
-// and tighter glow on high-res. Scale both for visual consistency.
-const REF_PIXELS = 3840 * 2160;
-function getResScale(w, h) {
-    const pr = Math.min(devicePixelRatio, 2);
-    return Math.sqrt((w * pr * h * pr) / REF_PIXELS);
-}
-function adaptedBloom(rs) {
-    return {
-        strength: THREE.MathUtils.clamp(bloom.strength * rs, 0.25, 0.9),
-        radius: THREE.MathUtils.clamp(bloom.radius / rs, 0.15, 0.6),
-    };
-}
-
-const initScale = getResScale(hero.clientWidth, hero.clientHeight);
-const initBloom = adaptedBloom(initScale);
-const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(1, 1),
-    initBloom.strength,
-    initBloom.radius,
-    bloom.threshold,
+const { composer, bloomPass } = createBloomComposer(
+    renderer,
+    scene,
+    camera,
+    bloom,
+    hero.clientWidth,
+    hero.clientHeight,
 );
-composer.addPass(bloomPass);
-composer.addPass(new OutputPass());
 
 function resize() {
     const w = hero.clientWidth;
@@ -123,7 +98,7 @@ function resize() {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 
-    const ab = adaptedBloom(getResScale(w, h));
+    const ab = adaptBloom(bloom, getResScale(w, h));
     bloomPass.strength = ab.strength;
     bloomPass.radius = ab.radius;
 }
@@ -154,71 +129,12 @@ function pathPoint(t) {
     return [rBend + s, zWall];
 }
 
-// Shared shader — each line gets its own uniforms but the same code.
-// `aT` is a per-vertex path parameter (0 → 1) used by the fragment
-// shader to position pulses along the line.
-const vertexShader = glsl`
-    attribute float aT;
-    varying float vT;
-    void main() {
-        vT = aT;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-`;
-const fragmentShader = glsl`
-    uniform vec3 uColor;
-    uniform float uBaseGlow;
-    uniform float uTime;
-    uniform float uHasPulse;
-    uniform float uPulseSpeed;
-    uniform float uPulseOffset;
-    uniform float uPulseTailLen;
-    uniform float uPulseHead;
-    uniform float uPulseTail;
-    uniform float uPulseHeadFalloff;
-    varying float vT;
-
-    void main() {
-        float intensity = uBaseGlow;
-
-        if (uHasPulse > 0.5) {
-            // phase ∈ [0,1) sweeps the pulse head along the line
-            float phase = fract(uTime * uPulseSpeed + uPulseOffset);
-            // Distance behind the pulse head, wrapped so the tail
-            // keeps decaying smoothly across cycle boundaries.
-            float d1 = phase - vT;
-            float d = d1 >= 0.0 ? d1 : d1 + 1.0;
-            float tail = exp(-d / uPulseTailLen) * uPulseTail;
-            // Halo around the head. Falloff matches the tail feel
-            // so the leading edge tapers as smoothly as the trail.
-            float head = exp(-abs(d1) * uPulseHeadFalloff) * uPulseHead;
-            intensity += tail + head;
-        }
-
-        gl_FragColor = vec4(uColor * intensity, 1.0);
-    }
-`;
-
-function randRange(min, max) {
-    return min + Math.random() * (max - min);
-}
-
-// Shared aT attribute — identical across every line.
+// Shared aT buffer — identical across every line, so one Float32Array can
+// back all 128 BufferAttribute wrappers.
 const tArr = new Float32Array(divisions + 1);
-for (let j = 0; j <= divisions; j++) {
-    tArr[j] = j / divisions;
-}
+for (let j = 0; j <= divisions; j++) tArr[j] = j / divisions;
 
-// Pre-sample anchor colours every `colorGroupSize` lines; in-between
-// lines lerp between the bracketing anchors for a smooth gradient.
-const anchorStep = Math.max(1, colorGroupSize);
-const numAnchors = Math.ceil((numLines - 1) / anchorStep) + 1;
-const anchorColors = [];
-for (let a = 0; a < numAnchors; a++) {
-    anchorColors.push(
-        new THREE.Color(palette[Math.floor(Math.random() * palette.length)]),
-    );
-}
+const colorFor = buildPalette(palette, numLines, colorGroupSize);
 
 const allUniforms = [];
 const group = new THREE.Group();
@@ -233,55 +149,17 @@ for (let i = 0; i < numLines; i++) {
         const [y, z] = pathPoint(j / divisions);
         pts[j] = new THREE.Vector3(x, y, z);
     }
-    const geom = new THREE.BufferGeometry().setFromPoints(pts);
-    geom.setAttribute("aT", new THREE.BufferAttribute(tArr, 1));
 
-    const frac = i / anchorStep;
-    const loIdx = Math.floor(frac);
-    const hiIdx = Math.min(loIdx + 1, numAnchors - 1);
-    const color = anchorColors[loIdx]
-        .clone()
-        .lerp(anchorColors[hiIdx], frac - loIdx);
-
-    const isBright = Math.random() < brightProbability;
-    const baseGlow = isBright
-        ? randRange(brightGlowMin, brightGlowMax)
-        : randRange(dimGlowMin, dimGlowMax);
-    const uniforms = {
-        uColor: { value: color },
-        uBaseGlow: { value: baseGlow },
-        uTime: { value: 0 },
-        uHasPulse: {
-            value: Math.random() < pulseProbability ? 1 : 0,
-        },
-        uPulseSpeed: {
-            value: randRange(pulseSpeedMin, pulseSpeedMax),
-        },
-        uPulseOffset: { value: Math.random() },
-        uPulseTailLen: {
-            value: randRange(pulseTailMin, pulseTailMax),
-        },
-        uPulseHead: { value: pulseHeadBoost },
-        uPulseTail: { value: pulseTailBoost },
-        uPulseHeadFalloff: { value: pulseHeadFalloff },
-    };
+    const geom = buildLineGeometry(pts, tArr);
+    const opts = sampleLineUniforms(lineCfg, i, colorFor);
+    const { material, uniforms } = createNeonLineMaterial(opts);
     allUniforms.push(uniforms);
-
-    const material = new THREE.ShaderMaterial({
-        uniforms,
-        vertexShader,
-        fragmentShader,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-    });
 
     group.add(new THREE.Line(geom, material));
 }
 
 scene.add(group);
 
-// Mouse parallax — track normalized cursor, lerp camera each frame
 const basePos = new THREE.Vector3(...cameraPos);
 const baseLookAt = new THREE.Vector3(...cameraLookAt);
 const targetPos = basePos.clone();
