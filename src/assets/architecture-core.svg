@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+    <style><![CDATA[
+        text { font-family: "DM Sans", system-ui, sans-serif; fill: #cfd8e0; }
+        .label       { font-size: 14px; font-weight: 500; }
+        .label-head  { font-family: "DM Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+        .label-sub   { fill: #7f8b96; font-size: 11px; font-weight: 400; }
+        .label-core  { fill: #ffffff; font-family: "Montserrat", system-ui, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.01em; }
+        .label-col   { fill: #9aa7b2; font-family: "DM Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; }
+        .fill-yellow { fill: #FFD167; }
+        .fill-lblue  { fill: #6CB3D1; }
+        .fill-teal   { fill: #4CBD97; }
+    ]]></style>
+
+    <rect fill="#FFD167" x="240" y="60"  width="520" height="480" rx="10"/>
+    <rect fill="#6CB3D1" x="280" y="110" width="440" height="380" rx="8"/>
+    <rect fill="#4CBD97" x="320" y="160" width="360" height="280" rx="8"/>
+    <rect fill="#119FCD" x="400" y="275" width="200" height="50"  rx="25"/>
+
+    <rect fill="#119FCD" x="40" y="140" width="140" height="50" rx="6"/>
+    <rect fill="#119FCD" x="40" y="290" width="140" height="50" rx="6"/>
+    <rect fill="#119FCD" x="40" y="440" width="140" height="50" rx="6"/>
+
+    <path fill="#119FCD" d="M 180,162 L 228,162 L 228,158 L 240,165 L 228,172 L 228,168 L 180,168 Z"/>
+    <path fill="#119FCD" d="M 180,312 L 228,312 L 228,308 L 240,315 L 228,322 L 228,318 L 180,318 Z"/>
+    <path fill="#119FCD" d="M 180,462 L 228,462 L 228,458 L 240,465 L 228,472 L 228,468 L 180,468 Z"/>
+
+    <rect fill="#4CBD97" x="820" y="50"  width="140" height="50" rx="6"/>
+    <rect fill="#4CBD97" x="820" y="130" width="140" height="50" rx="6"/>
+    <rect fill="#4CBD97" x="820" y="210" width="140" height="50" rx="6"/>
+    <rect fill="#4CBD97" x="820" y="290" width="140" height="50" rx="6"/>
+    <rect fill="#4CBD97" x="820" y="370" width="140" height="50" rx="6"/>
+    <rect fill="#4CBD97" x="820" y="450" width="140" height="50" rx="6"/>
+
+    <path fill="#4CBD97" d="M 760,72  L 808,72  L 808,68  L 820,75  L 808,82  L 808,78  L 760,78  Z"/>
+    <path fill="#4CBD97" d="M 760,152 L 808,152 L 808,148 L 820,155 L 808,162 L 808,158 L 760,158 Z"/>
+    <path fill="#4CBD97" d="M 760,232 L 808,232 L 808,228 L 820,235 L 808,242 L 808,238 L 760,238 Z"/>
+    <path fill="#4CBD97" d="M 760,312 L 808,312 L 808,308 L 820,315 L 808,322 L 808,318 L 760,318 Z"/>
+    <path fill="#4CBD97" d="M 760,392 L 808,392 L 808,388 L 820,395 L 808,402 L 808,398 L 760,398 Z"/>
+    <path fill="#4CBD97" d="M 760,472 L 808,472 L 808,468 L 820,475 L 808,482 L 808,478 L 760,478 Z"/>
+
+    <text class="label-col" x="110" y="32" text-anchor="middle">Ingress</text>
+    <text class="label-col" x="890" y="32" text-anchor="middle">Side-stream</text>
+
+    <text class="label-head fill-yellow" x="260" y="86">Govern</text>
+    <text class="label-sub"              x="325" y="86">policy · versioning · observability</text>
+
+    <text class="label-head fill-lblue"  x="300" y="136">Execute</text>
+    <text class="label-sub"              x="368" y="136">router · engine · task pipeline</text>
+
+    <text class="label-head fill-teal"   x="340" y="186">Define</text>
+    <text class="label-sub"              x="397" y="186">channels · workflows · connectors</text>
+
+    <text class="label-core" x="500" y="307" text-anchor="middle">Orion Runtime</text>
+
+    <text class="label" x="110" y="170" text-anchor="middle">HTTP / REST</text>
+    <text class="label" x="110" y="320" text-anchor="middle">Kafka</text>
+    <text class="label" x="110" y="470" text-anchor="middle">gRPC · WebSocket</text>
+
+    <text class="label" x="890" y="80"  text-anchor="middle">SQL</text>
+    <text class="label" x="890" y="160" text-anchor="middle">NoSQL</text>
+    <text class="label" x="890" y="240" text-anchor="middle">Cache</text>
+    <text class="label" x="890" y="320" text-anchor="middle">Storage</text>
+    <text class="label" x="890" y="400" text-anchor="middle">HTTP APIs</text>
+    <text class="label" x="890" y="480" text-anchor="middle">GraphQL</text>
+</svg>

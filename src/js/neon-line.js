@@ -33,18 +33,25 @@ export const fragmentShader = glsl`
     uniform float uPulseHead;
     uniform float uPulseTail;
     uniform float uPulseHeadFalloff;
+    uniform float uPulseCount;
     varying float vT;
+
+    const int MAX_PULSES = 6;
 
     void main() {
         float intensity = uBaseGlow;
 
         if (uHasPulse > 0.5) {
-            float phase = fract(uTime * uPulseSpeed + uPulseOffset);
-            float d1 = phase - vT;
-            float d = d1 >= 0.0 ? d1 : d1 + 1.0;
-            float tail = exp(-d / uPulseTailLen) * uPulseTail;
-            float head = exp(-abs(d1) * uPulseHeadFalloff) * uPulseHead;
-            intensity += tail + head;
+            float count = max(uPulseCount, 1.0);
+            for (int k = 0; k < MAX_PULSES; k++) {
+                if (float(k) >= count) break;
+                float phase = fract(uTime * uPulseSpeed + uPulseOffset + float(k) / count);
+                float d1 = phase - vT;
+                float d = d1 >= 0.0 ? d1 : d1 + 1.0;
+                float tail = exp(-d / uPulseTailLen) * uPulseTail;
+                float head = exp(-abs(d1) * uPulseHeadFalloff) * uPulseHead;
+                intensity += tail + head;
+            }
         }
 
         gl_FragColor = vec4(uColor * intensity, 1.0);
@@ -69,6 +76,7 @@ export function createNeonLineMaterial(opts) {
         uPulseHead: { value: opts.pulseHead },
         uPulseTail: { value: opts.pulseTail },
         uPulseHeadFalloff: { value: opts.pulseHeadFalloff },
+        uPulseCount: { value: opts.pulseCount || 1 },
     };
     const material = new THREE.ShaderMaterial({
         uniforms,
@@ -180,5 +188,6 @@ export function sampleLineUniforms(cfg, i, colorFor) {
         pulseHead: cfg.pulseHead,
         pulseTail: cfg.pulseTail,
         pulseHeadFalloff: cfg.pulseHeadFalloff,
+        pulseCount: cfg.pulseCount || 1,
     };
 }

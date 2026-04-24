@@ -56,6 +56,17 @@ const PAINT_ATTRS = new Set([
     "stroke-width",
     "stroke-opacity",
     "opacity",
+    // Text styling: <text> elements render as an HTML overlay, so the
+    // component needs these resolved onto the element too — otherwise a
+    // class-only rule (.label-core { font-family: "Montserrat" }) would be
+    // lost the moment the CSS selectors stop matching outside the SVG doc.
+    "font-family",
+    "font-size",
+    "font-weight",
+    "font-style",
+    "text-anchor",
+    "letter-spacing",
+    "text-transform",
 ]);
 
 async function loadSvgWithInlinedStyles(url) {
@@ -104,7 +115,39 @@ async function loadSvgWithInlinedStyles(url) {
         });
     }
 
-    return new XMLSerializer().serializeToString(doc);
+    return { svgText: new XMLSerializer().serializeToString(doc), doc };
+}
+
+// Extract <text> elements from the (style-inlined) SVG doc and convert each
+// SVG (x, y) anchor into the same world frame the shapes use — centred on
+// the shape bbox, Y flipped, scaled by k. The caller renders these as
+// plain HTML absolutely positioned over the canvas (flat text, no neon).
+function extractTexts(doc, transform) {
+    const { cx, cy, k } = transform;
+    const nodes = doc.querySelectorAll("text");
+    const out = [];
+    for (const n of nodes) {
+        const content = (n.textContent || "").trim();
+        if (!content) continue;
+        const sx = parseFloat(n.getAttribute("x") || "0");
+        const sy = parseFloat(n.getAttribute("y") || "0");
+        out.push({
+            text: content,
+            worldX: (sx - cx) * k,
+            worldY: -(sy - cy) * k,
+            // Font size travels through in *SVG user units*; the renderer
+            // rescales to pixels each frame based on current canvas height.
+            fontSizeSvg: parseFloat(n.getAttribute("font-size") || "14"),
+            fill: n.getAttribute("fill") || "",
+            fontFamily: n.getAttribute("font-family") || "",
+            fontWeight: n.getAttribute("font-weight") || "",
+            fontStyle: n.getAttribute("font-style") || "",
+            letterSpacing: n.getAttribute("letter-spacing") || "",
+            textTransform: n.getAttribute("text-transform") || "",
+            textAnchor: n.getAttribute("text-anchor") || "start",
+        });
+    }
+    return out;
 }
 
 /* ── geometry helpers ──────────────────────────────────────────────── */
@@ -179,11 +222,15 @@ function prepareShapes(paths, pathSamples, targetExtent) {
 
     const tx = (p) => new THREE.Vector2((p.x - cx) * k, -(p.y - cy) * k);
 
-    return raw.map(({ outer, holes, color }) => {
+    const shapes = raw.map(({ outer, holes, color }) => {
         const o = outer.map(tx);
         const h = holes.map((hh) => hh.map(tx));
         return { outer: o, holes: h, outerLen: polylineLen(o), color };
     });
+    // Arrays can carry non-index properties; stash the SVG→world transform
+    // here so callers (text overlay) can align with the shapes exactly.
+    shapes.transform = { cx, cy, k };
+    return shapes;
 }
 
 // Each shape gets the same line count so big paths don't drown small ones.
@@ -224,6 +271,10 @@ function rotateClosed(pts) {
 // random start vertex so stacked rings don't all share the same seam pixel.
 function outlineLines(shapes, numLines, extrudeDepth) {
     const perShape = distribute(shapes, numLines);
+    // Flat mode (extrude-depth=0): every Z-slice collapses to z=0, so >1
+    // ring per shape paints the same outline additively at the same spot
+    // and reads as a thick / blooming double line. One ring is enough.
+    if (extrudeDepth === 0) perShape.fill(1);
     const lines = [];
     shapes.forEach((s, si) => {
         const n = perShape[si];
@@ -378,6 +429,7 @@ class SectionGraphic extends HTMLElement {
         if (this.resizeObs) this.resizeObs.disconnect();
         if (this.rafId) cancelAnimationFrame(this.rafId);
         if (this._onMouse) removeEventListener("mousemove", this._onMouse);
+        if (this.textLayer) this.textLayer.remove();
 
         if (this.scene) {
             this.scene.traverse((obj) => {
@@ -422,6 +474,7 @@ class SectionGraphic extends HTMLElement {
             pulseHead: num(this, "pulse-head-boost", 12),
             pulseTailBoost: num(this, "pulse-tail-boost", 2.5),
             pulseHeadFalloff: num(this, "pulse-head-falloff", 40),
+            pulsesPerLine: int(this, "pulses-per-line", 1),
             bloomStrength: num(this, "bloom-strength", 0.6),
             bloomRadius: num(this, "bloom-radius", 0.28),
             bloomThreshold: num(this, "bloom-threshold", 0),
@@ -452,7 +505,7 @@ class SectionGraphic extends HTMLElement {
         }
 
         const loader = new SVGLoader();
-        const svgText = await loadSvgWithInlinedStyles(p.svg);
+        const { svgText, doc: svgDoc } = await loadSvgWithInlinedStyles(p.svg);
         if (this.disposed) return;
         const data = loader.parse(svgText);
 
@@ -461,6 +514,13 @@ class SectionGraphic extends HTMLElement {
             console.warn("[section-graphic] SVG produced no shapes:", p.svg);
             return;
         }
+
+        // Text elements from the source SVG: rendered as HTML absolutely
+        // positioned over the canvas, re-projected each frame so camera
+        // parallax / object-offset / group rotation carry them with the
+        // shapes. They never enter the neon pipeline — intentional, per
+        // the "flat text over 3D diagram" use case.
+        const texts = extractTexts(svgDoc, shapes.transform);
 
         const w = this.clientWidth || 1;
         const h = this.clientHeight || 1;
@@ -540,6 +600,7 @@ class SectionGraphic extends HTMLElement {
             pulseHead: p.pulseHead,
             pulseTail: p.pulseTailBoost,
             pulseHeadFalloff: p.pulseHeadFalloff,
+            pulseCount: p.pulsesPerLine,
         };
         const uniformsList = [];
         for (let i = 0; i < lineRecords.length; i++) {
@@ -554,6 +615,40 @@ class SectionGraphic extends HTMLElement {
 
         group.position.set(p.objectOffset[0] || 0, p.objectOffset[1] || 0, 0);
 
+        // ── Text overlay: one HTML div per <text>, parented to a layer
+        // that sits on top of the canvas. Each frame we project the text's
+        // world anchor through the live camera to get its screen pixel
+        // position, so camera parallax, object-offset and group rotation
+        // move the text with the shapes automatically.
+        let textLayer = null;
+        const textNodes = [];
+        if (texts.length) {
+            textLayer = document.createElement("div");
+            textLayer.className = "sg-text-layer";
+            this.appendChild(textLayer);
+            for (const t of texts) {
+                const el = document.createElement("div");
+                el.className = "sg-text";
+                el.textContent = t.text;
+                if (t.fill) el.style.color = t.fill;
+                if (t.fontFamily) el.style.fontFamily = t.fontFamily;
+                if (t.fontWeight) el.style.fontWeight = t.fontWeight;
+                if (t.fontStyle) el.style.fontStyle = t.fontStyle;
+                if (t.letterSpacing) el.style.letterSpacing = t.letterSpacing;
+                if (t.textTransform) el.style.textTransform = t.textTransform;
+                // SVG text-anchor → HTML %-shift so the projected point
+                // stays the same anchor (start/middle/end → left/centre/right).
+                // Vertical: SVG `y` is the text baseline; shift up ~0.82em
+                // since HTML divs anchor at the top.
+                const anchorPct =
+                    t.textAnchor === "middle" ? -50
+                        : t.textAnchor === "end" ? -100
+                        : 0;
+                textLayer.appendChild(el);
+                textNodes.push({ el, data: t, anchorPct });
+            }
+        }
+
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
@@ -561,6 +656,9 @@ class SectionGraphic extends HTMLElement {
         this.bloomPass = bloomPass;
         this.bloom = bloom;
         this.group = group;
+        this.textLayer = textLayer;
+        this.textNodes = textNodes;
+        this.shapeScale = shapes.transform.k;
         this.uniformsList = uniformsList;
         this.basePos = new THREE.Vector3(...p.cameraPos);
         this.baseLook = new THREE.Vector3(...p.cameraLook);
@@ -602,6 +700,20 @@ class SectionGraphic extends HTMLElement {
         const ab = adaptBloom(this.bloom, getResScale(w, h));
         this.bloomPass.strength = ab.strength;
         this.bloomPass.radius = ab.radius;
+
+        // Keep text legible across resizes. Match the shapes' on-screen
+        // scale: SVG units → world via `shapeScale` (same k shapes use),
+        // world → pixels via the perspective camera's on-axis factor at
+        // z=0: `pxPerWorld = h / (2·tan(fov/2)·|cam.z|)`.
+        if (this.textNodes && this.textNodes.length) {
+            const camZ = Math.abs(this.params.cameraPos[2] || 1);
+            const fovRad = (this.params.fov * Math.PI) / 180;
+            const pxPerWorld = h / (2 * Math.tan(fovRad / 2) * camZ);
+            const pxPerSvg = this.shapeScale * pxPerWorld;
+            for (const { el, data } of this.textNodes) {
+                el.style.fontSize = `${data.fontSizeSvg * pxPerSvg}px`;
+            }
+        }
     }
 
     animate() {
@@ -641,8 +753,27 @@ class SectionGraphic extends HTMLElement {
         this.camera.position.y += (targetY - this.camera.position.y) * pSmooth;
         this.camera.lookAt(this.baseLook);
 
+        // Project text anchors through the live camera & group matrix so
+        // overlays track every frame — parallax, object-offset, rotation.
+        if (this.textNodes.length) {
+            this.group.updateMatrixWorld();
+            const W = this.renderer.domElement.clientWidth;
+            const H = this.renderer.domElement.clientHeight;
+            const v = SectionGraphic._projVec;
+            for (const { el, data, anchorPct } of this.textNodes) {
+                v.set(data.worldX, data.worldY, 0);
+                v.applyMatrix4(this.group.matrixWorld);
+                v.project(this.camera);
+                const sx = (v.x * 0.5 + 0.5) * W;
+                const sy = (-v.y * 0.5 + 0.5) * H;
+                el.style.transform = `translate(${sx.toFixed(2)}px, ${sy.toFixed(2)}px) translate(${anchorPct}%, -82%)`;
+            }
+        }
+
         this.composer.render();
     }
 }
+
+SectionGraphic._projVec = new THREE.Vector3();
 
 customElements.define("section-graphic", SectionGraphic);

@@ -1,0 +1,58 @@
+%% Architecture diagram for index.html §2 "Infrastructure at the core of modern systems"
+%% Concentric metaphor: ingress enters Orion through Govern, which wraps Execute,
+%% which wraps Define, which wraps the Runtime core. Side-stream connectors are
+%% reached by calls emanating from within Orion.
+
+flowchart LR
+    subgraph IN[" Ingress "]
+        direction TB
+        HTTP["HTTP / REST"]
+        KAFKA["Kafka"]
+        GRPC["gRPC · WebSocket"]
+    end
+
+    subgraph GOV["Govern &nbsp;·&nbsp; policy &nbsp;·&nbsp; versioning &nbsp;·&nbsp; observability"]
+        direction TB
+        subgraph EXE["Execute &nbsp;·&nbsp; router &nbsp;·&nbsp; engine &nbsp;·&nbsp; task pipeline"]
+            direction TB
+            subgraph DEF["Define &nbsp;·&nbsp; channels &nbsp;·&nbsp; workflows &nbsp;·&nbsp; connectors"]
+                direction TB
+                CORE(["Orion Runtime"])
+            end
+        end
+    end
+
+    subgraph OUT[" Side-stream "]
+        direction TB
+        SQL[("SQL")]
+        NOSQL[("NoSQL")]
+        CACHE[("Cache")]
+        STORE[("Storage")]
+        HTTPAPI["HTTP APIs"]
+        GQL["GraphQL"]
+    end
+
+    HTTP  --> GOV
+    KAFKA --> GOV
+    GRPC  --> GOV
+
+    GOV --> SQL
+    GOV --> NOSQL
+    GOV --> CACHE
+    GOV --> STORE
+    GOV --> HTTPAPI
+    GOV --> GQL
+
+    classDef ingress    fill:#119FCD,stroke:#119FCD,color:#061018;
+    classDef sidestream fill:#4CBD97,stroke:#4CBD97,color:#061018;
+    classDef core       fill:#119FCD,stroke:#FFFFFF,stroke-width:2px,color:#FFFFFF;
+
+    class HTTP,KAFKA,GRPC ingress
+    class SQL,NOSQL,CACHE,STORE,HTTPAPI,GQL sidestream
+    class CORE core
+
+    style GOV fill:none,stroke:#FFD167,stroke-width:2px,color:#FFD167
+    style EXE fill:none,stroke:#6CB3D1,stroke-width:2px,color:#6CB3D1
+    style DEF fill:none,stroke:#4CBD97,stroke-width:2px,color:#4CBD97
+    style IN  fill:none,stroke:#1a2b3a,color:#9aa7b2
+    style OUT fill:none,stroke:#1a2b3a,color:#9aa7b2

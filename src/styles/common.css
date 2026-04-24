@@ -1174,6 +1174,24 @@ section:has(> section-graphic[position="background"]) > .section-container {
     z-index: 1;
 }
 
+/* Text layer rendered inside <section-graphic> for <text> elements in the
+   source SVG — flat HTML overlaid on the 3D canvas, re-projected each
+   frame to stay locked to the neon shapes. */
+section-graphic .sg-text-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+section-graphic .sg-text-layer > .sg-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    line-height: 1;
+    will-change: transform;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
