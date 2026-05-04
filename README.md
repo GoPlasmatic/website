@@ -5,7 +5,8 @@ Marketing website for Plasmatic's Orion platform, featuring interactive 3D visua
 ## Pages
 
 - **index.html** — Landing page with a scroll-driven 3D logo
-- **product.html** — Orion product page with an animated neural system visualization
+- **orion.html** — Orion product page with an animated neural system visualization
+- **contact.html**, **privacy.html**, **terms.html** — Supporting pages
 
 ## Getting Started
 
@@ -44,36 +45,39 @@ python -m http.server 8000 --directory public
 
 All libraries are loaded from CDNs.
 
+## License
+
+Source-available — see [LICENSE](LICENSE). Published for transparency; all rights reserved by Plasmatic.
+
 ## 3D Asset Pipeline
 
-Source models are authored in Blender (`reference/blender-source/*.blend`). The neural pathway data used on the product page is generated from an OBJ export:
+The neural pathway data used on the Orion page is generated from a Blender OBJ export:
 
 ```bash
 python tools/convert_obj.py
 ```
 
-This reads `reference/blender-source/nervous-system.obj` and writes the optimized binary into `src/`. Requires numpy and open3d.
+This reads `reference/blender-source/nervous-system.obj` and writes the optimized binary (`src/nervous-system.bin`). Requires numpy and open3d.
 
 ## Project Structure
 
 ```
 src/                    Authored site (served in development)
   index.html
-  product.html
-  nervous-system.bin    Neural pathway data (used by product.html)
-  assets/               SVG and PNG brand logos
+  orion.html
+  contact.html
+  privacy.html
+  terms.html
+  nervous-system.bin    Neural pathway data (used by orion.html)
+  assets/               SVG brand logos and section graphics
   js/                   Page scripts and shared chrome
   styles/               Page-level and shared CSS
 public/                 Minified build output (generated; git-ignored)
 reference/
-  design/               Mockups, mood boards, Figma design-system JSX
-  blender-source/       Blender projects and raw model exports
-  orion-lp/             Figma-exported React prototype
+  blender-source/       Nervous-system Blender source + OBJ export
+  design/               Homepage copy and design-system JSX
+  diagrams/             Architecture diagram sources
 tools/
   build.py              Minify src/ → public/
   convert_obj.py        Blender OBJ → nervous-system binary
-backup/
-  pages/                Retired HTML pages
-  models/               Retired 3D models
-  assets/               Retired brand assets
 ```

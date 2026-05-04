@@ -7,6 +7,9 @@ public/
 # Node tooling (terser for tools/build.py)
 node_modules/
 
+# Local Claude Code config
+.claude/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
