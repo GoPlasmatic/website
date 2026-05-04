@@ -12,7 +12,7 @@ Plasmatic marketing website — a static site with interactive 3D visualizations
 ```bash
 python -m http.server 8000 --directory src
 ```
-Visit `http://localhost:8000/` or `http://localhost:8000/product.html`.
+Visit `http://localhost:8000/` or `http://localhost:8000/orion.html`.
 
 **Build minified output** (writes `public/`, git-ignored):
 ```bash
@@ -64,7 +64,7 @@ If you skip the tag, the template content ships verbatim (big strings full of in
 
 Guidelines when writing scene code:
 
-1. **Don't wrap tunables in a big `CONFIG` object.** Property names can't be mangled, so `CONFIG.numLines` ships as a readable 9-byte string; `const numLines = 128;` at top level becomes a single letter after terser runs (and is usually inlined at call sites). `home-scene.js` / `product-scene.js` follow this flat pattern — keep it.
+1. **Don't wrap tunables in a big `CONFIG` object.** Property names can't be mangled, so `CONFIG.numLines` ships as a readable 9-byte string; `const numLines = 128;` at top level becomes a single letter after terser runs (and is usually inlined at call sites). `home-scene.js` / `orion-scene.js` follow this flat pattern — keep it.
 2. **Tight sub-objects are fine when keys are already leaked by Three.js.** `parallax = { x, y, smoothing }` and `bloom = { strength, radius, threshold }` are acceptable because `.x`, `.strength`, etc. appear in the bundle anyway via Three.js call sites.
 3. **Don't introduce properties named after GLSL uniform/attribute names on plain JS objects**, because you then can't enable property mangling later without a rename.
 4. **`customElements.define("site-nav", …)`** — tag names are string literals, safe.
@@ -79,14 +79,14 @@ src/foo.svg  →  svgo  →  public/foo.svg
 anything else  →  copied verbatim
 ```
 
-Top-level `await` is used in `product-scene.js`, which is why terser runs with `--module`. Any new top-level `await` or `import`/`export` will keep working.
+Top-level `await` is used in `orion-scene.js`, which is why terser runs with `--module`. Any new top-level `await` or `import`/`export` will keep working.
 
 ## Architecture
 
 ### Pages
 
 - **index.html** — Landing page with scroll-driven 3D logo visualization
-- **product.html** — Full Orion product page (~2300 lines) with neural system 3D visualization (loads `nervous-system.bin`)
+- **orion.html** — Full Orion product page (~2300 lines) with neural system 3D visualization (loads `nervous-system.bin`)
 
 Both pages are self-contained: styles and scripts are inline.
 
@@ -97,12 +97,12 @@ Blender (.blend) → Export (.glb / .obj) → convert_obj.py → Binary (.bin) �
 ```
 
 - **Three.js v0.170.0** loaded via CDN import maps (ES modules)
-- **Post-processing**: GTAO on index.html, UnrealBloomPass on product.html
-- **Custom shaders**: product.html contains GLSL vertex/fragment shaders for nerve lines, endpoint nodes, and traveling pulses
+- **Post-processing**: GTAO on index.html, UnrealBloomPass on orion.html
+- **Custom shaders**: orion.html contains GLSL vertex/fragment shaders for nerve lines, endpoint nodes, and traveling pulses
 - `nervous-system.bin` is a compact binary (~11 KB) containing decimated brain mesh (1024 verts, delta-encoded faces) and pre-sampled spine endpoints. Nerve pathway curves are generated on the frontend via natural cubic spline interpolation. See format spec in `tools/convert_obj.py`.
 - Never edit `.bin` files directly — always regenerate from source
 
-### product.html 3D Scene
+### orion.html 3D Scene
 
 Scroll-snap sections drive camera position through 8 keyframes. The scene renders:
 - Brain wireframe (LineSegments, additive blend, 1024-vert decimated mesh)

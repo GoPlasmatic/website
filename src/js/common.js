@@ -2,7 +2,7 @@
 //
 // Provides two custom elements:
 //   <site-nav active="home|product">
-//   <site-footer variant="home|product">
+//   <site-footer>
 //
 // Also auto-injects the scroll-hint, wires the IntersectionObserver for
 // reveal animations, primes scroll-snap, and refreshes Lucide icons.
@@ -11,50 +11,13 @@
 const html = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
 
 const NAV_ITEMS = [
-    { label: "Product", href: "product.html", key: "product" },
-    { label: "Docs", href: "#" },
+    { label: "Product", href: "orion.html", key: "product" },
     { label: "Contact", href: "contact.html", key: "contact" },
     { label: "GitHub", href: "https://github.com/GoPlasmatic" },
 ];
 
-const FOOTER_VARIANTS = {
-    home: {
-        brand: "A software company focused on building infrastructure for modern systems.",
-        product: [
-            { label: "Orion", href: "product.html" },
-            { label: "Documentation", href: "#" },
-            { label: "Changelog", href: "#" },
-            { label: "GitHub", href: "https://github.com/GoPlasmatic" },
-        ],
-        company: [
-            { label: "Contact", href: "contact.html" },
-            { label: "Enquiries", href: "mailto:enquiries@goplasmatic.io" },
-        ],
-    },
-    product: {
-        brand: "Building the nervous system for modern software.",
-        product: [
-            { label: "Features", href: "#" },
-            { label: "Documentation", href: "#" },
-            { label: "Pricing", href: "#" },
-            { label: "Changelog", href: "#" },
-        ],
-        company: [
-            { label: "Contact", href: "contact.html" },
-            { label: "GitHub", href: "https://github.com/GoPlasmatic" },
-        ],
-    },
-};
-
 const ext = (href) =>
     /^https?:/.test(href) ? ' target="_blank" rel="noopener"' : "";
-
-const linkList = (items) =>
-    items
-        .map(
-            (i) => `<li><a href="${i.href}"${ext(i.href)}>${i.label}</a></li>`,
-        )
-        .join("");
 
 class SiteNav extends HTMLElement {
     connectedCallback() {
@@ -75,7 +38,7 @@ class SiteNav extends HTMLElement {
                 </a>
                 <div class="nav-links">
                     ${links}
-                    <button class="btn-nav">Get started</button>
+                    <a href="contact.html" class="btn-nav">Get started</a>
                 </div>
             </nav>
         `;
@@ -84,30 +47,9 @@ class SiteNav extends HTMLElement {
 
 class SiteFooter extends HTMLElement {
     connectedCallback() {
-        const variant = this.getAttribute("variant") || "home";
-        const data = FOOTER_VARIANTS[variant] || FOOTER_VARIANTS.home;
-
         this.innerHTML = html`
             <footer class="footer section-dimmed">
                 <div class="section-container">
-                    <div class="footer-grid">
-                        <div class="footer-brand">
-                            <img
-                                src="assets/plasmatic-logo.svg"
-                                alt="Plasmatic"
-                                class="footer-logo"
-                            />
-                            <p>${data.brand}</p>
-                        </div>
-                        <div class="footer-col">
-                            <h4>Product</h4>
-                            <ul>${linkList(data.product)}</ul>
-                        </div>
-                        <div class="footer-col">
-                            <h4>Company</h4>
-                            <ul>${linkList(data.company)}</ul>
-                        </div>
-                    </div>
                     <div class="footer-bottom">
                         <p>&copy; 2026 Plasmatic. All rights reserved.</p>
                         <div class="footer-links">

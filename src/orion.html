@@ -13,7 +13,7 @@
             rel="stylesheet"
         />
         <link rel="stylesheet" href="styles/common.css" />
-        <link rel="stylesheet" href="styles/product.css" />
+        <link rel="stylesheet" href="styles/orion.css" />
 
         <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
         <script defer src="js/common.js"></script>
@@ -25,7 +25,7 @@
                 }
             }
         </script>
-        <script type="module" src="js/product-scene.js"></script>
+        <script type="module" src="js/orion-scene.js"></script>
     </head>
     <body>
         <canvas id="bg"></canvas>
@@ -54,7 +54,7 @@
                         <a href="contact.html" class="btn-primary"
                             >Start a conversation &rarr;</a
                         >
-                        <a href="#" class="btn-secondary"
+                        <a href="#how-it-works" class="btn-secondary"
                             >Explore how it works</a
                         >
                     </div>
@@ -62,7 +62,7 @@
             </section>
 
             <!-- PROBLEM ─────────────────────────────────────────── -->
-            <section class="section-full">
+            <section id="how-it-works" class="section-full">
                 <div class="section-container">
                     <div class="grid-2col">
                         <div class="col-content reveal-left">
@@ -468,10 +468,8 @@
                                         Early access to Orion for platform and
                                         engineering teams building at scale.
                                     </p>
-                                    <a
-                                        href="mailto:enquiries@goplasmatic.io"
-                                        class="label-mono"
-                                        >enquiries@goplasmatic.io &rarr;</a
+                                    <a href="contact.html" class="label-mono"
+                                        >Get in touch &rarr;</a
                                     >
                                 </div>
                                 <div class="card audience-card">
@@ -503,13 +501,6 @@
                                 <a href="contact.html" class="btn-primary"
                                     >Request early access &rarr;</a
                                 >
-                                <a
-                                    href="https://goplasmatic.io"
-                                    target="_blank"
-                                    rel="noopener"
-                                    class="btn-secondary"
-                                    >Visit goplasmatic.io</a
-                                >
                             </div>
                         </div>
                         <div></div>
@@ -517,7 +508,7 @@
                 </div>
             </section>
 
-            <site-footer variant="product"></site-footer>
+            <site-footer></site-footer>
         </div>
     </body>
 </html>

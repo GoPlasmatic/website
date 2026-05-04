@@ -1,4 +1,4 @@
-// Brain → spine nervous-system scene for product.html. Loads a compact
+// Brain → spine nervous-system scene for orion.html. Loads a compact
 // binary mesh, generates connection curves on the fly, and pilots the
 // camera through 8 keyframes driven by scroll position.
 

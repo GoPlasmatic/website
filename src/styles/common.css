@@ -102,20 +102,25 @@ site-footer {
     color: white;
 }
 
-.btn-nav {
+.btn-nav,
+.nav-links a.btn-nav {
+    display: inline-block;
     padding: 10px 20px;
     background: var(--accent-green);
     color: var(--bg-section);
     font-family: "DM Sans", sans-serif;
     font-weight: 500;
     font-size: 14px;
+    text-decoration: none;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: opacity 0.2s;
 }
-.btn-nav:hover {
+.btn-nav:hover,
+.nav-links a.btn-nav:hover {
     opacity: 0.9;
+    color: var(--bg-section);
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────── */
@@ -407,6 +412,12 @@ site-footer {
 }
 .dot-red::after {
     background: var(--accent-red);
+}
+.dot-blue {
+    background: rgba(17, 159, 205, 0.2);
+}
+.dot-blue::after {
+    background: var(--accent-blue);
 }
 
 .pain-title {
@@ -956,52 +967,11 @@ site-footer {
 /* ── Footer ──────────────────────────────────────────────────────── */
 
 .footer {
-    border-top: 1px solid var(--border-subtle);
-    padding: 64px 32px;
-    scroll-snap-align: start;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-}
-
-.footer-logo {
-    height: 52px;
-    margin-bottom: 16px;
-}
-
-.footer-brand p {
-    font-size: 14px;
-    color: var(--text-body);
-    line-height: 1.6;
-}
-
-.footer-col h4 {
-    font-weight: 500;
-    font-size: 15px;
-    color: var(--text-heading);
-    margin-bottom: 16px;
-}
-
-.footer-col li {
-    margin-bottom: 8px;
-}
-
-.footer-col a {
-    font-size: 14px;
-    color: var(--text-body);
-    transition: color 0.2s;
-}
-.footer-col a:hover {
-    color: var(--text-heading);
+    padding: 24px 32px;
+    scroll-snap-align: end;
 }
 
 .footer-bottom {
-    padding-top: 32px;
-    border-top: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1208,9 +1178,6 @@ section-graphic .sg-text-layer > .sg-text {
     .audience-grid {
         grid-template-columns: 1fr;
     }
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-    }
     .nav-links a {
         display: none;
     }
@@ -1224,9 +1191,6 @@ section-graphic .sg-text-layer > .sg-text {
     .hero-ctas .btn-secondary {
         width: 100%;
         justify-content: center;
-    }
-    .footer-grid {
-        grid-template-columns: 1fr;
     }
     .footer-bottom {
         flex-direction: column;
