@@ -13,8 +13,8 @@ const html = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
 const NAV_ITEMS = [
     { label: "Product", href: "product.html", key: "product" },
     { label: "Docs", href: "#" },
-    { label: "Community", href: "#" },
-    { label: "GitHub", href: "#" },
+    { label: "Contact", href: "contact.html", key: "contact" },
+    { label: "GitHub", href: "https://github.com/GoPlasmatic" },
 ];
 
 const FOOTER_VARIANTS = {
@@ -24,18 +24,10 @@ const FOOTER_VARIANTS = {
             { label: "Orion", href: "product.html" },
             { label: "Documentation", href: "#" },
             { label: "Changelog", href: "#" },
-            { label: "GitHub", href: "#" },
-        ],
-        resources: [
-            { label: "Blog", href: "#" },
-            { label: "Guides", href: "#" },
-            { label: "Quickstart", href: "#" },
-            { label: "Community", href: "#" },
+            { label: "GitHub", href: "https://github.com/GoPlasmatic" },
         ],
         company: [
-            { label: "About", href: "#" },
-            { label: "Careers", href: "#" },
-            { label: "Contact", href: "#" },
+            { label: "Contact", href: "contact.html" },
             { label: "Enquiries", href: "mailto:enquiries@goplasmatic.io" },
         ],
     },
@@ -47,30 +39,29 @@ const FOOTER_VARIANTS = {
             { label: "Pricing", href: "#" },
             { label: "Changelog", href: "#" },
         ],
-        resources: [
-            { label: "Blog", href: "#" },
-            { label: "Guides", href: "#" },
-            { label: "Examples", href: "#" },
-            { label: "Community", href: "#" },
-        ],
         company: [
-            { label: "About", href: "#" },
-            { label: "Careers", href: "#" },
-            { label: "Contact", href: "#" },
-            { label: "GitHub", href: "#" },
+            { label: "Contact", href: "contact.html" },
+            { label: "GitHub", href: "https://github.com/GoPlasmatic" },
         ],
     },
 };
 
+const ext = (href) =>
+    /^https?:/.test(href) ? ' target="_blank" rel="noopener"' : "";
+
 const linkList = (items) =>
-    items.map((i) => `<li><a href="${i.href}">${i.label}</a></li>`).join("");
+    items
+        .map(
+            (i) => `<li><a href="${i.href}"${ext(i.href)}>${i.label}</a></li>`,
+        )
+        .join("");
 
 class SiteNav extends HTMLElement {
     connectedCallback() {
         const active = this.getAttribute("active") || "";
         const links = NAV_ITEMS.map((i) => {
             const cur = i.key === active ? ' aria-current="page"' : "";
-            return `<a href="${i.href}"${cur}>${i.label}</a>`;
+            return `<a href="${i.href}"${cur}${ext(i.href)}>${i.label}</a>`;
         }).join("");
 
         this.innerHTML = html`
@@ -113,10 +104,6 @@ class SiteFooter extends HTMLElement {
                             <ul>${linkList(data.product)}</ul>
                         </div>
                         <div class="footer-col">
-                            <h4>Resources</h4>
-                            <ul>${linkList(data.resources)}</ul>
-                        </div>
-                        <div class="footer-col">
                             <h4>Company</h4>
                             <ul>${linkList(data.company)}</ul>
                         </div>
@@ -124,8 +111,8 @@ class SiteFooter extends HTMLElement {
                     <div class="footer-bottom">
                         <p>&copy; 2026 Plasmatic. All rights reserved.</p>
                         <div class="footer-links">
-                            <a href="#">Privacy Policy</a>
-                            <a href="#">Terms of Service</a>
+                            <a href="privacy.html">Privacy Policy</a>
+                            <a href="terms.html">Terms of Service</a>
                         </div>
                     </div>
                 </div>

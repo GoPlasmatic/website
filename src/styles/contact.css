@@ -1,0 +1,127 @@
+/* Contact-page styles. Loaded after common.css. */
+
+.section-contact {
+    padding-top: 160px;
+}
+
+.contact-grid {
+    align-items: start;
+}
+
+.section-contact h1 {
+    font-family: "filson-pro", sans-serif;
+    font-weight: 700;
+    font-size: clamp(36px, 4.5vw, 60px);
+    color: var(--text-heading);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+}
+
+.contact-direct {
+    margin-top: 32px;
+}
+
+.contact-direct-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-body);
+    font-size: 15px;
+    transition: color 0.2s;
+}
+
+.contact-direct-link:hover {
+    color: var(--accent-blue);
+}
+
+.contact-direct-link svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ── Form ────────────────────────────────────────────────────────── */
+
+.contact-form {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row label {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-body);
+}
+
+.form-row input,
+.form-row textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(7, 17, 26, 0.6);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-heading);
+    font-family: "DM Sans", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    transition:
+        border-color 0.2s,
+        background 0.2s;
+}
+
+.form-row textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background: rgba(7, 17, 26, 0.85);
+}
+
+.contact-submit {
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+.contact-submit[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.contact-status {
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 20px;
+    color: var(--text-body);
+}
+
+.contact-status.is-success {
+    color: var(--accent-green);
+}
+
+.contact-status.is-error {
+    color: var(--accent-red);
+}
+
+/* The contact page is single-screen — disable mandatory snap so the
+   form section and footer don't fight on shorter viewports. */
+@media (max-height: 900px) {
+    .section-contact {
+        scroll-snap-align: none;
+        min-height: auto;
+        padding-bottom: 96px;
+    }
+}

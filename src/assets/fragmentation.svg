@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+    <style><![CDATA[
+        text { font-family: "DM Sans", system-ui, sans-serif; fill: #cfd8e0; }
+        .label-col   { fill: #9aa7b2; font-family: "DM Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; }
+        .label-head  { font-family: "DM Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+        .label-sub   { fill: #7f8b96; font-size: 11px; font-weight: 400; }
+        .fill-red    { fill: #EF476F; }
+    ]]></style>
+
+    <!-- LEFT: Release cadence — bars stack with shrinking gaps to evoke
+         compressing release cycles. -->
+    <rect fill="#FFD167" x="60" y="92"  width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="130" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="164" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="195" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="223" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="248" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="270" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="290" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="308" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="324" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="338" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="352" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="366" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="380" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="394" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="408" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="422" width="120" height="14" rx="3"/>
+    <rect fill="#FFD167" x="60" y="436" width="120" height="14" rx="3"/>
+
+    <!-- Connector arrow from the release stack into the service grid. -->
+    <path fill="#119FCD" d="M 200,272 L 388,272 L 388,265 L 405,275 L 388,285 L 388,278 L 200,278 Z"/>
+
+    <!-- RIGHT: Service mesh — a 4×4 grid where the two red nodes are
+         the behaviour drift the copy talks about. -->
+    <rect fill="#4CBD97" x="440" y="100" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="565" y="100" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="690" y="100" width="100" height="60" rx="8"/>
+    <rect fill="#EF476F" x="815" y="100" width="100" height="60" rx="8"/>
+
+    <rect fill="#4CBD97" x="440" y="195" width="100" height="60" rx="8"/>
+    <rect fill="#EF476F" x="565" y="195" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="690" y="195" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="815" y="195" width="100" height="60" rx="8"/>
+
+    <rect fill="#4CBD97" x="440" y="290" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="565" y="290" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="690" y="290" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="815" y="290" width="100" height="60" rx="8"/>
+
+    <rect fill="#4CBD97" x="440" y="385" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="565" y="385" width="100" height="60" rx="8"/>
+    <rect fill="#EF476F" x="690" y="385" width="100" height="60" rx="8"/>
+    <rect fill="#4CBD97" x="815" y="385" width="100" height="60" rx="8"/>
+
+    <!-- Inter-service connector pills (thin filled rects so the SVGLoader
+         treats them as shapes rather than stroked lines). Vertical mesh. -->
+    <rect fill="#119FCD" x="488" y="160" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="613" y="160" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="738" y="160" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="863" y="160" width="4" height="35" rx="2"/>
+
+    <rect fill="#119FCD" x="488" y="255" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="613" y="255" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="738" y="255" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="863" y="255" width="4" height="35" rx="2"/>
+
+    <rect fill="#119FCD" x="488" y="350" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="613" y="350" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="738" y="350" width="4" height="35" rx="2"/>
+    <rect fill="#119FCD" x="863" y="350" width="4" height="35" rx="2"/>
+
+    <!-- Labels -->
+    <text class="label-col" x="120" y="76" text-anchor="middle">Release cadence</text>
+    <text class="label-col" x="678" y="78" text-anchor="middle">Service mesh</text>
+
+    <text class="label-head fill-red" x="815" y="478">Drift</text>
+    <text class="label-sub" x="853" y="478">behaviour fragments</text>
+</svg>

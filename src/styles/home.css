@@ -22,12 +22,41 @@
     display: block;
 }
 
-/* Hero text sits above the canvas. Narrower than the common default
-   so the lead copy doesn't intrude on the ribbon background. */
+/* Left-weighted dark gradient between the WebGL canvas and the hero
+   text so copy stays legible while the brightest ribbon frames stay
+   visible on the right. */
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(7, 17, 26, 0.85) 0%,
+        rgba(7, 17, 26, 0.7) 35%,
+        rgba(7, 17, 26, 0.25) 70%,
+        rgba(7, 17, 26, 0) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Hero text sits above the canvas. Wider than the common default so
+   the larger headline has room to breathe before it wraps. */
 .hero-text {
     position: relative;
     z-index: 2;
-    max-width: 680px;
+    max-width: 880px;
+}
+
+.hero h1 {
+    font-size: clamp(44px, 7vw, 96px);
+    letter-spacing: -1px;
+    margin-bottom: 28px;
+}
+
+.hero .lead {
+    font-size: 20px;
+    max-width: 600px;
 }
 
 /* The .lead default leaves 0 margin-bottom; on home it's followed by

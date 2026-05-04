@@ -1,0 +1,118 @@
+/* Long-form legal pages (privacy, terms). Loaded after common.css. */
+
+/* Override the global mandatory scroll-snap from common.css — long-form
+   prose plus a snap-anchored footer makes scrolling jumpy and can pull
+   the initial scroll position away from the top. */
+html.snap-ready {
+    scroll-snap-type: none;
+}
+
+.section-legal {
+    padding: 160px 32px 96px;
+    min-height: 80vh;
+    scroll-snap-align: none;
+}
+
+.legal-container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.legal-meta {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+}
+
+.legal-container h1 {
+    font-family: "filson-pro", sans-serif;
+    font-weight: 700;
+    font-size: clamp(36px, 4.5vw, 56px);
+    color: var(--text-heading);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+}
+
+.legal-lede {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-body);
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+.legal-container h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text-heading);
+    line-height: 1.3;
+    margin-top: 48px;
+    margin-bottom: 16px;
+}
+
+.legal-container h3 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text-heading);
+    margin-top: 28px;
+    margin-bottom: 10px;
+}
+
+.legal-container p {
+    font-size: 16px;
+    color: var(--text-body);
+    line-height: 1.75;
+    margin-bottom: 16px;
+}
+
+.legal-container ul,
+.legal-container ol {
+    margin-bottom: 16px;
+    padding-left: 24px;
+    color: var(--text-body);
+}
+
+.legal-container ul {
+    list-style: disc;
+}
+
+.legal-container ol {
+    list-style: decimal;
+}
+
+.legal-container li {
+    font-size: 16px;
+    line-height: 1.75;
+    margin-bottom: 6px;
+}
+
+.legal-container li::marker {
+    color: var(--text-muted);
+}
+
+.legal-container a {
+    color: var(--accent-blue);
+    text-decoration: underline;
+}
+
+.legal-container a:hover {
+    opacity: 0.85;
+}
+
+.legal-container strong {
+    color: var(--text-heading);
+    font-weight: 500;
+}
+
+.legal-callout {
+    border-left: 2px solid var(--accent-green);
+    padding: 4px 0 4px 20px;
+    margin: 24px 0;
+    color: var(--text-heading);
+    font-size: 15px;
+    line-height: 1.7;
+}

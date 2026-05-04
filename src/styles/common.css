@@ -550,7 +550,7 @@ site-footer {
 /* ── Orion section ───────────────────────────────────────────────── */
 
 .section-orion {
-    padding: 96px 32px;
+    padding: 128px 32px;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -564,26 +564,26 @@ site-footer {
 .orion-label {
     color: var(--text-muted);
     line-height: 20px;
-    margin-bottom: 14px;
+    margin-bottom: 20px;
 }
 
 .orion-heading {
     font-family: "Montserrat", sans-serif;
     font-weight: 700;
-    font-size: clamp(32px, 3.5vw, 46px);
+    font-size: clamp(32px, 4vw, 56px);
     color: var(--text-heading);
     line-height: 1.15;
     letter-spacing: -0.5px;
-    margin-bottom: 14px;
+    margin-bottom: 32px;
 }
 
 .orion-desc-card {
-    padding: 24px;
-    margin-bottom: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
 }
 
 .orion-desc-card p {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 300;
     color: var(--text-body);
     line-height: 1.7;
@@ -597,13 +597,13 @@ site-footer {
 .orion-feature-list {
     display: flex;
     flex-direction: column;
-    gap: 11px;
+    gap: 20px;
 }
 
 .orion-feature-card {
-    padding: 16px 20px 16px 63px;
+    padding: 28px 32px 28px 84px;
     position: relative;
-    min-height: 72px;
+    min-height: 96px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -611,30 +611,30 @@ site-footer {
 
 .orion-feature-icon {
     position: absolute;
-    left: 17px;
-    top: 16px;
-    width: 32px;
-    height: 32px;
+    left: 24px;
+    top: 28px;
+    width: 40px;
+    height: 40px;
 }
 
 .orion-feature-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     color: var(--text-heading);
 }
 
 .orion-feature-card h4 {
     font-family: "Montserrat", sans-serif;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text-heading);
-    margin-bottom: 3px;
+    margin-bottom: 6px;
 }
 
 .orion-feature-card p {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text-body);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* ── CTA section ─────────────────────────────────────────────────── */
@@ -963,7 +963,7 @@ site-footer {
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 48px;
     margin-bottom: 48px;
 }
