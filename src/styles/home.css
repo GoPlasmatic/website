@@ -81,6 +81,7 @@
         width: 100%;
         height: auto;
         aspect-ratio: 16 / 10;
+        max-height: 60dvh;
     }
     .section-full:has(> section-graphic[position="background"])
         > .section-container {
