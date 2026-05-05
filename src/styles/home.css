@@ -65,19 +65,34 @@
     margin-bottom: 16px;
 }
 
-/* On narrow viewports the configured 2-column layout (3D graphic
-   side-by-side with copy) collapses: stack the section-graphic above
-   the prose, full bleed, with a fixed aspect so the canvas has
-   predictable height.
-   Scoped so iPad landscape (≥1024 wide, landscape) keeps the desktop
-   side-by-side layout — only portrait tablets and narrow landscape
-   phones collapse. The matching matchMedia in section-graphic.js uses
-   the same condition. */
-@media (max-width: 1280px) and (orientation: portrait), (max-width: 950px) {
+/* Sections that host a background <section-graphic> get a pure black
+   fill so the copy block matches the canvas — the bloom composer in
+   section-graphic.js writes opaque alpha on the canvas, which reads as
+   #000 regardless of clear color. Scoped to home so orion's fixed
+   brain canvas keeps showing through its sections. */
+.section-full:has(> section-graphic[position="background"]) {
+    background: #000;
+}
+
+/* Section-graphic placement varies by device class:
+ *   - Mobile (≤640 portrait): graphics are hidden — the diagram is
+ *     too dense to read at phone widths.
+ *   - Phone landscape (≤600 height landscape): handled by the
+ *     landscape-short rule in common.css, which also hides the graphic.
+ *   - iPad portrait (641–1280 wide, portrait): stack the graphic BELOW
+ *     the copy so the heading reads first, with the diagram as
+ *     supporting visual.
+ *   - Else (iPad landscape, desktop): full-bleed absolute,
+ *     side-by-side with the copy column (the default rule in
+ *     common.css). The matching matchMedia in section-graphic.js
+ *     keeps the camera in narrow mode for stacked / hidden cases. */
+
+@media (min-width: 641px) and (max-width: 1280px) and (orientation: portrait) {
     .section-full:has(> section-graphic[position="background"]) {
         flex-direction: column;
         align-items: stretch;
         min-height: auto;
+        padding-bottom: 96px;
     }
     .section-full > section-graphic[position="background"] {
         position: relative;
@@ -86,10 +101,28 @@
         height: auto;
         aspect-ratio: 16 / 10;
         max-height: 60dvh;
+        order: 2;
     }
     .section-full:has(> section-graphic[position="background"])
         > .section-container {
-        padding: 48px 32px 128px;
+        padding: 96px 32px 32px;
+        order: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .section-full > section-graphic[position="background"] {
+        display: none;
+    }
+    /* The :has() rule in common.css strips section padding so the
+       graphic can fill via inset: 0; restore standard mobile padding
+       now that the graphic is gone. */
+    .section-full:has(> section-graphic[position="background"]) {
+        padding: 96px 24px;
+    }
+    .section-full:has(> section-graphic[position="background"])
+        > .section-container {
+        padding: 0;
     }
 }
 
