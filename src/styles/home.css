@@ -64,3 +64,49 @@
 .hero-sub {
     margin-bottom: 16px;
 }
+
+/* On mobile, drop the architecture-core / fragmentation backgrounds on
+   the two .section-full blocks. The CTA's logo graphic lives on
+   .section-cta and is unaffected. */
+@media (max-width: 640px) {
+    .section-full > section-graphic[position="background"] {
+        display: none;
+    }
+}
+
+/* On tablet (641–1024px), pull the graphics out of background mode and
+   stack them above the section content so the two never overlap. */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .section-full {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 48px;
+    }
+    .section-full > section-graphic[position="background"] {
+        position: relative;
+        inset: auto;
+        width: 80%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+        align-self: center;
+        mix-blend-mode: screen;
+        overflow: hidden;
+    }
+    /* Recenter the offset shape into the strip and scale up so it fills.
+       object-offset=+9 with target-extent=17 places the shape ~22.9% right
+       of canvas center at a 3:2 aspect; mirror for the offset=-9 sibling. */
+    .section-full
+        > section-graphic[svg="assets/architecture-core.svg"]
+        canvas,
+    .section-full
+        > section-graphic[svg="assets/architecture-core.svg"]
+        .sg-text-layer {
+        transform: scale(1.4) translateX(-22.9%);
+    }
+    .section-full > section-graphic[svg="assets/fragmentation.svg"] canvas,
+    .section-full
+        > section-graphic[svg="assets/fragmentation.svg"]
+        .sg-text-layer {
+        transform: scale(1.4) translateX(22.9%);
+    }
+}

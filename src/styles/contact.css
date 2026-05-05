@@ -1,7 +1,25 @@
 /* Contact-page styles. Loaded after common.css. */
 
+/* Standalone single-section page — opt out of the global mandatory snap
+   from common.css and the footer's snap-end so the page lands at the
+   headline instead of the footer on mobile. */
+html.snap-ready {
+    scroll-snap-type: none;
+}
+
+.footer {
+    scroll-snap-align: none;
+}
+
 .section-contact {
-    padding-top: 160px;
+    padding: 160px 32px 96px;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-contact > .section-container {
+    position: relative;
+    z-index: 1;
 }
 
 .contact-grid {
@@ -118,12 +136,3 @@
     color: var(--accent-red);
 }
 
-/* The contact page is single-screen — disable mandatory snap so the
-   form section and footer don't fight on shorter viewports. */
-@media (max-height: 900px) {
-    .section-contact {
-        scroll-snap-align: none;
-        min-height: auto;
-        padding-bottom: 96px;
-    }
-}

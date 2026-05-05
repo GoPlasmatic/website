@@ -36,12 +36,28 @@ class SiteNav extends HTMLElement {
                         class="nav-logo"
                     />
                 </a>
-                <div class="nav-links">
+                <button
+                    type="button"
+                    class="nav-toggle"
+                    aria-label="Toggle menu"
+                    aria-expanded="false"
+                    aria-controls="site-nav-links"
+                >
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="nav-links" id="site-nav-links">
                     ${links}
                     <a href="contact.html" class="btn-nav">Get started</a>
                 </div>
             </nav>
         `;
+
+        const navEl = this.querySelector(".nav");
+        const toggle = this.querySelector(".nav-toggle");
+        toggle.addEventListener("click", () => {
+            const open = navEl.classList.toggle("open");
+            toggle.setAttribute("aria-expanded", open);
+        });
     }
 }
 

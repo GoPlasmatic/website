@@ -123,6 +123,40 @@ site-footer {
     color: var(--bg-section);
 }
 
+/* Hamburger toggle — desktop hides it, mobile media query reveals it. */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.nav-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text-heading);
+    border-radius: 1px;
+    transition:
+        transform 0.2s,
+        opacity 0.2s;
+}
+.nav.open .nav-toggle span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.nav.open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+.nav.open .nav-toggle span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
 /* ── Buttons ─────────────────────────────────────────────────────── */
 
 .btn-primary {
@@ -1178,7 +1212,32 @@ section-graphic .sg-text-layer > .sg-text {
     .audience-grid {
         grid-template-columns: 1fr;
     }
+    .nav-toggle {
+        display: flex;
+    }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 8px 0;
+        background: rgba(7, 17, 26, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav.open .nav-links {
+        display: flex;
+    }
     .nav-links a {
+        padding: 14px 32px;
+        font-size: 16px;
+    }
+    .nav-links a.btn-nav {
         display: none;
     }
 }
