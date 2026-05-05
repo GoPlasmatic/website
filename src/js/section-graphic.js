@@ -719,7 +719,9 @@ class SectionGraphic extends HTMLElement {
         // zoom to fit the shape's bbox.
         const narrow =
             p.position === "background" &&
-            (matchMedia("(max-width: 1280px)").matches ||
+            (matchMedia(
+                "(max-width: 1280px) and (orientation: portrait), (max-width: 950px)",
+            ).matches ||
                 getComputedStyle(this).position !== "absolute");
         const baseZ = p.cameraPos[2] || 1;
         if (narrow) {
@@ -767,13 +769,29 @@ class SectionGraphic extends HTMLElement {
         // scale: SVG units → world via `shapeScale` (same k shapes use),
         // world → pixels via the perspective camera's on-axis factor at
         // z=0: `pxPerWorld = h / (2·tan(fov/2)·|cam.z|)`.
+        // Floor the result against the *shape's projected pixel height*
+        // — that way, labels stay legible on small canvases (where the
+        // raw projection is tiny) but don't grow oversized on landscape
+        // canvases where the shape is offset and only fills part of the
+        // viewport.
         if (this.textNodes && this.textNodes.length) {
-            const camZ = Math.abs(this.params.cameraPos[2] || 1);
+            // Use the *actual* camera Z (basePos.z) — narrow mode rewrites
+            // it to fit the shape, so reading the configured params.cameraPos
+            // here gives wildly wrong projection on stacked layouts.
+            const camZ = Math.abs(
+                this.basePos?.z || this.params.cameraPos[2] || 1,
+            );
             const fovRad = (this.params.fov * Math.PI) / 180;
             const pxPerWorld = h / (2 * Math.tan(fovRad / 2) * camZ);
             const pxPerSvg = this.shapeScale * pxPerWorld;
+            // Projected size already tracks shape extent; on landscape
+            // canvases the shape is offset and labels naturally sit at
+            // ~7px, on portrait stacked layouts they grow to ~12px.
+            // Apply a small absolute floor so mobile-portrait (where
+            // projection still produces ~5px) stays readable.
             for (const { el, data } of this.textNodes) {
-                el.style.fontSize = `${data.fontSizeSvg * pxPerSvg}px`;
+                const projected = data.fontSizeSvg * pxPerSvg;
+                el.style.fontSize = `${Math.max(8, projected)}px`;
             }
         }
     }

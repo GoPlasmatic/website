@@ -960,12 +960,14 @@ visualViewport?.addEventListener("resize", onResize);
 
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const clock = new THREE.Clock();
+let firstFrame = true;
 (function animate() {
     requestAnimationFrame(animate);
     const dt = clock.getDelta();
     const elapsed = clock.getElapsedTime();
 
-    scrollProgress += (targetScrollProgress - scrollProgress) * 0.05;
+    if (reduced) scrollProgress = targetScrollProgress;
+    else scrollProgress += (targetScrollProgress - scrollProgress) * 0.05;
 
     // Fade hero text as user scrolls
     heroText.style.opacity = Math.max(0, 1 - scrollProgress * 4);
@@ -977,4 +979,9 @@ const clock = new THREE.Clock();
     updateCamera(scrollProgress);
 
     composer.render();
+
+    if (firstFrame) {
+        firstFrame = false;
+        document.body.dataset.sceneReady = "true";
+    }
 })();

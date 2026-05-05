@@ -68,8 +68,12 @@
 /* On narrow viewports the configured 2-column layout (3D graphic
    side-by-side with copy) collapses: stack the section-graphic above
    the prose, full bleed, with a fixed aspect so the canvas has
-   predictable height. */
-@media (max-width: 1280px) {
+   predictable height.
+   Scoped so iPad landscape (≥1024 wide, landscape) keeps the desktop
+   side-by-side layout — only portrait tablets and narrow landscape
+   phones collapse. The matching matchMedia in section-graphic.js uses
+   the same condition. */
+@media (max-width: 1280px) and (orientation: portrait), (max-width: 950px) {
     .section-full:has(> section-graphic[position="background"]) {
         flex-direction: column;
         align-items: stretch;

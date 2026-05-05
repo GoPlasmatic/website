@@ -3,9 +3,12 @@
   "private": true,
   "description": "Build tooling for the Plasmatic marketing site. Source lives in src/; tools/build.py produces public/.",
   "scripts": {
-    "build": "python tools/build.py"
+    "build": "python tools/build.py",
+    "screenshots": "playwright test",
+    "screenshots:ui": "playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "svgo": "^4.0.1",
     "terser": "^5.36.0"
   }

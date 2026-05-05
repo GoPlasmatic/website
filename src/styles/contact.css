@@ -65,8 +65,10 @@ html.snap-ready {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: rgba(15, 32, 48, 0.6);
+    background: rgba(15, 32, 48, 0.92);
     backdrop-filter: blur(8px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
 }
 
 .form-row {
@@ -87,8 +89,8 @@ html.snap-ready {
 .form-row textarea {
     width: 100%;
     padding: 12px 14px;
-    background: rgba(7, 17, 26, 0.6);
-    border: 1px solid var(--border-subtle);
+    background: rgba(7, 17, 26, 0.85);
+    border: 1px solid rgba(17, 159, 205, 0.28);
     border-radius: var(--radius-sm);
     color: var(--text-heading);
     font-family: "DM Sans", sans-serif;
@@ -108,7 +110,7 @@ html.snap-ready {
 .form-row textarea:focus {
     outline: none;
     border-color: var(--accent-blue);
-    background: rgba(7, 17, 26, 0.85);
+    background: rgba(7, 17, 26, 0.95);
 }
 
 .contact-submit {

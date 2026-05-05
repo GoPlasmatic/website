@@ -57,6 +57,7 @@ class SiteNav extends HTMLElement {
         toggle.addEventListener("click", () => {
             const open = navEl.classList.toggle("open");
             toggle.setAttribute("aria-expanded", open);
+            document.body.classList.toggle("nav-open", open);
         });
     }
 }
@@ -64,7 +65,7 @@ class SiteNav extends HTMLElement {
 class SiteFooter extends HTMLElement {
     connectedCallback() {
         this.innerHTML = html`
-            <footer class="footer section-dimmed">
+            <footer class="footer section-dimmed" data-test-section="footer">
                 <div class="section-container">
                     <div class="footer-bottom">
                         <p>&copy; 2026 Plasmatic. All rights reserved.</p>

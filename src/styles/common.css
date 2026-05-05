@@ -36,11 +36,19 @@ html {
 html.snap-ready {
     scroll-snap-type: y mandatory;
 }
-/* Mandatory snap fights tall content on small viewports — switch to
-   proximity wherever any section is liable to exceed the viewport. */
-@media (max-width: 1024px), (max-height: 800px) {
+/* Phone portraits get proximity snap so a section taller than the
+   viewport doesn't trap the user mid-scroll. Tablets (iPad mini and up,
+   any orientation) keep mandatory snap from the rule above. */
+@media (max-width: 640px) {
     html.snap-ready {
         scroll-snap-type: y proximity;
+    }
+}
+/* Landscape phones can't fit a viewport-height section worth of content;
+   even proximity snap is hostile. Drop snap entirely. */
+@media (max-height: 600px) and (orientation: landscape) {
+    html.snap-ready {
+        scroll-snap-type: none;
     }
 }
 /* Offset snap alignment so sections clear the fixed nav. */
@@ -50,7 +58,7 @@ html.snap-ready {
 html {
     scroll-padding-top: var(--nav-offset);
 }
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (orientation: portrait), (max-width: 950px) {
     :root {
         --nav-offset: 88px;
     }
@@ -235,10 +243,10 @@ site-footer {
 /* ── Hero ────────────────────────────────────────────────────────── */
 
 .hero {
-    min-height: calc(100dvh - var(--nav-offset));
+    min-height: 100dvh;
     display: flex;
     align-items: center;
-    padding: 0 clamp(32px, 6vw, 96px);
+    padding: var(--nav-offset) clamp(32px, 6vw, 96px) 0;
     scroll-snap-align: start;
 }
 
@@ -1227,7 +1235,10 @@ section-graphic .sg-text-layer > .sg-text {
 
 /* ── Responsive ──────────────────────────────────────────────────── */
 
-@media (max-width: 1024px) {
+/* Mobile / small-tablet collapse. Scoped so iPad Mini landscape (1024×768)
+   and any wider iPad in landscape keep the desktop two-column layout —
+   only portrait tablets and phone landscapes collapse. */
+@media (max-width: 1024px) and (orientation: portrait), (max-width: 950px) {
     .hero,
     .section-full,
     .section-orion,
@@ -1259,8 +1270,8 @@ section-graphic .sg-text-layer > .sg-text {
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        padding: 8px 0;
-        background: rgba(7, 17, 26, 0.95);
+        padding: 8px 0 16px;
+        background: var(--bg-deep);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border-subtle);
@@ -1273,7 +1284,15 @@ section-graphic .sg-text-layer > .sg-text {
         font-size: 16px;
     }
     .nav-links a.btn-nav {
-        display: none;
+        display: block;
+        margin: 12px 32px 0;
+        padding: 14px 20px;
+        text-align: center;
+        font-size: 15px;
+    }
+    /* Lock background scroll while the drawer is open. */
+    body.nav-open {
+        overflow: hidden;
     }
     .capability-card {
         display: grid;
@@ -1332,11 +1351,28 @@ section-graphic .sg-text-layer > .sg-text {
     .section-full,
     .section-orion,
     .section-cta {
-        padding-top: 72px;
+        min-height: auto;
+        padding-top: calc(var(--nav-offset) + 16px);
+        padding-bottom: 56px;
+        align-items: flex-start;
+        scroll-snap-align: none;
+    }
+    .footer {
+        scroll-snap-align: none;
+    }
+    /* Sections with a background <section-graphic> route padding through
+       the inner .section-container (the :has rule above sets section
+       padding to 0); reduce that here too, otherwise the 128 px tops/bottoms
+       push every heading off-screen on a 390 px viewport. */
+    section:has(> section-graphic[position="background"]) > .section-container {
+        padding-top: calc(var(--nav-offset) + 16px);
         padding-bottom: 56px;
     }
-    .hero {
-        scroll-snap-align: none;
+    /* The decorative background graphics fill the section via inset: 0 and
+       dominate a phone-landscape viewport. Hide them so the heading and
+       body copy are reachable; the desktop/tablet layouts keep them. */
+    section-graphic[position="background"] {
+        display: none;
     }
     .section-header {
         margin-bottom: 24px;
@@ -1357,6 +1393,10 @@ section-graphic .sg-text-layer > .sg-text {
 }
 
 @media (max-width: 640px) {
+    .hero h1 {
+        font-size: 32px;
+        line-height: 1.05;
+    }
     .hero-ctas {
         flex-direction: column;
     }

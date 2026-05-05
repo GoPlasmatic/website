@@ -171,19 +171,28 @@ addEventListener("mousemove", (e) => {
     mouseY = (e.clientY / innerHeight) * 2 - 1;
 });
 
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const clock = new THREE.Clock();
+let firstFrame = true;
 (function animate() {
     requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-    for (const u of allUniforms) u.uTime.value = t;
+    if (!reduced) {
+        const t = clock.getElapsedTime();
+        for (const u of allUniforms) u.uTime.value = t;
 
-    targetPos.set(
-        basePos.x - mouseX * parallax.x,
-        basePos.y + mouseY * parallax.y,
-        basePos.z,
-    );
-    camera.position.lerp(targetPos, parallax.smoothing);
+        targetPos.set(
+            basePos.x - mouseX * parallax.x,
+            basePos.y + mouseY * parallax.y,
+            basePos.z,
+        );
+        camera.position.lerp(targetPos, parallax.smoothing);
+    }
     camera.lookAt(baseLookAt);
 
     composer.render();
+
+    if (firstFrame) {
+        firstFrame = false;
+        document.body.dataset.sceneReady = "true";
+    }
 })();

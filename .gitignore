@@ -10,6 +10,14 @@ node_modules/
 # Local Claude Code config
 .claude/
 
+# Playwright visual-test artifacts
+tests/visual/__screenshots__/
+test-results/
+playwright-report/
+
+# Local-only planning notes (not part of the repo)
+proposal.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
