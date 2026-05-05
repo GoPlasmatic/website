@@ -856,10 +856,37 @@ const camKeyframes = [
     }, // 7 Footer
 ];
 
-// Initialize from current scroll position so a refresh mid-page syncs immediately
+// Map scroll position to keyframe progress via the actual snap sections.
+// scrollY/scrollHeight is fragile on mobile because section heights grow
+// when the layout collapses to one column — anchoring on element rects
+// keeps the camera index aligned with the section the user is reading.
+let _sections = [];
+const refreshSections = () => {
+    _sections = [...document.querySelectorAll(
+        ".hero, .section-full, .section-orion, .section-cta, footer.footer"
+    )];
+};
+refreshSections();
+addEventListener("load", refreshSections);
+visualViewport?.addEventListener("resize", refreshSections);
+
 function getScrollProgress() {
-    const max = document.body.scrollHeight - innerHeight;
-    return max > 0 ? scrollY / max : 0;
+    if (_sections.length < 2) {
+        refreshSections();
+        if (_sections.length < 2) {
+            const max = document.body.scrollHeight - innerHeight;
+            return max > 0 ? scrollY / max : 0;
+        }
+    }
+    const mid = innerHeight * 0.5;
+    let active = 0;
+    for (let i = 0; i < _sections.length; i++) {
+        if (_sections[i].getBoundingClientRect().top <= mid) active = i;
+    }
+    const r = _sections[active].getBoundingClientRect();
+    const within = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height)));
+    const n = _sections.length - 1;
+    return Math.min(1, Math.max(0, (active + within) / n));
 }
 let targetScrollProgress = getScrollProgress();
 let scrollProgress = targetScrollProgress; // no lerp on first frame
@@ -907,7 +934,10 @@ function updateCamera(p) {
 
 /* ── Resize ────────────────────────────────────────────────────────── */
 
-addEventListener("resize", () => {
+// visualViewport.resize fires when iOS Safari's URL bar collapses; the
+// regular window.resize event does not, which leaves the canvas the
+// wrong size on mobile until the next orientation change.
+const onResize = () => {
     const pr = Math.min(devicePixelRatio, 2);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
@@ -922,10 +952,13 @@ addEventListener("resize", () => {
     epMat.uniforms.uPointScale.value = pointScale(rs);
     pulseMat.uniforms.uPointScale.value = pointScale(rs);
     lineMat.uniforms.uOpacity.value = lineOpacity(rs);
-});
+};
+addEventListener("resize", onResize);
+visualViewport?.addEventListener("resize", onResize);
 
 /* ── Render loop ───────────────────────────────────────────────────── */
 
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const clock = new THREE.Clock();
 (function animate() {
     requestAnimationFrame(animate);
@@ -937,8 +970,10 @@ const clock = new THREE.Clock();
     // Fade hero text as user scrolls
     heroText.style.opacity = Math.max(0, 1 - scrollProgress * 4);
 
-    epMat.uniforms.uTime.value = elapsed;
-    updatePulses(dt);
+    if (!reduced) {
+        epMat.uniforms.uTime.value = elapsed;
+        updatePulses(dt);
+    }
     updateCamera(scrollProgress);
 
     composer.render();

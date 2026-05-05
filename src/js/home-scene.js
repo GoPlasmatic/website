@@ -104,6 +104,7 @@ function resize() {
 }
 resize();
 addEventListener("resize", resize);
+visualViewport?.addEventListener("resize", resize);
 
 // Path: floor (−Z travel) → quarter-arc fillet → wall (+Y travel).
 // Fillet centered at (rBend, zWall + rBend) so tangents meet the
