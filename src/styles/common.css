@@ -31,9 +31,17 @@
 
 html {
     scroll-snap-type: none;
+    overscroll-behavior-y: none;
 }
 html.snap-ready {
     scroll-snap-type: y mandatory;
+}
+/* Mandatory snap fights tall content on small viewports — switch to
+   proximity wherever any section is liable to exceed the viewport. */
+@media (max-width: 1024px), (max-height: 800px) {
+    html.snap-ready {
+        scroll-snap-type: y proximity;
+    }
 }
 /* Offset snap alignment so sections clear the fixed nav. */
 :root {
@@ -227,11 +235,10 @@ site-footer {
 /* ── Hero ────────────────────────────────────────────────────────── */
 
 .hero {
-    min-height: calc(100vh - var(--nav-offset));
+    min-height: calc(100dvh - var(--nav-offset));
     display: flex;
     align-items: center;
     padding: 0 clamp(32px, 6vw, 96px);
-    padding-top: 96px;
     scroll-snap-align: start;
 }
 
@@ -314,7 +321,7 @@ site-footer {
 
 .section-full {
     padding: 128px 32px;
-    min-height: calc(100vh - var(--nav-offset));
+    min-height: calc(100dvh - var(--nav-offset));
     display: flex;
     align-items: center;
     scroll-snap-align: start;
@@ -613,7 +620,7 @@ site-footer {
 
 .section-orion {
     padding: 128px 32px;
-    min-height: calc(100vh - var(--nav-offset));
+    min-height: calc(100dvh - var(--nav-offset));
     display: flex;
     align-items: center;
     scroll-snap-align: start;
@@ -703,7 +710,7 @@ site-footer {
 
 .section-cta {
     padding: 128px 32px;
-    min-height: calc(100vh - var(--nav-offset));
+    min-height: calc(100dvh - var(--nav-offset));
     display: flex;
     align-items: center;
     scroll-snap-align: start;
@@ -1287,6 +1294,51 @@ section-graphic .sg-text-layer > .sg-text {
     .capability-card .icon-box svg {
         width: 22px;
         height: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero,
+    .section-full,
+    .section-orion,
+    .section-cta {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    .section-full,
+    .section-orion,
+    .section-cta {
+        padding-top: 96px;
+        padding-bottom: 96px;
+    }
+    .section-header {
+        margin-bottom: 48px;
+    }
+    .orion-feature-card {
+        padding: 20px 20px 20px 68px;
+        min-height: 80px;
+    }
+    .orion-feature-icon {
+        left: 16px;
+        top: 20px;
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+    .hero,
+    .section-full,
+    .section-orion,
+    .section-cta {
+        padding-top: 72px;
+        padding-bottom: 56px;
+    }
+    .hero {
+        scroll-snap-align: none;
+    }
+    .section-header {
+        margin-bottom: 24px;
     }
 }
 
