@@ -65,48 +65,26 @@
     margin-bottom: 16px;
 }
 
-/* On mobile, drop the architecture-core / fragmentation backgrounds on
-   the two .section-full blocks. The CTA's logo graphic lives on
-   .section-cta and is unaffected. */
-@media (max-width: 640px) {
-    .section-full > section-graphic[position="background"] {
-        display: none;
-    }
-}
-
-/* On tablet (641–1024px), pull the graphics out of background mode and
-   stack them above the section content so the two never overlap. */
-@media (min-width: 641px) and (max-width: 1024px) {
-    .section-full {
+/* On narrow viewports the configured 2-column layout (3D graphic
+   side-by-side with copy) collapses: stack the section-graphic above
+   the prose, full bleed, with a fixed aspect so the canvas has
+   predictable height. */
+@media (max-width: 1280px) {
+    .section-full:has(> section-graphic[position="background"]) {
         flex-direction: column;
         align-items: stretch;
-        gap: 48px;
+        min-height: auto;
     }
     .section-full > section-graphic[position="background"] {
         position: relative;
         inset: auto;
-        width: 80%;
+        width: 100%;
         height: auto;
-        aspect-ratio: 3 / 2;
-        align-self: center;
-        mix-blend-mode: screen;
-        overflow: hidden;
+        aspect-ratio: 16 / 10;
     }
-    /* Recenter the offset shape into the strip and scale up so it fills.
-       object-offset=+9 with target-extent=17 places the shape ~22.9% right
-       of canvas center at a 3:2 aspect; mirror for the offset=-9 sibling. */
-    .section-full
-        > section-graphic[svg="assets/architecture-core.svg"]
-        canvas,
-    .section-full
-        > section-graphic[svg="assets/architecture-core.svg"]
-        .sg-text-layer {
-        transform: scale(1.4) translateX(-22.9%);
-    }
-    .section-full > section-graphic[svg="assets/fragmentation.svg"] canvas,
-    .section-full
-        > section-graphic[svg="assets/fragmentation.svg"]
-        .sg-text-layer {
-        transform: scale(1.4) translateX(22.9%);
+    .section-full:has(> section-graphic[position="background"])
+        > .section-container {
+        padding: 48px 32px 128px;
     }
 }
+

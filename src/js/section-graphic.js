@@ -230,6 +230,8 @@ function prepareShapes(paths, pathSamples, targetExtent) {
     // Arrays can carry non-index properties; stash the SVG→world transform
     // here so callers (text overlay) can align with the shapes exactly.
     shapes.transform = { cx, cy, k };
+    shapes.extentX = (maxX - minX) * k;
+    shapes.extentY = (maxY - minY) * k;
     return shapes;
 }
 
@@ -492,6 +494,10 @@ class SectionGraphic extends HTMLElement {
             // World-space offset applied to the group origin so rotation
             // stays centred on the shape while the shape sits off-axis.
             objectOffset: vec(this, "object-offset", [0, 0]),
+            // Offset applied on narrow viewports (≤1280px). Defaults to
+            // centered (0,0) since the side-by-side desktop layout doesn't
+            // apply when the canvas stacks above prose.
+            mobileObjectOffset: vec(this, "mobile-object-offset", [0, 0]),
             targetExtent: num(this, "target-extent", 8),
             position: str(this, "position", "inline"),
         };
@@ -659,6 +665,7 @@ class SectionGraphic extends HTMLElement {
         this.textLayer = textLayer;
         this.textNodes = textNodes;
         this.shapeScale = shapes.transform.k;
+        this.shapeExtent = { x: shapes.extentX, y: shapes.extentY };
         this.uniformsList = uniformsList;
         this.basePos = new THREE.Vector3(...p.cameraPos);
         this.baseLook = new THREE.Vector3(...p.cameraLook);
@@ -671,12 +678,17 @@ class SectionGraphic extends HTMLElement {
 
         const DEG = Math.PI / 180;
         this.rotRad = [p.rotation[0] * DEG, p.rotation[1] * DEG, p.rotation[2] * DEG];
-        this.tiltRad = [p.tilt[0] * DEG, p.tilt[1] * DEG, p.tilt[2] || 1];
-        this.parallaxV = [p.parallax[0], p.parallax[1], p.parallax[2]];
+        this.tiltBase = [p.tilt[0] * DEG, p.tilt[1] * DEG, p.tilt[2] || 1];
+        this.parallaxBase = [p.parallax[0], p.parallax[1], p.parallax[2]];
+        this.tiltRad = [...this.tiltBase];
+        this.parallaxV = [...this.parallaxBase];
 
         this.resize();
         this.resizeObs = new ResizeObserver(() => this.resize());
         this.resizeObs.observe(this);
+        this._mq = matchMedia("(max-width: 1280px)");
+        this._onMq = () => this.resize();
+        this._mq.addEventListener("change", this._onMq);
 
         this._onMouse = (e) => {
             this.mouseX = (e.clientX / innerWidth) * 2 - 1;
@@ -696,6 +708,56 @@ class SectionGraphic extends HTMLElement {
         this.composer.setSize(w, h);
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
+
+        // On narrow viewports the configured object-offset (meant for the
+        // desktop 2-column layout) pushes the shape off-screen. Center it
+        // and zoom the camera so targetExtent fills the viewport in both
+        // axes (with a small margin).
+        const p = this.params;
+        // Mobile / tablet treatment: ignore the configured object-offset
+        // (meant for desktop side-by-side layout), center the camera, and
+        // zoom to fit the shape's bbox.
+        const narrow =
+            p.position === "background" &&
+            (matchMedia("(max-width: 1280px)").matches ||
+                getComputedStyle(this).position !== "absolute");
+        const baseZ = p.cameraPos[2] || 1;
+        if (narrow) {
+            const mox = p.mobileObjectOffset[0] || 0;
+            const moy = p.mobileObjectOffset[1] || 0;
+            this.group.position.set(mox, moy, 0);
+            this.basePos.x = 0;
+            this.basePos.y = 0;
+            this.camera.position.x = 0;
+            this.camera.position.y = 0;
+            // Disable mouse-driven parallax and tilt — keep the camera locked
+            // on origin so the diagram reads like a static figure on mobile.
+            this.parallaxV = [0, 0, this.parallaxBase[2]];
+            this.tiltRad = [0, 0, this.tiltBase[2]];
+            this.tiltCur.set(0, 0);
+            const fovRad = (p.fov * Math.PI) / 180;
+            const aspect = w / h;
+            const t = Math.tan(fovRad / 2);
+            const ex = (this.shapeExtent?.x || p.targetExtent) * 1.02;
+            const ey = (this.shapeExtent?.y || p.targetExtent) * 1.02;
+            const dFitX = ex / (2 * t * aspect);
+            const dFitY = ey / (2 * t);
+            const d = Math.max(dFitX, dFitY);
+            this.basePos.z = d;
+            this.camera.position.z = d;
+        } else {
+            this.group.position.set(
+                p.objectOffset[0] || 0,
+                p.objectOffset[1] || 0,
+                0,
+            );
+            this.basePos.x = p.cameraPos[0] || 0;
+            this.basePos.y = p.cameraPos[1] || 0;
+            this.basePos.z = baseZ;
+            this.camera.position.z = baseZ;
+            this.parallaxV = [...this.parallaxBase];
+            this.tiltRad = [...this.tiltBase];
+        }
 
         const ab = adaptBloom(this.bloom, getResScale(w, h));
         this.bloomPass.strength = ab.strength;

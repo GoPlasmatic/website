@@ -35,6 +35,23 @@ html {
 html.snap-ready {
     scroll-snap-type: y mandatory;
 }
+/* Offset snap alignment so sections clear the fixed nav. */
+:root {
+    --nav-offset: 96px;
+}
+html {
+    scroll-padding-top: var(--nav-offset);
+}
+@media (max-width: 1024px) {
+    :root {
+        --nav-offset: 88px;
+    }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+    :root {
+        --nav-offset: 56px;
+    }
+}
 
 body {
     background: var(--bg-deep);
@@ -210,7 +227,7 @@ site-footer {
 /* ── Hero ────────────────────────────────────────────────────────── */
 
 .hero {
-    min-height: 100vh;
+    min-height: calc(100vh - var(--nav-offset));
     display: flex;
     align-items: center;
     padding: 0 clamp(32px, 6vw, 96px);
@@ -297,7 +314,7 @@ site-footer {
 
 .section-full {
     padding: 128px 32px;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--nav-offset));
     display: flex;
     align-items: center;
     scroll-snap-align: start;
@@ -596,7 +613,7 @@ site-footer {
 
 .section-orion {
     padding: 128px 32px;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--nav-offset));
     display: flex;
     align-items: center;
     scroll-snap-align: start;
@@ -686,7 +703,7 @@ site-footer {
 
 .section-cta {
     padding: 128px 32px;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--nav-offset));
     display: flex;
     align-items: center;
     scroll-snap-align: start;
@@ -1172,10 +1189,14 @@ section-graphic[position="background"] {
 section:has(> section-graphic[position="background"]) {
     position: relative;
     overflow: hidden;
+    padding: 0;
 }
 section:has(> section-graphic[position="background"]) > .section-container {
     position: relative;
     z-index: 1;
+    padding: 128px 32px;
+    box-sizing: border-box;
+    max-width: calc(1200px + 64px);
 }
 
 /* Text layer rendered inside <section-graphic> for <text> elements in the
@@ -1199,6 +1220,12 @@ section-graphic .sg-text-layer > .sg-text {
 /* ── Responsive ──────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
+    .hero,
+    .section-full,
+    .section-orion,
+    .section-cta {
+        padding-bottom: 128px;
+    }
     .grid-2col {
         grid-template-columns: 1fr;
         gap: 48px;
@@ -1239,6 +1266,40 @@ section-graphic .sg-text-layer > .sg-text {
     }
     .nav-links a.btn-nav {
         display: none;
+    }
+    .capability-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 16px;
+        padding: 24px;
+    }
+    .capability-card .icon-box {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        margin-bottom: 0;
+        width: 44px;
+        height: 44px;
+        align-self: start;
+    }
+    .capability-card > *:not(.icon-box) {
+        grid-column: 2;
+    }
+    .capability-card .icon-box svg {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .nav {
+        padding: 8px 32px;
+    }
+    .nav-logo {
+        height: 32px;
+    }
+    .nav-toggle {
+        width: 32px;
+        height: 32px;
     }
 }
 
