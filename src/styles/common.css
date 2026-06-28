@@ -1224,11 +1224,18 @@ section-graphic .sg-text-layer > .sg-text {
    and any wider iPad in landscape keep the desktop two-column layout —
    only portrait tablets and phone landscapes collapse. */
 @media (max-width: 1024px) and (orientation: portrait), (max-width: 950px) {
+    html.snap-ready {
+        scroll-snap-type: none !important;
+    }
     .hero,
     .section-full,
     .section-orion,
     .section-cta {
+        scroll-snap-align: none !important;
         padding-bottom: 128px;
+    }
+    footer.footer {
+        scroll-snap-align: none !important;
     }
     .grid-2col {
         grid-template-columns: 1fr;

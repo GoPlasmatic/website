@@ -830,30 +830,31 @@ function updatePulses(dt) {
 
 /* ── Scroll-driven camera (brain → spine journey) ──────────────────── */
 
-// One keyframe per snap-section (8 sections, 7 segments)
-// Hero | Problem | Solution | Capabilities | How It Works | Orion | CTA | Footer
+// One keyframe per snap-section (9 sections, 8 segments)
+// Hero | Two Clocks | Orion | Decouple Diagram | AI & Trust | Guardrails Diagram | The Future | CTA | Footer
 const maxLookY = spineBottomY * 0.45; // limit: don't let spine go above mid-screen
 const camKeyframes = [
     { posX: 1.5, lookY: brainCenterY, camZ: 5, camYOff: 0.5, rotOff: 0 }, // 0 Hero
-    { posX: 1.5, lookY: brainCenterY, camZ: 6, camYOff: 0.4, rotOff: 0 }, // 1 Problem
-    { posX: -1.5, lookY: brainCenterY * 0.3, camZ: 8, camYOff: 0.3, rotOff: 0 }, // 2 Solution
-    { posX: 0, lookY: 0, camZ: 9, camYOff: 0.2, rotOff: 0 }, // 3 Capabilities
-    { posX: 0, lookY: spineBottomY * 0.25, camZ: 10, camYOff: 0.1, rotOff: 0 }, // 4 How It Works
-    { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 5 Orion
+    { posX: 1.5, lookY: brainCenterY, camZ: 6, camYOff: 0.4, rotOff: 0 }, // 1 Two Clocks
+    { posX: -1.5, lookY: brainCenterY * 0.3, camZ: 8, camYOff: 0.3, rotOff: 0 }, // 2 Orion
+    { posX: 0, lookY: 0, camZ: 9, camYOff: 0.2, rotOff: 0 }, // 3 Decouple Diagram
+    { posX: 0, lookY: spineBottomY * 0.25, camZ: 10, camYOff: 0.1, rotOff: 0 }, // 4 AI & Trust
+    { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 5 Guardrails Diagram
+    { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 6 The Future
     {
         posX: 2.4,
         lookY: brainCenterY * 0.4,
         camZ: 10,
         camYOff: 0.3,
         rotOff: -Math.PI / 2,
-    }, // 6 CTA
+    }, // 7 CTA
     {
         posX: 2.4,
         lookY: brainCenterY * 0.4,
         camZ: 10,
         camYOff: 0.3,
         rotOff: -Math.PI / 2,
-    }, // 7 Footer
+    }, // 8 Footer
 ];
 
 // Map scroll position to keyframe progress via the actual snap sections.
@@ -922,7 +923,7 @@ function updateCamera(p) {
 
     // Rotation: unwind intro over first section, then continuous scroll
     // rotation + per-keyframe offset.
-    const introT = ease(Math.min(p * 7, 1));
+    const introT = ease(Math.min(p * (camKeyframes.length - 1), 1));
     const introRot = MODEL_START_ROT * (1 - introT);
     const scrollRot = p * Math.PI * 2;
     modelGroup.rotation.y = introRot + scrollRot + kf.rotOff;

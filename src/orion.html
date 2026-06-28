@@ -17,6 +17,16 @@
 
         <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
         <script defer src="js/common.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+        <script>
+            if (window.mermaid) {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: "dark",
+                    securityLevel: "loose",
+                });
+            }
+        </script>
         <script type="importmap">
             {
                 "imports": {
@@ -37,7 +47,7 @@
             <section class="hero" data-test-section="hero">
                 <div class="hero-text" id="heroText">
                     <div class="eyebrow">
-                        <span>Introducing Orion</span>
+                        <span>Build | Deploy | Govern</span>
                     </div>
                     <h1 class="reveal-blur">
                         <span class="gradient-text">Orion</span>
@@ -46,141 +56,365 @@
                         The nervous system for modern software.
                     </h1>
                     <p class="lead">
-                        AI is accelerating how systems are built. But without
-                        coordination, behaviour becomes unpredictable. Orion is
-                        the runtime that makes systems work as one.
+                        Orion separates business logic from application code,
+                        allowing changes to evolve independently and instantly.
                     </p>
                     <div class="hero-ctas">
                         <a href="contact.html" class="btn-primary"
                             >Start a conversation &rarr;</a
                         >
-                        <a href="#how-it-works" class="btn-secondary"
+                        <a href="#two-clocks" class="btn-secondary"
                             >Explore how it works</a
                         >
                     </div>
                 </div>
             </section>
 
-            <!-- PROBLEM ─────────────────────────────────────────── -->
-            <section id="how-it-works" class="section-full" data-test-section="problem">
+            <!-- TWO CLOCKS ──────────────────────────────────────── -->
+            <section
+                id="two-clocks"
+                class="section-full"
+                data-test-section="problem"
+            >
                 <div class="section-container">
                     <div class="grid-2col">
                         <div class="col-content reveal-left">
+                            <div class="eyebrow">
+                                <span>Problem</span>
+                            </div>
                             <h2 class="reveal-blur">
-                                Systems are growing faster than they can
-                                coordinate.
+                                Business logic lives on the engineering clock
                             </h2>
                             <p class="section-body">
-                                Every service has its own logic. Every
-                                deployment changes behaviour. Every integration
-                                introduces drift.
+                                Every bsiness runs on two clocks. The business
+                                clock moves at the speed of opportunity:
+                                markets, customers, competition. The engineering
+                                clock moves at the speed of the release cycle:
+                                design, build, test, deploy. Both are necessary.
+                                But most business logic lives on the engineering
+                                clock.
                             </p>
-                            <div class="pain-points">
-                                <div class="pain-point">
-                                    <div class="dot dot-red"></div>
-                                    <div>
-                                        <p class="pain-title">
-                                            Behaviour is unpredictable
-                                        </p>
-                                        <p class="pain-desc">
-                                            Logic scattered across dozens of
-                                            services
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="pain-point">
-                                    <div class="dot dot-red"></div>
-                                    <div>
-                                        <p class="pain-title">
-                                            Changes take too long
-                                        </p>
-                                        <p class="pain-desc">
-                                            Every update requires rebuilding and
-                                            redeploying
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="pain-point">
-                                    <div class="dot dot-red"></div>
-                                    <div>
-                                        <p class="pain-title">
-                                            No single source of truth
-                                        </p>
-                                        <p class="pain-desc">
-                                            Understanding system behaviour
-                                            requires reading all the code
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="callout">
+                            <div class="callout reveal-blur">
                                 <p>
-                                    The issue isn't building systems.<br /><strong
-                                        >It's controlling how they
-                                        behave.</strong
-                                    >
+                                    So every pricing change, every fraud rule,
+                                    and every new customer experience becomes a
+                                    software release.
+                                    <strong>And the business waits.</strong>
                                 </p>
                             </div>
                         </div>
-                        <div></div>
+                        <div
+                            class="reveal-right"
+                            style="
+                                --reveal-delay: 0.1s;
+                                display: flex;
+                                align-items: center;
+                            "
+                        >
+                            <div class="simulator-card">
+                                <div class="simulator-header">
+                                    <span class="dot dot-red"></span>
+                                    <span class="dot dot-yellow"></span>
+                                    <span class="dot dot-green"></span>
+                                    <span class="simulator-title"
+                                        >Deployment Speed Comparison</span
+                                    >
+                                </div>
+                                <div class="simulator-body">
+                                    <div class="sim-columns">
+                                        <div class="sim-column">
+                                            <div class="sim-column-header">
+                                                <span
+                                                    class="slider-label"
+                                                    style="color: #ffd167"
+                                                    >Engineering Clock</span
+                                                >
+                                                <span
+                                                    class="sim-speed-badge speed-slow"
+                                                    style="
+                                                        font-size: 10px;
+                                                        padding: 2px 8px;
+                                                        margin: 0;
+                                                    "
+                                                    >90s Delay</span
+                                                >
+                                            </div>
+                                            <div
+                                                class="stages-chart"
+                                                id="eng-stages-chart"
+                                            >
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >Commit &amp; PR
+                                                            Push</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >10s</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >Container
+                                                            Build</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >35s</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >CI/CD Testing</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >30s</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >Rolling
+                                                            Deploy</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >15s</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sim-column">
+                                            <div class="sim-column-header">
+                                                <span
+                                                    class="slider-label"
+                                                    style="color: #4cbd97"
+                                                    >Orion Clock</span
+                                                >
+                                                <span
+                                                    class="sim-speed-badge speed-fast"
+                                                    style="
+                                                        font-size: 10px;
+                                                        padding: 2px 8px;
+                                                        margin: 0;
+                                                    "
+                                                    >12ms Hot-Swap</span
+                                                >
+                                            </div>
+                                            <div
+                                                class="stages-chart"
+                                                id="biz-stages-chart"
+                                            >
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >Schema Check</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >2ms</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill orion-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >Policy
+                                                            Guardrails</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >3ms</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill orion-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                                <div class="stage-row">
+                                                    <div class="stage-info">
+                                                        <span class="stage-name"
+                                                            >Edge
+                                                            Promotion</span
+                                                        >
+                                                        <span
+                                                            class="stage-duration"
+                                                            >7ms</span
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="stage-progress-bar"
+                                                    >
+                                                        <div
+                                                            class="progress-fill orion-fill"
+                                                            style="width: 0%"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            margin-top: 8px;
+                                        "
+                                    >
+                                        <button
+                                            class="btn-deploy"
+                                            id="sim-trigger-btn"
+                                            onclick="triggerParallelDeploy()"
+                                            style="
+                                                padding: 8px 20px;
+                                                font-size: 12px;
+                                                border-radius: 6px;
+                                            "
+                                        >
+                                            Deploy Change
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SOLUTION ────────────────────────────────────────── -->
+            <!-- ORION ───────────────────────────────────────────── -->
             <section class="section-full" data-test-section="solution">
                 <div class="section-container">
                     <div class="grid-2col">
                         <div></div>
                         <div class="col-content reveal-right">
+                            <div class="eyebrow">
+                                <span>Solution</span>
+                            </div>
                             <h2 class="reveal-blur">
-                                What's missing is a
-                                <span class="gradient-text"
-                                    >nervous system.</span
-                                >
+                                Unlock the business logic
                             </h2>
                             <p class="section-body">
-                                Orion sits between your services as a runtime
-                                coordination layer &mdash; a central spine that
-                                routes signals, governs behaviour, and controls
-                                how your entire system responds.
+                                Orion allows you to separates business logic
+                                from application code. Engineering builds the
+                                platform. Business logic evolves independently.
                             </p>
-                            <div class="feature-cards-stack">
-                                <div class="feature-card feature-card-blue">
-                                    <h3>
-                                        <span
-                                            class="dot-inline dot-blue"
-                                        ></span>
-                                        Signal routing
-                                    </h3>
-                                    <p>
-                                        Direct events to the right handlers
-                                        based on content, priority, or context
-                                    </p>
-                                </div>
-                                <div class="feature-card feature-card-green">
-                                    <h3>
-                                        <span
-                                            class="dot-inline dot-green"
-                                        ></span>
-                                        Instant deployment
-                                    </h3>
-                                    <p>
-                                        Change behaviour across all services
-                                        without rebuilding or redeploying code
-                                    </p>
-                                </div>
-                                <div class="feature-card feature-card-yellow">
-                                    <h3>
-                                        <span
-                                            class="dot-inline dot-yellow"
-                                        ></span>
-                                        Central governance
-                                    </h3>
-                                    <p>
-                                        One source of truth for how your system
-                                        should behave
-                                    </p>
+
+                            <!-- Real-world Use Case Selector -->
+                            <div
+                                class="use-case-tabs reveal-blur"
+                                style="--reveal-delay: 0.15s"
+                            >
+                                <button
+                                    class="use-case-btn active"
+                                    onclick="switchUseCase('pricing')"
+                                >
+                                    Dynamic Pricing
+                                </button>
+                                <button
+                                    class="use-case-btn"
+                                    onclick="switchUseCase('fraud')"
+                                >
+                                    Fraud Detection
+                                </button>
+                                <button
+                                    class="use-case-btn"
+                                    onclick="switchUseCase('experience')"
+                                >
+                                    Customer Experience
+                                </button>
+                            </div>
+
+                            <div
+                                class="use-case-display-card reveal-blur"
+                                id="use-case-card"
+                                style="--reveal-delay: 0.2s"
+                            >
+                                <h4>Dynamic Surge Pricing</h4>
+                                <p>
+                                    Adjust pricing rules in response to market
+                                    demand, inventory levels, or user profiles
+                                    instantly.
+                                </p>
+                                <div class="use-case-comparison">
+                                    <div class="comp-col comp-col-before">
+                                        <strong
+                                            >Before Orion (Engineering
+                                            Clock)</strong
+                                        >
+                                        <p>
+                                            Engineers push a Git branch, run
+                                            unit/integration tests, build Docker
+                                            containers, roll out a rolling
+                                            Kubernetes deployment, and wait for
+                                            DNS propagation. (Total time: 90
+                                            mins)
+                                        </p>
+                                    </div>
+                                    <div class="comp-col comp-col-after">
+                                        <strong
+                                            >With Orion (Business Clock)</strong
+                                        >
+                                        <p>
+                                            Surge pricing multiplier is
+                                            hot-swapped in the Orion logical
+                                            layer. The rule goes live globally
+                                            across all endpoints in 12ms with
+                                            zero microservice restarts.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -188,114 +422,378 @@
                 </div>
             </section>
 
-            <!-- CAPABILITIES ────────────────────────────────────── -->
-            <section class="section-full section-dimmed" data-test-section="capabilities">
+            <!-- DECOUPLE DIAGRAM ────────────────────────────────── -->
+            <section
+                class="section-full section-dimmed"
+                data-test-section="decouple"
+            >
                 <div class="section-container">
                     <div class="section-header reveal">
-                        <h2 class="reveal-blur">
-                            Built like a real nervous system
-                        </h2>
+                        <div class="eyebrow">
+                            <span>Architecture</span>
+                        </div>
+                        <h2 class="reveal-blur">The Decouple</h2>
                         <p>
-                            Signals, reflexes, memory, and protection &mdash;
-                            the same principles that coordinate biological
-                            systems
+                            Orion lifts logic out of compiled services and runs
+                            it in a dynamic, runtime-swappable environment.
                         </p>
                     </div>
-                    <div class="grid-2x2">
-                        <div class="card card-elevated card-hoverable capability-card reveal">
-                            <div class="icon-box icon-blue">
-                                <i data-lucide="git-branch"></i>
+
+                    <div
+                        class="grid-2col reveal"
+                        style="gap: 32px; margin-top: 40px"
+                    >
+                        <!-- Column 1: Where Business Logic Sits (Copy & Explanations) -->
+                        <div class="col-content">
+                            <h3
+                                style="
+                                    font-size: 20px;
+                                    font-weight: 600;
+                                    color: #f8fafc;
+                                    margin-bottom: 12px;
+                                "
+                            >
+                                Where Orion Changes The Architecture
+                            </h3>
+
+                            <div
+                                style="
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 16px;
+                                "
+                            >
+                                <div
+                                    class="approach-box old-way"
+                                    style="
+                                        background: rgba(255, 209, 103, 0.03);
+                                        border: 1px solid
+                                            rgba(255, 209, 103, 0.1);
+                                        border-radius: 8px;
+                                        padding: 16px;
+                                    "
+                                >
+                                    <h4
+                                        style="
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #ffd167;
+                                            margin-bottom: 6px;
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 8px;
+                                        "
+                                    >
+                                        <span
+                                            style="
+                                                width: 6px;
+                                                height: 6px;
+                                                border-radius: 50%;
+                                                background: #ffd167;
+                                            "
+                                        ></span>
+                                        Old Approach: Coupled
+                                    </h4>
+                                    <p
+                                        style="
+                                            font-size: 13px;
+                                            color: #cbd5e1;
+                                            line-height: 1.5;
+                                            margin: 0;
+                                        "
+                                    >
+                                        Logic is compiled directly into
+                                        microservices. Adjusting a threshold
+                                        requires a git branch, code reviews,
+                                        Docker builds, integration tests, and
+                                        rolling K8s deployments.
+                                    </p>
+                                </div>
+                                <div
+                                    class="approach-box orion-way"
+                                    style="
+                                        background: rgba(76, 189, 151, 0.03);
+                                        border: 1px solid
+                                            rgba(76, 189, 151, 0.1);
+                                        border-radius: 8px;
+                                        padding: 16px;
+                                    "
+                                >
+                                    <h4
+                                        style="
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #4cbd97;
+                                            margin-bottom: 6px;
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 8px;
+                                        "
+                                    >
+                                        <span
+                                            style="
+                                                width: 6px;
+                                                height: 6px;
+                                                border-radius: 50%;
+                                                background: #4cbd97;
+                                            "
+                                        ></span>
+                                        Orion Approach: Decoupled
+                                    </h4>
+                                    <p
+                                        style="
+                                            font-size: 13px;
+                                            color: #cbd5e1;
+                                            line-height: 1.5;
+                                            margin: 0;
+                                        "
+                                    >
+                                        Logic runs as an independent,
+                                        declarative graph. Swapping rules
+                                        happens dynamically at runtime in 8ms
+                                        with safety validations and zero gateway
+                                        downtime.
+                                    </p>
+                                </div>
                             </div>
-                            <h3>Signals</h3>
-                            <p class="capability-subtitle">
-                                Route and orchestrate
-                            </p>
-                            <p>
-                                Direct events through your system based on
-                                content, context, and priority. Coordinate
-                                workflows that span multiple services.
-                            </p>
                         </div>
-                        <div class="card card-elevated card-hoverable capability-card reveal">
-                            <div class="icon-box icon-yellow">
-                                <i data-lucide="zap"></i>
+
+                        <!-- Column 2: Simple Workflow Flowcharts (Before vs After) -->
+                        <div>
+                            <h3
+                                style="
+                                    font-size: 20px;
+                                    font-weight: 600;
+                                    color: #f8fafc;
+                                    margin-bottom: 12px;
+                                    text-align: center;
+                                "
+                            >
+                                Rule Flow Comparison
+                            </h3>
+                            <div class="decouple-flows-comparison">
+                                <!-- Left: Before (Old Way) -->
+                                <div class="decouple-flow-column">
+                                    <div
+                                        class="decouple-flow-header"
+                                        style="
+                                            color: #ffd167;
+                                            border-color: rgba(
+                                                255,
+                                                209,
+                                                103,
+                                                0.2
+                                            );
+                                        "
+                                    >
+                                        Before (Coupled Code)
+                                    </div>
+                                    <div class="decouple-flow-canvas">
+                                        <!-- Node 1: Request -->
+                                        <div
+                                            class="orion-style-node unresolved"
+                                        >
+                                            <span
+                                                class="node-dot bg-gray"
+                                            ></span>
+                                            <i
+                                                data-lucide="radio"
+                                                class="node-icon"
+                                            ></i>
+                                            <div class="node-text">
+                                                <div class="node-label">
+                                                    POST /checkout
+                                                </div>
+                                                <div class="node-kind">
+                                                    Channel
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flow-arrow">&darr;</div>
+                                        <!-- Node 2: App Code -->
+                                        <div class="orion-style-node draft">
+                                            <span
+                                                class="node-dot bg-blue"
+                                            ></span>
+                                            <i
+                                                data-lucide="cpu"
+                                                class="node-icon"
+                                            ></i>
+                                            <div class="node-text">
+                                                <div class="node-label">
+                                                    App Code (Monolith)
+                                                </div>
+                                                <div class="node-kind">
+                                                    Hardcoded Logic
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flow-arrow">&darr;</div>
+                                        <!-- Node 3: Hardcoded threshold -->
+                                        <div
+                                            class="orion-style-node error-node"
+                                        >
+                                            <span
+                                                class="node-dot bg-yellow"
+                                            ></span>
+                                            <i
+                                                data-lucide="git-commit"
+                                                class="node-icon"
+                                            ></i>
+                                            <div class="node-text">
+                                                <div class="node-label">
+                                                    fraudScore > 80
+                                                </div>
+                                                <div class="node-kind">
+                                                    Hardcoded Rule
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right: After (Orion Way) -->
+                                <div class="decouple-flow-column">
+                                    <div
+                                        class="decouple-flow-header"
+                                        style="
+                                            color: #4cbd97;
+                                            border-color: rgba(
+                                                76,
+                                                189,
+                                                151,
+                                                0.2
+                                            );
+                                        "
+                                    >
+                                        After (Orion Decoupled)
+                                    </div>
+                                    <div class="decouple-flow-canvas">
+                                        <!-- Node 1: Channel -->
+                                        <div class="orion-style-node active">
+                                            <span
+                                                class="node-dot bg-green"
+                                            ></span>
+                                            <i
+                                                data-lucide="radio"
+                                                class="node-icon"
+                                            ></i>
+                                            <div class="node-text">
+                                                <div class="node-label">
+                                                    POST /orders
+                                                </div>
+                                                <div class="node-kind">
+                                                    Channel
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flow-arrow">&darr;</div>
+                                        <!-- Node 2: Workflow -->
+                                        <div class="orion-style-node active">
+                                            <span
+                                                class="node-dot bg-green"
+                                            ></span>
+                                            <i
+                                                data-lucide="git-branch"
+                                                class="node-icon"
+                                            ></i>
+                                            <div class="node-text">
+                                                <div class="node-label">
+                                                    payment-fraud-check
+                                                </div>
+                                                <div class="node-kind">
+                                                    Workflow
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flow-arrow">&darr;</div>
+                                        <!-- Node 3: Connector -->
+                                        <div class="orion-style-node active">
+                                            <span
+                                                class="node-dot bg-green"
+                                            ></span>
+                                            <i
+                                                data-lucide="plug"
+                                                class="node-icon"
+                                            ></i>
+                                            <div class="node-text">
+                                                <div class="node-label">
+                                                    gateway-connector
+                                                </div>
+                                                <div class="node-kind">
+                                                    Connector
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h3>Reflexes</h3>
-                            <p class="capability-subtitle">Instant response</p>
-                            <p>
-                                Deploy behaviour changes that take effect
-                                immediately across all services. No code
-                                deployments, no downtime.
-                            </p>
-                        </div>
-                        <div class="card card-elevated card-hoverable capability-card reveal">
-                            <div class="icon-box icon-teal">
-                                <i data-lucide="database"></i>
-                            </div>
-                            <h3>Memory</h3>
-                            <p class="capability-subtitle">Version and audit</p>
-                            <p>
-                                Every behaviour change is versioned and
-                                traceable. Understand what changed, when, and
-                                why.
-                            </p>
-                        </div>
-                        <div class="card card-elevated card-hoverable capability-card reveal">
-                            <div class="icon-box icon-red">
-                                <i data-lucide="shield"></i>
-                            </div>
-                            <h3>Protection</h3>
-                            <p class="capability-subtitle">
-                                Govern and control
-                            </p>
-                            <p>
-                                Enforce policies, validate changes, and maintain
-                                complete visibility over how your system
-                                behaves.
-                            </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- HOW IT WORKS ────────────────────────────────────── -->
-            <section class="section-full section-dimmed" data-test-section="how-it-works">
+            <!-- AI & TRUST ──────────────────────────────────────── -->
+            <section
+                class="section-full section-dimmed"
+                data-test-section="ai-trust"
+            >
                 <div class="section-container">
                     <div class="section-header reveal">
-                        <h2 class="reveal-blur">
-                            From scattered signals to
-                            <span class="gradient-text"
-                                >coordinated behaviour</span
-                            >
-                        </h2>
+                        <div class="eyebrow">
+                            <span>Governance</span>
+                        </div>
+                        <h2 class="reveal-blur">AI &amp; Trust</h2>
+                        <p>Adaptability only matters when you can trust it.</p>
                     </div>
                     <div class="grid-2col comparison-grid">
                         <div class="comparison-card before-card reveal-left">
-                            <div class="label-mono label-mono-upper comparison-label">
-                                Before Orion
+                            <div
+                                class="label-mono label-mono-upper comparison-label"
+                                style="color: var(--accent-blue)"
+                            >
+                                AI Optimization
                             </div>
-                            <h3>Scattered signals</h3>
+                            <h3>AI Proposes</h3>
+                            <p
+                                class="section-body"
+                                style="
+                                    font-size: 15px;
+                                    margin-bottom: 20px;
+                                    color: rgba(255, 255, 255, 0.7);
+                                "
+                            >
+                                Because business logic lives in its own layer,
+                                AI can safely optimize workflows, rules, and
+                                system behavior:
+                            </p>
                             <div class="comparison-points">
                                 <div class="comparison-point">
                                     <span
                                         class="dot-sm"
-                                        style="background: var(--accent-red)"
+                                        style="background: var(--accent-blue)"
                                     ></span>
-                                    <p>Logic embedded in every service</p>
+                                    <p>
+                                        A sharper fraud rule suggested at
+                                        runtime
+                                    </p>
                                 </div>
                                 <div class="comparison-point">
                                     <span
                                         class="dot-sm"
-                                        style="background: var(--accent-red)"
+                                        style="background: var(--accent-blue)"
                                     ></span>
-                                    <p>Changes require full deployments</p>
+                                    <p>
+                                        A better pricing ruleset matching market
+                                        change
+                                    </p>
                                 </div>
                                 <div class="comparison-point">
                                     <span
                                         class="dot-sm"
-                                        style="background: var(--accent-red)"
+                                        style="background: var(--accent-blue)"
                                     ></span>
-                                    <p>Inconsistent behaviour across system</p>
+                                    <p>A smarter customer experience flow</p>
                                 </div>
                             </div>
                         </div>
@@ -303,144 +801,236 @@
                             <div
                                 class="label-mono label-mono-upper comparison-label comparison-label-green"
                             >
-                                With Orion
+                                Security Layer
                             </div>
-                            <h3>Coordinated behaviour</h3>
+                            <h3>Human Approves</h3>
+                            <p
+                                class="section-body"
+                                style="
+                                    font-size: 15px;
+                                    margin-bottom: 20px;
+                                    color: rgba(255, 255, 255, 0.7);
+                                "
+                            >
+                                Every change is executed inside a structured
+                                trust model, fully reviewable and with complete
+                                auditability:
+                            </p>
                             <div class="comparison-points">
                                 <div class="comparison-point">
                                     <span
                                         class="dot-sm"
                                         style="background: var(--accent-green)"
                                     ></span>
-                                    <p>Central coordination layer</p>
+                                    <p>
+                                        Validated: Checked against system
+                                        constraints
+                                    </p>
                                 </div>
                                 <div class="comparison-point">
                                     <span
                                         class="dot-sm"
                                         style="background: var(--accent-green)"
                                     ></span>
-                                    <p>Instant behaviour changes</p>
+                                    <p>
+                                        Versioned &amp; Audited: Trace every
+                                        single change
+                                    </p>
                                 </div>
                                 <div class="comparison-point">
                                     <span
                                         class="dot-sm"
                                         style="background: var(--accent-green)"
                                     ></span>
-                                    <p>Governed, predictable system</p>
+                                    <p>
+                                        Instantly Reversible: Rollback instantly
+                                        if needed
+                                    </p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="grid-3col steps-grid">
-                        <div class="card card-elevated card-hoverable step-card reveal">
-                            <div class="step-num">01</div>
-                            <h3>Define behaviour</h3>
-                            <p>
-                                Describe what your system should do &mdash;
-                                routing, transformation, orchestration
-                            </p>
-                        </div>
-                        <div class="card card-elevated card-hoverable step-card reveal">
-                            <div class="step-num">02</div>
-                            <h3>Deploy instantly</h3>
-                            <p>
-                                Changes activate across all services without
-                                rebuilding or redeploying
-                            </p>
-                        </div>
-                        <div class="card card-elevated card-hoverable step-card reveal">
-                            <div class="step-num">03</div>
-                            <h3>Observe &amp; govern</h3>
-                            <p>
-                                See how signals flow, trace decisions, enforce
-                                policies
-                            </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ORION PRODUCT ───────────────────────────────────── -->
-            <section class="section-orion section-dimmed" data-test-section="orion">
+            <!-- GUARDRAILS DIAGRAM ──────────────────────────────── -->
+            <section
+                class="section-full section-dimmed"
+                data-test-section="guardrails"
+            >
+                <div class="section-container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">
+                            <span>Guardrails</span>
+                        </div>
+                        <h2 class="reveal-blur">AI with Guardrails</h2>
+                        <p>
+                            AI proposes &rarr; A human approves &rarr; Orion
+                            executes. Trustworthy runtime adaptability.
+                        </p>
+                    </div>
+
+                    <div class="diagram-card reveal" style="padding: 24px">
+                        <div class="guardrails-visual-container">
+                            <div class="guard-step step-ai" id="step-1">
+                                <div class="step-num">01</div>
+                                <h4>AI Proposes</h4>
+                                <p>
+                                    Optimized rules are formulated based on
+                                    business outcomes and real-time telemetry.
+                                </p>
+                                <div class="step-icon">
+                                    <i data-lucide="cpu"></i>
+                                </div>
+                            </div>
+                            <div class="step-arrow">&rarr;</div>
+                            <div class="guard-step step-human" id="step-2">
+                                <div class="step-num">02</div>
+                                <h4>Human Approves</h4>
+                                <p>
+                                    Changes go through policy guardrails. Humans
+                                    review, approve, and sign off.
+                                </p>
+                                <div class="step-icon">
+                                    <i data-lucide="user-check"></i>
+                                </div>
+                            </div>
+                            <div class="step-arrow">&rarr;</div>
+                            <div class="guard-step step-orion" id="step-3">
+                                <div class="step-num">03</div>
+                                <h4>Orion Runs</h4>
+                                <p>
+                                    Rules deploy dynamically. Changes are
+                                    versioned, audited, and instantly
+                                    reversible.
+                                </p>
+                                <div class="step-icon">
+                                    <i data-lucide="zap"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Proposal Queue Simulator -->
+                        <div
+                            class="proposal-simulator-card reveal-blur"
+                            style="--reveal-delay: 0.15s; margin-top: 24px"
+                        >
+                            <div class="sim-header">
+                                <span class="label-mono"
+                                    >AI Proposal Queue (1 pending)</span
+                                >
+                                <span class="status-indicator pulsing"
+                                    >Pending Review</span
+                                >
+                            </div>
+                            <div class="proposal-body" id="proposal-box">
+                                <div class="proposal-details">
+                                    <strong>Proposed Change:</strong> Set
+                                    <code>payment.fraudScore &gt; 70</code>
+                                    reject rule for anonymous proxies.<br />
+                                    <strong>AI Rationale:</strong> Observed 8.4%
+                                    rise in chargebacks from proxy sessions over
+                                    past 2 hours.<br />
+                                    <strong>Policy Check:</strong>
+                                    <span class="text-success"
+                                        >✔ Compliant with compliance
+                                        limits.</span
+                                    >
+                                </div>
+                                <div class="proposal-actions">
+                                    <button
+                                        class="btn-approve"
+                                        onclick="simulateApproval()"
+                                    >
+                                        Approve &amp; Deploy Rule
+                                    </button>
+                                    <button
+                                        class="btn-reject"
+                                        onclick="simulateRejection()"
+                                    >
+                                        Reject
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- THE FUTURE ──────────────────────────────────────── -->
+            <section
+                class="section-orion section-dimmed"
+                data-test-section="orion"
+            >
                 <div class="section-container">
                     <div class="grid-2col orion-grid">
                         <div class="reveal-left">
-                            <div class="label-mono orion-label">
-                                Orion &mdash; Business Runtime Platform
-                            </div>
+                            <div class="label-mono orion-label">The Future</div>
                             <h2 class="orion-heading reveal-blur">
-                                Control how your systems behave. Without
-                                touching code.
+                                Software that adapts to the AI era.
                             </h2>
                             <div class="card orion-desc-card">
                                 <p>
-                                    Business logic buried inside microservices
-                                    means every change needs an engineer, a PR,
-                                    and a release cycle.
-                                    <strong
-                                        >Orion externalises that logic</strong
+                                    The future isn’t software that gets rebuilt
+                                    every time the business changes. It’s
+                                    software that adapts. Two clocks. Working
+                                    together.
+                                </p>
+                                <p
+                                    style="
+                                        margin-top: 24px;
+                                        font-size: 28px;
+                                        font-weight: 800;
+                                        font-family: var(--font-display);
+                                        line-height: 1.2;
+                                    "
+                                >
+                                    Orion.<br />
+                                    <span class="gradient-text"
+                                        >The nervous system for modern
+                                        software.</span
                                     >
-                                    into a governed runtime layer &mdash; giving
-                                    you instant, traceable control over how your
-                                    systems behave.
                                 </p>
                             </div>
-                            <a href="contact.html" class="btn-primary"
+                            <a
+                                href="contact.html"
+                                class="btn-primary"
+                                style="margin-top: 16px"
                                 >Request early access &rarr;</a
                             >
                         </div>
                         <div class="orion-feature-list reveal-right">
                             <div class="card orion-feature-card">
                                 <div class="icon-chip orion-feature-icon">
-                                    <i data-lucide="zap"></i>
+                                    <i data-lucide="clock"></i>
                                 </div>
-                                <h4>Instant system changes</h4>
+                                <h4>Synchronized Speed</h4>
                                 <p>
-                                    Deploy logic changes in real time. No
-                                    engineering cycles, no PRs, no release
-                                    schedules.
+                                    Unify the engineering clock and business
+                                    clock to launch pricing and rule updates
+                                    instantly.
                                 </p>
                             </div>
                             <div class="card orion-feature-card">
                                 <div class="icon-chip orion-feature-icon">
-                                    <i data-lucide="building-2"></i>
+                                    <i data-lucide="layers"></i>
                                 </div>
-                                <h4>Governance at scale</h4>
+                                <h4>Decoupled Evolvability</h4>
                                 <p>
-                                    Define standards once in a central layer.
-                                    Every service enforces the same rules
-                                    automatically.
+                                    Separating logic from codebase means
+                                    engineering builds once, and logic adapts
+                                    indefinitely.
                                 </p>
                             </div>
                             <div class="card orion-feature-card">
                                 <div class="icon-chip orion-feature-icon">
-                                    <i data-lucide="search"></i>
+                                    <i data-lucide="shield-check"></i>
                                 </div>
-                                <h4>Full traceability</h4>
+                                <h4>Governed AI Execution</h4>
                                 <p>
-                                    Every execution is versioned and traceable.
-                                    Know exactly what ran, when, and why.
-                                </p>
-                            </div>
-                            <div class="card orion-feature-card">
-                                <div class="icon-chip orion-feature-icon">
-                                    <i data-lucide="link-2"></i>
-                                </div>
-                                <h4>Decoupled from services</h4>
-                                <p>
-                                    Logic lives in the runtime layer, not inside
-                                    microservices. Easier to own and evolve.
-                                </p>
-                            </div>
-                            <div class="card orion-feature-card">
-                                <div class="icon-chip orion-feature-icon">
-                                    <i data-lucide="bot"></i>
-                                </div>
-                                <h4>Ready for AI systems</h4>
-                                <p>
-                                    Govern AI-generated outputs at runtime.
-                                    Apply rules and stay in control as AI
-                                    accelerates your systems.
+                                    Use AI to optimize business outcomes while
+                                    maintaining strict human-in-the-loop review
+                                    guardrails.
                                 </p>
                             </div>
                         </div>
@@ -510,5 +1100,281 @@
 
             <site-footer></site-footer>
         </div>
+        <script>
+            function switchTab(btn, tabId) {
+                const tabsContainer = btn.parentElement;
+                tabsContainer
+                    .querySelectorAll(".tab-btn")
+                    .forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                const card = tabsContainer.parentElement;
+                card.querySelectorAll(".tab-content").forEach((c) =>
+                    c.classList.remove("active"),
+                );
+                const target = card.querySelector("#" + tabId);
+                target.classList.add("active");
+
+                // Render mermaid inside this tab if it exists and hasn't been processed yet
+                if (target.querySelector(".mermaid") && window.mermaid) {
+                    const unprocessed = target.querySelectorAll(
+                        '.mermaid:not([data-processed="true"])',
+                    );
+                    if (unprocessed.length > 0) {
+                        mermaid.init(undefined, unprocessed);
+                    }
+                }
+            }
+
+            // ── Clock Speed Simulator (Parallel Triggered Animation) ──
+            let simRunning = false;
+            let engAnimationTimeout = null;
+            let bizAnimationTimeout = null;
+
+            function triggerParallelDeploy() {
+                if (simRunning) return; // Prevent double clicking during animation
+                simRunning = true;
+
+                const btn = document.getElementById("sim-trigger-btn");
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerText = "Deploying...";
+                    btn.style.opacity = "0.5";
+                    btn.style.cursor = "not-allowed";
+                }
+
+                const engChart = document.getElementById("eng-stages-chart");
+                const bizChart = document.getElementById("biz-stages-chart");
+                if (!engChart || !bizChart) return;
+
+                const engRows = engChart.querySelectorAll(".stage-row");
+                const bizRows = bizChart.querySelectorAll(".stage-row");
+
+                // Reset all states & fills
+                engRows.forEach((row) => {
+                    row.classList.remove("active");
+                    row.querySelector(".progress-fill").style.width = "0%";
+                });
+                bizRows.forEach((row) => {
+                    row.classList.remove("active");
+                    row.querySelector(".progress-fill").style.width = "0%";
+                });
+
+                // Clear any running timeouts
+                if (engAnimationTimeout) clearTimeout(engAnimationTimeout);
+                if (bizAnimationTimeout) clearTimeout(bizAnimationTimeout);
+
+                // Animate Orion Clock (Instantaneous)
+                bizRows.forEach((row, idx) => {
+                    bizAnimationTimeout = setTimeout(() => {
+                        row.classList.add("active");
+                        row.querySelector(".progress-fill").style.width =
+                            "100%";
+                    }, idx * 100);
+                });
+
+                // Animate Engineering Clock (Slow sequential stages)
+                let engCurrent = 0;
+                function nextEngStage() {
+                    if (engCurrent < engRows.length) {
+                        const row = engRows[engCurrent];
+                        row.classList.add("active");
+                        setTimeout(() => {
+                            row.querySelector(".progress-fill").style.width =
+                                "100%";
+                        }, 50);
+                        engCurrent++;
+                        engAnimationTimeout = setTimeout(nextEngStage, 600);
+                    } else {
+                        // All finished! Reset the button so the user can run it again.
+                        simRunning = false;
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerText = "Deploy Change";
+                            btn.style.opacity = "1";
+                            btn.style.cursor = "pointer";
+                        }
+                    }
+                }
+                nextEngStage();
+            }
+
+            // Initialize stages to empty state initially, then run once after load to show user
+            window.addEventListener("load", () => {
+                setTimeout(triggerParallelDeploy, 800);
+                if (window.mermaid) {
+                    const visibleMermaid = document.querySelectorAll(
+                        ".tab-content.active .mermaid",
+                    );
+                    if (visibleMermaid.length > 0) {
+                        mermaid.init(undefined, visibleMermaid);
+                    }
+                }
+            });
+
+            // ── Live Code Swapping Simulator ──
+            function deployInteractiveCode() {
+                const text = document.getElementById("rules-textarea").value;
+                const output = document.getElementById("sim-checkout-output");
+                if (!output) return;
+
+                // Parse fraudScore limit
+                let fraudThreshold = 80;
+                const scoreMatch = text.match(
+                    /payment\.fraudScore\s*>\s*(\d+)/,
+                );
+                if (scoreMatch && scoreMatch[1]) {
+                    fraudThreshold = parseInt(scoreMatch[1]);
+                }
+
+                output.innerHTML =
+                    '<span class="log-info">[info] Swapping rules in Orion layer...</span><br><span class="log-info">[info] Hot-swap complete (11ms). Evaluating payment...</span>';
+
+                setTimeout(() => {
+                    const transactionScore = 45; // fixed score from the console details
+                    if (transactionScore > fraudThreshold) {
+                        output.innerHTML = `
+                            <span class="log-info">[info] Querying Orion Runtime...</span><br>
+                            <span class="log-error">✖ Transaction Rejected!</span><br>
+                            <strong>Reason:</strong> Rule 'High Risk Fraud Score Block' triggered (Score ${transactionScore} > Threshold ${fraudThreshold}).<br>
+                            <strong>Status:</strong> Denied at Gateway.
+                        `;
+                    } else {
+                        output.innerHTML = `
+                            <span class="log-info">[info] Querying Orion Runtime...</span><br>
+                            <span class="log-success">✔ Payment Approved!</span><br>
+                            <strong>Status:</strong> Card Authorized (Score ${transactionScore} <= Threshold ${fraudThreshold}).<br>
+                            <strong>Rules Evaluated:</strong> 2 active.
+                        `;
+                    }
+                }, 600);
+            }
+
+            // ── AI Proposal Review Simulator ──
+            function simulateApproval() {
+                const step1 = document.getElementById("step-1");
+                const step2 = document.getElementById("step-2");
+                const step3 = document.getElementById("step-3");
+                const propBox = document.getElementById("proposal-box");
+                if (!propBox) return;
+
+                step1.classList.remove("pulse-active");
+                step2.classList.remove("pulse-active");
+                step3.classList.remove("pulse-active");
+
+                step1.classList.add("pulse-active");
+                propBox.innerHTML =
+                    '<div class="sim-log">Step 1: AI optimization rule generated...</div>';
+
+                setTimeout(() => {
+                    step1.classList.remove("pulse-active");
+                    step2.classList.add("pulse-active");
+                    propBox.innerHTML =
+                        '<div class="sim-log">Step 2: Verification check &amp; cryptographic signature secured...</div>';
+
+                    setTimeout(() => {
+                        step2.classList.remove("pulse-active");
+                        step3.classList.add("pulse-active");
+                        propBox.innerHTML =
+                            '<div class="sim-log">Step 3: Orion engine deploying hotswap configs...</div>';
+
+                        setTimeout(() => {
+                            step3.classList.remove("pulse-active");
+                            propBox.innerHTML = `
+                                <div class="sim-success-box">
+                                    <span class="log-success">✔ Rule hot-swapped active in 8ms!</span><br>
+                                    <strong>Ledger Signature:</strong> <code>0x3f7b2c...a891e</code> (Signed)<br>
+                                    <strong>Real-time Impact:</strong> Fraud threshold optimized safely.<br>
+                                    <button class="btn-undo" onclick="resetProposalBox()">Rollback Change (1-Click)</button>
+                                </div>
+                            `;
+                        }, 800);
+                    }, 800);
+                }, 800);
+            }
+
+            function simulateRejection() {
+                const propBox = document.getElementById("proposal-box");
+                if (!propBox) return;
+                propBox.innerHTML = `
+                    <div class="sim-rejected-box">
+                        <span class="text-danger">✖ Proposal Rejected.</span><br>
+                        The rule was dismissed. No code was updated, no production systems were modified.<br>
+                        <button class="btn-undo" onclick="resetProposalBox()">Reset Demo</button>
+                    </div>
+                `;
+            }
+
+            function resetProposalBox() {
+                const propBox = document.getElementById("proposal-box");
+                if (!propBox) return;
+                propBox.innerHTML = `
+                    <div class="proposal-details">
+                        <strong>Proposed Change:</strong> Set <code>payment.fraudScore &gt; 70</code> reject rule for anonymous proxies.<br>
+                        <strong>AI Rationale:</strong> Observed 8.4% rise in chargebacks from proxy sessions over past 2 hours.<br>
+                        <strong>Policy Check:</strong> <span class="text-success">✔ Compliant with compliance limits.</span>
+                    </div>
+                    <div class="proposal-actions">
+                        <button class="btn-approve" onclick="simulateApproval()">Approve &amp; Deploy Rule</button>
+                        <button class="btn-reject" onclick="simulateRejection()">Reject</button>
+                    </div>
+                `;
+            }
+
+            // ── Use Case Selector ──
+            const USE_CASES = {
+                pricing: {
+                    title: "Dynamic Surge Pricing",
+                    desc: "Adjust pricing rules in response to market demand, inventory levels, or user profiles instantly.",
+                    before: "Engineers push a Git branch, run unit/integration tests, build Docker containers, roll out a rolling Kubernetes deployment, and wait for DNS propagation. (Total time: 90 mins)",
+                    after: "Surge pricing multiplier is hot-swapped in the Orion logical layer. The rule goes live globally across all endpoints in 12ms with zero microservice restarts.",
+                },
+                fraud: {
+                    title: "Payment Fraud Score Rules",
+                    desc: "Evaluate transaction fraud risk scores dynamically at runtime and reject or approve card authorizations without downtime.",
+                    before: "Hardcode risk limits and scoring thresholds (e.g. score > 85) inside checkout service code. Adjusting the score threshold to block new attacks requires updating backend logic, code reviews, container builds, and rolling deployments. (Total time: 45 mins)",
+                    after: "Fraud rules evaluate payment risk models in the Orion layer. If risk scores rise above a dynamically adjusted threshold (e.g. fraudScore > 75), Orion blocks the payment at the gateway instantly. Rules swap in 8ms with zero backend service restarts.",
+                },
+                experience: {
+                    title: "Smart User Experience (A/B Routing)",
+                    desc: "Deploy customized UI behaviors, landing rules, or localized routing for cohorts on the fly.",
+                    before: "Update feature flag backend config, sync environment variables, and perform canary deployments to ensure service stability. (Total time: 30 mins)",
+                    after: "Route cohorts dynamically by updating rules in Orion. Path updates reflect instantly for targeted user cohorts with zero traffic interruption.",
+                },
+            };
+
+            function switchUseCase(key) {
+                const data = USE_CASES[key];
+                if (!data) return;
+
+                const container = document.querySelector(".use-case-tabs");
+                if (!container) return;
+                container
+                    .querySelectorAll(".use-case-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+
+                const activeBtn = container.querySelector(
+                    `[onclick*="${key}"]`,
+                );
+                if (activeBtn) activeBtn.classList.add("active");
+
+                const card = document.getElementById("use-case-card");
+                if (!card) return;
+                card.innerHTML = `
+                    <h4>${data.title}</h4>
+                    <p>${data.desc}</p>
+                    <div class="use-case-comparison">
+                        <div class="comp-col comp-col-before">
+                            <strong>Before Orion (Engineering Clock)</strong>
+                            <p>${data.before}</p>
+                        </div>
+                        <div class="comp-col comp-col-after">
+                            <strong>With Orion (Business Clock)</strong>
+                            <p>${data.after}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        </script>
     </body>
 </html>
