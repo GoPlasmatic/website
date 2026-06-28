@@ -99,10 +99,15 @@ site-footer {
 .nav-logo-link {
     display: inline-flex;
     align-items: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .nav-logo {
     height: 48px;
+    cursor: pointer;
+    pointer-events: none;
 }
 
 .nav-links {
