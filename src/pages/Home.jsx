@@ -38,7 +38,7 @@ function GithubMark() {
 }
 
 export default function Home() {
-    usePageTitle("Plasmatic – Systems for modern software");
+    usePageTitle("Plasmatic – Declarative services runtime");
     usePageStyles(homeCss);
     return (
         <>
@@ -47,15 +47,15 @@ export default function Home() {
                 <HeroCanvas />
                 <div className="hero-text" id="heroText">
                     <div className="eyebrow">
-                        <span>Modern infrastructure</span>
+                        <span>Declarative Runtimes</span>
                     </div>
                     <h1 className="reveal-blur">
                         Plasmatic builds systems for{" "}
                         <span className="gradient-text">modern software.</span>
                     </h1>
                     <p className="lead hero-sub">
-                        We design and develop infrastructure that defines,
-                        executes and governs how complex systems behave.
+                        We design and develop runtimes that decouple,
+                        execute, and govern business logic in modern applications.
                     </p>
                     <div className="hero-ctas">
                         <Link to="/orion" className="btn-primary">
@@ -103,24 +103,24 @@ export default function Home() {
                     <div className="grid-2col">
                         <div className="col-content reveal-left">
                             <h2 className="reveal-blur">
-                                Infrastructure at the{" "}
+                                Software runtimes at the{" "}
                                 <span className="gradient-text">
                                     core of modern systems.
                                 </span>
                             </h2>
                             <p className="section-body">
-                                Plasmatic builds infrastructure that sits at the
-                                core of modern systems.
+                                Plasmatic builds declarative runtimes that sit at the
+                                core of modern software.
                             </p>
                             <p className="section-body">
-                                We focus on how systems define behaviour, execute
-                                logic and maintain control at scale.
+                                We focus on how systems decouple business logic, execute
+                                workflows, and maintain architectural safety at scale.
                             </p>
                             <div className="callout">
                                 <p>
                                     Our work enables organisations to move faster{" "}
                                     <strong>
-                                        without losing consistency or governance.
+                                        without losing agility or architectural control.
                                     </strong>
                                 </p>
                             </div>
@@ -177,8 +177,7 @@ export default function Home() {
                                             AI is generating code
                                         </p>
                                         <p className="pain-desc">
-                                            Development velocity has never been
-                                            higher
+                                            Developer velocity has never been higher
                                         </p>
                                     </div>
                                 </div>
@@ -186,11 +185,10 @@ export default function Home() {
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            Teams are shipping faster than ever
+                                            Release cycles are compressing
                                         </p>
                                         <p className="pain-desc">
-                                            Release cycles are compressing across
-                                            the industry
+                                            Constant deployments create operational overhead
                                         </p>
                                     </div>
                                 </div>
@@ -198,18 +196,17 @@ export default function Home() {
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            Behaviour becomes inconsistent
+                                            Business logic is coupled to code
                                         </p>
                                         <p className="pain-desc">
-                                            Services fragment, governance becomes
-                                            harder to enforce
+                                            Simple pricing or rule changes get blocked behind software releases
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             <div className="callout">
                                 <p>
-                                    They are limited by <strong>control.</strong>
+                                    They are limited by <strong>adaptability.</strong>
                                 </p>
                             </div>
                         </div>
@@ -226,8 +223,8 @@ export default function Home() {
                     <div className="section-header reveal">
                         <h2 className="reveal-blur">A better way to build.</h2>
                         <p>
-                            System behaviour should not be tied to release cycles
-                            or embedded across fragmented services.
+                            System logic should not be tied to release cycles
+                            or compiled inside fragmented microservices.
                         </p>
                     </div>
                     <div className="grid-3col">
@@ -235,13 +232,13 @@ export default function Home() {
                             <div className="icon-box icon-blue">
                                 <PenLine />
                             </div>
-                            <h3>Define clearly</h3>
+                            <h3>Decouple logic</h3>
                             <p className="capability-subtitle">
-                                Single source of truth
+                                Clean separation
                             </p>
                             <p>
-                                Behaviour described once, in a central layer — not
-                                scattered across dozens of services and deployment
+                                Business logic lives outside the codebase — not
+                                scattered across dozens of compiled services and deployment
                                 pipelines.
                             </p>
                         </div>
@@ -251,25 +248,22 @@ export default function Home() {
                             </div>
                             <h3>Execute dynamically</h3>
                             <p className="capability-subtitle">
-                                Real-time runtime
+                                Declarative runtime
                             </p>
                             <p>
-                                Changes activate instantly across all services. No
-                                rebuilds, no deployments, no downtime.
+                                Run workflows on a high-performance engine. Hot-swap rules at runtime in under 8ms with zero downtime.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
                             <div className="icon-box icon-yellow">
                                 <ShieldCheck />
                             </div>
-                            <h3>Govern centrally</h3>
+                            <h3>Govern automatically</h3>
                             <p className="capability-subtitle">
-                                Control at scale
+                                Built-in guardrails
                             </p>
                             <p>
-                                Enforce policies consistently. Systems can evolve
-                                continuously while maintaining control and
-                                consistency.
+                                Enforce rate limiting, circuit breakers, and payload validation automatically to ensure safe execution at scale.
                             </p>
                         </div>
                     </div>
@@ -285,7 +279,7 @@ export default function Home() {
                     <div className="grid-2col orion-grid">
                         <div className="reveal-left">
                             <div className="label-mono orion-label">
-                                Orion &mdash; Business Runtime Engine
+                                Orion &mdash; Declarative Services Runtime
                             </div>
                             <h2 className="orion-heading reveal-blur">
                                 Build minimal.
@@ -311,31 +305,27 @@ export default function Home() {
                                 <div className="icon-chip orion-feature-icon">
                                     <Zap />
                                 </div>
-                                <h4>Real-time execution</h4>
+                                <h4>Zero Boilerplate</h4>
                                 <p>
-                                    Deploy logic changes instantly. No engineering
-                                    cycles, no PRs, no release schedules.
+                                    Go from idea to a live REST or Kafka service in seconds. No Dockerfiles, no CI pipelines, and no server setup.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
                                 <div className="icon-chip orion-feature-icon">
                                     <Shield />
                                 </div>
-                                <h4>Built-in governance</h4>
+                                <h4>Architectural Guardrails</h4>
                                 <p>
-                                    Every behaviour change is versioned, auditable
-                                    and policy-enforced from a central layer.
+                                    Observability, rate limiting, circuit breakers, and version history are baked into the runtime, not bolted on.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
                                 <div className="icon-chip orion-feature-icon">
                                     <TrendingDown />
                                 </div>
-                                <h4>Reduced engineering overhead</h4>
+                                <h4>AI-Native &amp; Safe</h4>
                                 <p>
-                                    Logic lives in the runtime, not inside
-                                    microservices. Easier to own, faster to
-                                    evolve.
+                                    Structured JSON workflows are easy for LLMs to generate. Safe rollout pipelines ensure AI changes never break production.
                                 </p>
                             </div>
                         </div>
@@ -376,28 +366,24 @@ export default function Home() {
                             <div className="icon-box icon-blue">
                                 <Gauge />
                             </div>
-                            <h3>High-performance runtime</h3>
+                            <h3>Rust-speed performance</h3>
                             <p className="capability-subtitle">
                                 Scale without compromise
                             </p>
                             <p>
-                                Designed for throughput at scale. Execute millions
-                                of governed workflows without performance
-                                trade-offs.
+                                Built on Tokio and Axum. Achieves 6,000+ requests/sec per instance with single-digit millisecond latency.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
                             <div className="icon-box icon-yellow">
                                 <Network />
                             </div>
-                            <h3>Distributed systems native</h3>
+                            <h3>Connect to anything</h3>
                             <p className="capability-subtitle">
                                 Built for the real world
                             </p>
                             <p>
-                                Designed from the ground up for distributed
-                                architectures — microservices, event-driven, and
-                                everything in between.
+                                Natively supports HTTP/REST, Kafka event streams, and connectors to databases or external APIs out of the box.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
@@ -406,11 +392,10 @@ export default function Home() {
                             </div>
                             <h3>API-first &amp; developer-friendly</h3>
                             <p className="capability-subtitle">
-                                Integrate anywhere
+                                GitOps &amp; CLI integrated
                             </p>
                             <p>
-                                Every capability exposed via clean APIs. Works with
-                                your existing stack, language, and tooling.
+                                Manage everything through our clean HTTP Admin API, local CLI, or standard GitOps pipelines.
                             </p>
                         </div>
                     </div>
