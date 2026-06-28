@@ -1,49 +1,58 @@
 # Plasmatic Website
 
-Marketing website for Plasmatic's Orion platform, featuring interactive 3D visualizations powered by Three.js.
+Marketing website for Plasmatic's Orion platform — a Vite + React single-page app
+with interactive Three.js visualizations.
 
-## Pages
+## Pages / Routes
 
-- **index.html** — Landing page with a scroll-driven 3D logo
-- **orion.html** — Orion product page with an animated neural system visualization
-- **contact.html**, **privacy.html**, **terms.html** — Supporting pages
+- **`/`** — Landing page with a scroll-driven 3D neon-ribbon hero
+- **`/orion`** — Orion product page with an animated neural-system visualization
+- **`/contact`**, **`/privacy`**, **`/terms`** — Supporting pages
 
 ## Getting Started
 
-Serve `src/` during development (required for 3D asset loading):
-
 ```bash
-python -m http.server 8000 --directory src
+npm install        # one-time
+npm run dev        # Vite dev server on http://localhost:8000
 ```
 
-Then open http://localhost:8000.
-
-## Build (Minified Output)
-
-Produce a minified, deployable copy in `public/`:
+## Build & Preview
 
 ```bash
-pip install htmlmin csscompressor   # one-time
-npm install                         # one-time (installs terser, svgo)
-python tools/build.py
+npm run build      # bundles + minifies to dist/ (also writes 404.html for SPA routing)
+npm run preview    # serve the production build on http://localhost:8000
 ```
 
-This reads everything under `src/`, minifies `*.html`, `*.css`, `*.js`, `*.svg`, copies other files verbatim, and writes to `public/`. The `public/` directory is git-ignored.
+`dist/` is git-ignored. The static assets in `public/` (`CNAME`, `robots.txt`,
+`nervous-system.bin`, `favicon.svg`) are copied to the root of `dist/` verbatim.
 
-Serve the build output the same way:
+## Deployment
+
+Pushes to `main` trigger `.github/workflows/deploy.yml`, which runs `npm ci &&
+npm run build` and publishes `dist/` to GitHub Pages at the custom domain
+`goplasmatic.io` (via `public/CNAME`). Deep links work because the build copies
+`index.html` to `404.html`, so GitHub Pages serves the SPA shell for any path
+and React Router renders the route client-side.
+
+## Visual Tests
 
 ```bash
-python -m http.server 8000 --directory public
+npm run screenshots       # Playwright sweep across viewports × routes
+npm run screenshots:ui    # interactive mode
 ```
+
+The harness starts the Vite dev server, waits for `document.body.dataset.sceneReady`
+on the 3D pages, freezes animations, and captures per-section / full-page / mobile-nav
+screenshots plus layout probes under `tests/visual/__screenshots__/` (git-ignored).
 
 ## Tech Stack
 
-- Vanilla HTML / CSS / JavaScript (no framework)
-- [Three.js](https://threejs.org/) v0.170.0 for 3D rendering and post-processing
-- [Lucide](https://lucide.dev/) for icons
-- Google Fonts (Montserrat, DM Sans, DM Mono)
-
-All libraries are loaded from CDNs.
+- [Vite](https://vite.dev/) + [React](https://react.dev/) (plain JavaScript, React Router)
+- [Three.js](https://threejs.org/) v0.170.0 — bundled (no CDN), with custom GLSL shaders,
+  UnrealBloom post-processing, and an SVG-driven neon-line engine. Scenes are plain
+  Three.js wrapped in React hooks (`src/three/*` + `useScene`).
+- [lucide-react](https://lucide.dev/) for icons
+- Google Fonts (Montserrat, DM Sans, DM Mono) + Adobe Fonts (Typekit), loaded in `index.html`
 
 ## License
 
@@ -51,33 +60,37 @@ Source-available — see [LICENSE](LICENSE). Published for transparency; all rig
 
 ## 3D Asset Pipeline
 
-The neural pathway data used on the Orion page is generated from a Blender OBJ export:
+The neural-pathway data on the Orion page is generated from a Blender OBJ export:
 
 ```bash
-python tools/convert_obj.py
+python tools/convert_obj.py     # requires numpy + open3d
 ```
 
-This reads `reference/blender-source/nervous-system.obj` and writes the optimized binary (`src/nervous-system.bin`). Requires numpy and open3d.
+This reads `reference/blender-source/nervous-system.obj` and writes the optimized
+binary into `public/` (the engine fetches `/nervous-system.bin` at runtime). Never
+edit the `.bin` directly — regenerate it from source.
 
 ## Project Structure
 
 ```
-src/                    Authored site (served in development)
-  index.html
-  orion.html
-  contact.html
-  privacy.html
-  terms.html
-  nervous-system.bin    Neural pathway data (used by orion.html)
-  assets/               SVG brand logos and section graphics
-  js/                   Page scripts and shared chrome
-  styles/               Page-level and shared CSS
-public/                 Minified build output (generated; git-ignored)
+index.html              Vite entry (SPA shell: fonts + #root)
+vite.config.js          Vite config (react plugin, three/addons alias, 404 SPA fallback)
+public/                 Static files copied to dist/ root (CNAME, robots.txt, .bin, favicon)
+src/
+  main.jsx              createRoot + <BrowserRouter>; imports global common.css
+  App.jsx               <Routes> under a shared <Layout>
+  pages/                Home, Orion, Contact, Privacy, Terms
+  components/           SiteNav, SiteFooter, ScrollHint, SectionGraphic, canvases,
+                        ContactForm, orion/ interactive widgets
+  three/                Framework-agnostic Three.js engines (init → dispose):
+                        neon-line, home-scene, orion-scene, section-graphic
+  hooks/                useScene, useReveal, useSnapReady, usePageStyles, usePageTitle
+  styles/               common.css (global) + per-page CSS (injected via usePageStyles)
+  assets/               SVG brand logos and section graphics (imported as URLs)
 reference/
   blender-source/       Nervous-system Blender source + OBJ export
   design/               Homepage copy and design-system JSX
   diagrams/             Architecture diagram sources
 tools/
-  build.py              Minify src/ → public/
-  convert_obj.py        Blender OBJ → nervous-system binary
+  convert_obj.py        Blender OBJ → public/nervous-system.bin
 ```

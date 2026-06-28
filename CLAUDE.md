@@ -4,126 +4,68 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Plasmatic marketing website — a static site with interactive 3D visualizations for the Orion distributed systems platform. Vanilla HTML/CSS/JavaScript authored under `src/`; a minifier script produces the deployable `public/`.
+Plasmatic marketing website — a **Vite + React** single-page app (plain JavaScript, React Router) with interactive Three.js visualizations for the Orion platform. Source lives in `src/`; `vite build` produces the deployable `dist/`.
 
 ## Development
 
-**Local server** — serve `src/` during development (required for 3D asset loading):
 ```bash
-python -m http.server 8000 --directory src
+npm install        # one-time
+npm run dev        # Vite dev server on http://localhost:8000 (SPA fallback for deep routes)
+npm run build      # bundle + minify to dist/ (also copies index.html -> 404.html)
+npm run preview    # serve the production build on http://localhost:8000
 ```
-Visit `http://localhost:8000/` or `http://localhost:8000/orion.html`.
 
-**Build minified output** (writes `public/`, git-ignored):
+Routes: `/`, `/orion`, `/contact`, `/privacy`, `/terms`.
+
+**Regenerate the neural-pathway binary** (after editing Blender source):
 ```bash
-pip install htmlmin csscompressor   # one-time
-npm install                         # one-time (installs terser, svgo)
-python tools/build.py
+python tools/convert_obj.py     # requires numpy + open3d
 ```
-The script mirrors `src/` into `public/`, minifying `*.html` / `*.css` / `*.js` / `*.svg` (terser handles JS — mangle + compress, property mangling off so Three.js uniform/attribute string keys stay intact; svgo handles SVG with default preset) and copying everything else verbatim. Serve the build with `python -m http.server 8000 --directory public`.
+Reads `reference/blender-source/nervous-system.obj`, writes into `public/`. The scene fetches `/nervous-system.bin` at runtime. Never edit `.bin` files directly — regenerate from source.
 
-**Regenerate neural pathway binary** (after editing Blender source):
-```bash
-python tools/convert_obj.py
-```
-Requires numpy, open3d. Reads `reference/blender-source/nervous-system.obj`, writes `src/nervous-system.bin`.
+## Build / bundling notes
 
-## Build Pipeline Conventions
+- **Three.js is bundled from the `three` npm package** (no CDN import map). Addon imports use `three/addons/...`, aliased to `three/examples/jsm` in `vite.config.js`.
+- **No property-mangling hazard.** Vite's esbuild minifier never renames object properties or string literals, so Three.js's by-name lookups are safe with zero config — `uniforms.uColor.value`, `setAttribute("aT", …)`, and GLSL kept inside template literals all survive. (This is what the old Python `build.py` worked to guarantee; esbuild gives it for free.) The `glsl` identity-tag helper remains in the scene files purely for readable shaders.
+- **Static files** live in `public/` and are copied to `dist/` root verbatim: `CNAME` (custom domain `goplasmatic.io`), `robots.txt`, `nervous-system.bin`, `favicon.svg`.
+- **GitHub Pages SPA routing:** `vite.config.js` has a plugin that copies `dist/index.html` → `dist/404.html` so deep links boot the SPA. Deploy runs via `.github/workflows/deploy.yml` (`npm ci && npm run build` → upload `dist/`).
 
-Authored files in `src/` should be readable; the build compresses them. Two source-level conventions exist so the build can reach content that minifiers normally can't touch.
+## CSS isolation (important)
 
-### Tagged-template markers: `html` and `glsl`
-
-Every JS file that embeds HTML or GLSL in a template literal defines a no-op identity tag near the top:
-
-```js
-const html = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
-const glsl = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
-```
-
-Use these tags on any literal whose body should be minified by the build:
-
-```js
-this.innerHTML = html`<nav class="nav">…${links}…</nav>`;
-const vertexShader = glsl`attribute float aT; varying float vT; …`;
-```
-
-`tools/build.py` scans for `` html`…` `` and `` glsl`…` `` *before* handing the source to terser, and replaces the body with a minified version:
-- **`html`** — `${…}` placeholders are stashed, `htmlmin` runs on the scrubbed content, placeholders are restored. Safe for interpolation as long as each `${…}` contains only identifiers/simple calls (nested strings, backticks, or `{`/`}` inside interpolation abort the rewrite for that literal).
-- **`glsl`** — strips `//` and `/* */` comments, collapses whitespace around punctuation/operators. Safe for WebGL1 shaders without `#version` / `#define` directives (which is what Three.js `ShaderMaterial` expects).
-
-If you skip the tag, the template content ships verbatim (big strings full of indentation survive to production). Always tag new shaders and new `innerHTML` templates.
-
-### Terser constraints (important for Three.js)
-
-`tools/build.py` runs terser with `--mangle toplevel --compress passes=2,pure_getters,unsafe_arrows --module`. Property mangling is deliberately **off**, because Three.js reads uniform / attribute keys by their exact string name:
-
-- `ShaderMaterial.uniforms.uColor.value` — `uColor` must match the `uniform vec3 uColor;` declaration in GLSL, and `.value` is Three.js's internal contract.
-- `geom.setAttribute("aT", …)` — `aT` must match the `attribute float aT;` declaration.
-- Three.js APIs (`camera.position`, `.aspect`, `bloomPass.strength`, `.setSize`, …) are all property accesses and must not be renamed.
-
-Guidelines when writing scene code:
-
-1. **Don't wrap tunables in a big `CONFIG` object.** Property names can't be mangled, so `CONFIG.numLines` ships as a readable 9-byte string; `const numLines = 128;` at top level becomes a single letter after terser runs (and is usually inlined at call sites). `home-scene.js` / `orion-scene.js` follow this flat pattern — keep it.
-2. **Tight sub-objects are fine when keys are already leaked by Three.js.** `parallax = { x, y, smoothing }` and `bloom = { strength, radius, threshold }` are acceptable because `.x`, `.strength`, etc. appear in the bundle anyway via Three.js call sites.
-3. **Don't introduce properties named after GLSL uniform/attribute names on plain JS objects**, because you then can't enable property mangling later without a rename.
-4. **`customElements.define("site-nav", …)`** — tag names are string literals, safe.
-
-### Pipeline order
-
-```
-src/foo.js  →  rewrite html`…` / glsl`…` bodies  →  terser  →  public/js/foo.js
-src/foo.html  →  htmlmin  →  public/foo.html
-src/foo.css  →  csscompressor  →  public/foo.css
-src/foo.svg  →  svgo  →  public/foo.svg
-anything else  →  copied verbatim
-```
-
-Top-level `await` is used in `orion-scene.js`, which is why terser runs with `--module`. Any new top-level `await` or `import`/`export` will keep working.
+`src/styles/common.css` is global (imported once in `main.jsx`): brand tokens (`:root`), nav/footer, reveal animations, scroll-hint. **Per-page CSS (`home.css`, `orion.css`, `contact.css`, `legal.css`) is NOT imported globally** — each page imports it with Vite's `?inline` query and injects it via the `usePageStyles` hook, so it is present only while that page is mounted. This is load-bearing: these stylesheets override shared selectors (`.hero`, `.section-full`, …), and bundling them globally would leak rules across routes (e.g. `home.css` `.hero { background:#000 }` would occlude Orion's fixed neural canvas). When adding a new page, follow the same pattern.
 
 ## Architecture
 
-### Pages
+### Routing & chrome
 
-- **index.html** — Landing page with scroll-driven 3D logo visualization
-- **orion.html** — Full Orion product page (~2300 lines) with neural system 3D visualization (loads `nervous-system.bin`)
+`App.jsx` mounts all routes under a shared `<Layout>` (`SiteNav` + `<Outlet/>` + `ScrollHint` + `SiteFooter`). `Layout` also runs `useSnapReady` (scroll-restoration + scroll-snap priming) and `useReveal` (IntersectionObserver reveal-on-scroll), re-primed per route. `SiteNav`/`SiteFooter` render the literal `<site-nav>` / `<site-footer>` custom-element tags so the existing CSS selectors keep matching. Icons come from `lucide-react`.
 
-Both pages are self-contained: styles and scripts are inline.
+### Three.js scenes (`src/three/`, plain JS — no React)
 
-### 3D Pipeline
+Each engine exports `init(canvas/host, opts) => dispose()`: it owns the renderer, collects event listeners, runs the RAF loop, and the returned `dispose()` cancels the loop, removes listeners, and frees GPU resources. React drives them via the `useScene` hook (owns a `<canvas ref>`, calls `init` in an effect, returns `dispose`).
 
-```
-Blender (.blend) → Export (.glb / .obj) → convert_obj.py → Binary (.bin) → Three.js rendering
-```
+- `neon-line.js` — shared shader + material/geometry/bloom helpers (used by home + section-graphic).
+- `home-scene.js` — hero neon-ribbon scene (`initHomeScene`).
+- `orion-scene.js` — neural brain→spine scene (`initOrionScene`): async-loads `nervous-system.bin`, generates ~650 cubic-spline nerve pathways, brain wireframe, pulsing endpoint nodes, 200 traveling pulses, UnrealBloom + MSAA. A scroll-driven camera interpolates **9 keyframes** (one per Orion snap-section) read from the page's `.hero/.section-full/.section-orion/.section-cta/footer.footer` rects.
+- `section-graphic.js` — SVG → extruded neon-line background engine (`initSectionGraphic` + `resolveConfig`), surfaced as the `<SectionGraphic>` component (camelCase props map to the old kebab attributes). Lazy-inits on IntersectionObserver; projects an HTML text overlay each frame.
 
-- **Three.js v0.170.0** loaded via CDN import maps (ES modules)
-- **Post-processing**: GTAO on index.html, UnrealBloomPass on orion.html
-- **Custom shaders**: orion.html contains GLSL vertex/fragment shaders for nerve lines, endpoint nodes, and traveling pulses
-- `nervous-system.bin` is a compact binary (~11 KB) containing decimated brain mesh (1024 verts, delta-encoded faces) and pre-sampled spine endpoints. Nerve pathway curves are generated on the frontend via natural cubic spline interpolation. See format spec in `tools/convert_obj.py`.
-- Never edit `.bin` files directly — always regenerate from source
+### The migration DOM contract
 
-### orion.html 3D Scene
+The React DOM must preserve (the scenes and Playwright depend on these): `document.body.dataset.sceneReady` set on the scene's first frame (and `delete`d on dispose); per-section `class` names + `data-test-section` slugs; `.reveal*` classes; `.nav-toggle` + `body.nav-open`; `html.snap-ready`. Don't let JSX refactors rename a class or drop one of these.
 
-Scroll-snap sections drive camera position through 8 keyframes. The scene renders:
-- Brain wireframe (LineSegments, additive blend, 1024-vert decimated mesh)
-- ~650 nerve pathways generated on frontend (cubic spline through waypoints) with per-vertex alpha fade
-- Pulsing endpoint nodes (custom shader)
-- 200 traveling pulses animating along random pathways
+### Interactive Orion widgets (`src/components/orion/`)
 
-### Key Directories
+`DeploySimulator`, `UseCaseTabs`, `GuardrailsSimulator` — formerly inline `<script>` DOM-mutation handlers, now `useState`-driven components (timers tracked in refs, cleared on unmount). They keep the original CSS class names.
 
-- `src/` — Authored site (HTML, CSS, JS, assets, binaries) — the dev server's doc root
-- `public/` — Minified build output, generated by `tools/build.py`; git-ignored
-- `reference/design/` — Homepage copy and Figma-exported design-system JSX
-- `reference/blender-source/` — Nervous-system Blender source + OBJ export (not served to users)
-- `reference/diagrams/` — Architecture diagram sources (Mermaid)
-- `tools/` — Python utilities (`build.py` minifier, `convert_obj.py` asset converter)
+## 3D asset format
+
+`nervous-system.bin` (~11 KB): 30-byte header, quantized spine centers, pre-sampled spine endpoints, delta-encoded brain faces (extracted to edges on load), quantized brain verts (1024). Nerve curves are generated on the frontend via natural cubic-spline interpolation. Full format spec in `tools/convert_obj.py`.
 
 ## Brand Design Tokens
 
 Colors: `#07111A` (deep bg), `#119FCD` (accent blue), `#4CBD97` (accent green)
-Fonts: Montserrat (display), DM Sans (body), DM Mono (code) — all via Google Fonts CDN
+Fonts: Montserrat (display), DM Sans (body), DM Mono (code) — Google Fonts + Adobe Typekit, linked in `index.html`.
 
-## External CDN Dependencies
+## Tests
 
-Three.js, Lucide icons, and Google Fonts are all loaded from CDNs. No offline fallback exists.
+`npm run screenshots` runs Playwright (`tests/visual/`) against the Vite dev server: per-section / full-page / mobile-nav captures + layout probes across 11 viewports × 5 routes, gated on `sceneReady`. Output (git-ignored) lands in `tests/visual/__screenshots__/`.

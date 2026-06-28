@@ -170,7 +170,7 @@ def quantize(pts):
 
 num_spine_segs = len(spine_order)
 
-with open('../src/nervous-system-compact.bin', 'wb') as f:
+with open('../public/nervous-system-compact.bin', 'wb') as f:
     # Header (30 bytes)
     f.write(struct.pack('<3f', *bb_min))             # 12
     f.write(struct.pack('<3f', *bb_range))            # 12
@@ -195,8 +195,8 @@ with open('../src/nervous-system-compact.bin', 'wb') as f:
     # Brain vertices (quantized)
     f.write(quantize(brain_verts).tobytes())
 
-bin_size = os.path.getsize('../src/nervous-system-compact.bin')
-orig_size = os.path.getsize('../src/nervous-system.bin') if os.path.exists('../src/nervous-system.bin') else 0
+bin_size = os.path.getsize('../public/nervous-system-compact.bin')
+orig_size = os.path.getsize('../public/nervous-system.bin') if os.path.exists('../public/nervous-system.bin') else 0
 
 spine_data_size = 42 + total_samples * 3 + num_spine_segs
 print(f"\nExported nervous-system-compact.bin ({bin_size / 1024:.1f} KB)")
