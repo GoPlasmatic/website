@@ -1,15 +1,24 @@
 {
   "name": "plasmatic-website",
   "private": true,
-  "description": "Build tooling for the Plasmatic marketing site. Source lives in src/; tools/build.py produces public/.",
+  "description": "Plasmatic marketing site — Vite + React SPA with Three.js visualizations.",
   "scripts": {
-    "build": "python tools/build.py",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "screenshots": "playwright test",
     "screenshots:ui": "playwright test --ui"
   },
+  "dependencies": {
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "three": "^0.170.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
-    "svgo": "^4.0.1",
-    "terser": "^5.36.0"
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
   }
 }
