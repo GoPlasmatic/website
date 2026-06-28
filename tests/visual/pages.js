@@ -6,9 +6,9 @@
 const PAGES = [
     {
         name: "index",
-        path: "/index.html",
+        path: "/",
         mode: "snap",
-        // 8 sections in DOM order; the slugs match data-test-section attributes added in src/index.html.
+        // 8 sections in DOM order; the slugs match data-test-section attributes in src/pages/Home.jsx.
         sections: [
             "hero",
             "what-we-do",
@@ -22,7 +22,7 @@ const PAGES = [
     },
     {
         name: "orion",
-        path: "/orion.html",
+        path: "/orion",
         mode: "snap",
         sections: [
             "hero",
@@ -36,9 +36,9 @@ const PAGES = [
             "footer",
         ],
     },
-    { name: "contact", path: "/contact.html", mode: "long" },
-    { name: "privacy", path: "/privacy.html", mode: "long" },
-    { name: "terms",   path: "/terms.html",   mode: "long" },
+    { name: "contact", path: "/contact", mode: "long" },
+    { name: "privacy", path: "/privacy", mode: "long" },
+    { name: "terms",   path: "/terms",   mode: "long" },
 ];
 
 module.exports = { PAGES };

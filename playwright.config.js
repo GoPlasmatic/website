@@ -17,7 +17,7 @@ module.exports = defineConfig({
     testDir: "tests/visual",
     timeout: 60_000,
     expect: { timeout: 10_000 },
-    fullyParallel: false, // single python http.server can't handle parallel workers cleanly
+    fullyParallel: false, // keep deterministic capture ordering against one dev server
     workers: 1,
     reporter: [["list"]],
     outputDir: "test-results",
@@ -30,10 +30,12 @@ module.exports = defineConfig({
     },
 
     webServer: {
-        command: "python -m http.server 8000 --directory src",
+        // Vite dev server (port 8000 via vite.config.js); it serves index.html
+        // for deep routes (/orion, …) so client-side routing works under test.
+        command: "npm run dev",
         url: "http://localhost:8000",
         reuseExistingServer: true,
-        timeout: 30_000,
+        timeout: 60_000,
     },
 
     projects,
