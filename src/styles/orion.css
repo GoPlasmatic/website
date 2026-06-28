@@ -24,6 +24,14 @@
     pointer-events: auto;
 }
 
+/* The vanilla page nested <site-footer> inside .content; the React layout
+   renders it as a sibling, so it needs its own stacking context to sit above
+   the opaque fixed #bg canvas. */
+site-footer {
+    position: relative;
+    z-index: 1;
+}
+
 /* ── Overrides of common.css values ──────────────────────────────── */
 
 /* Spacing overrides to fit viewport (prevents scroll-snap breaks) */
