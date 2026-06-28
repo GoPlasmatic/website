@@ -60,15 +60,15 @@ html.snap-ready {
 
 /* ── Form ────────────────────────────────────────────────────────── */
 
+/* Surface (bg/border/radius/shadow/ring) comes from .card; the form opts
+   out of the hover lift via .card-static (set in ContactForm.jsx). A denser
+   surface keeps the inputs legible over the page background. */
 .contact-form {
-    padding: 40px;
+    --card-surface: rgba(15, 32, 48, 0.9);
+    padding: var(--pad-card-xl);
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    background: rgba(15, 32, 48, 0.92);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
+    gap: var(--space-5);
 }
 
 .form-row {

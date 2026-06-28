@@ -129,7 +129,7 @@ export default function DeploySimulator() {
     );
 
     return (
-        <div className="simulator-card">
+        <div className="simulator-card card card-glass">
             <div className="simulator-header">
                 <span className="dot dot-red"></span>
                 <span className="dot dot-yellow"></span>

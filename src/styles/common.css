@@ -17,6 +17,39 @@
     --radius-lg: 16px;
     --radius-md: 12px;
     --radius-sm: 10px;
+
+    /* ── Card design system ──────────────────────────────────────── */
+    /* Elevation (ambient depth, always on) */
+    --shadow-ambient: 0 4px 24px rgba(0, 0, 0, 0.35);
+    --shadow-ambient-hover: 0 12px 40px rgba(0, 0, 0, 0.45);
+    /* Surfaces: content cards stay near-opaque; .card-glass swaps to frost */
+    --card-surface: var(--bg-card);
+    --card-surface-frost: rgba(17, 27, 39, 0.55);
+    --card-blur: 10px;
+    /* Per-card accent — each category overrides this single var; the
+       ambient ring, hover border and glow all derive from it. */
+    --card-accent: var(--accent-blue);
+    --radius-card: 16px;
+    /* Motion */
+    --ease-card: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-card: 0.35s;
+    --dur-fast: 0.2s;
+    /* Spacing scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 32px;
+    --space-8: 40px;
+    --space-9: 48px;
+    /* Card padding scale */
+    --pad-card-sm: 20px;
+    --pad-card-md: 24px;
+    --pad-card-lg: 32px;
+    --pad-card-xl: 40px;
+    --pad-card-2xl: 48px;
 }
 
 /* ── Reset ───────────────────────────────────────────────────────── */
@@ -488,27 +521,59 @@ site-footer {
     color: var(--text-body);
 }
 
-/* ── Card surface primitives ─────────────────────────────────────── */
+/* ── Card surface system ─────────────────────────────────────────── */
 
-/* Base surface used by capability/orion/dev-link/audience/step cards.
-   Modifiers compose on top: .card-elevated for the larger radius,
-   .card-hoverable for the border-color hover treatment. */
+/* Unified surface for every card (capability/orion/dev-link/audience/
+   comparison + the interactive Orion widgets). Each card category sets a
+   single --card-accent; the ambient shadow, accent ring, hover border and
+   glow all derive from it. Near-opaque by default; .card-glass swaps in a
+   frosted translucent surface for the Level-1 interactive "device" cards.
+   .card-elevated / .card-hoverable remain in markup as harmless no-ops —
+   the radius is now unified and the hover treatment is built into .card. */
 .card {
-    background: var(--bg-card);
+    background: var(--card-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-card);
+    box-shadow:
+        var(--shadow-ambient),
+        0 0 0 1px color-mix(in srgb, var(--card-accent) 12%, transparent);
+    transition:
+        translate var(--dur-card) var(--ease-card),
+        box-shadow var(--dur-card) var(--ease-card),
+        border-color var(--dur-card) var(--ease-card);
 }
 
-.card-elevated {
-    border-radius: var(--radius-lg);
+.card:hover {
+    /* translate (not transform) so the lift composes with .reveal* */
+    translate: 0 -4px;
+    border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
+    box-shadow:
+        var(--shadow-ambient-hover),
+        0 0 0 1px color-mix(in srgb, var(--card-accent) 18%, transparent),
+        0 0 32px color-mix(in srgb, var(--card-accent) 18%, transparent);
 }
 
-.card-hoverable {
-    transition: border-color 0.3s;
+/* Frosted-glass surface — Level-1 interactive "device" cards only. */
+.card-glass {
+    background: var(--card-surface-frost);
+    -webkit-backdrop-filter: blur(var(--card-blur));
+    backdrop-filter: blur(var(--card-blur));
 }
 
-.card-hoverable:hover {
-    border-color: var(--border-hover);
+/* Opt out of the hover lift/glow (prose cards, forms) while keeping the
+   surface, ambient shadow and resting accent ring. */
+.card-static:hover {
+    translate: 0;
+    border-color: var(--border-subtle);
+    box-shadow:
+        var(--shadow-ambient),
+        0 0 0 1px color-mix(in srgb, var(--card-accent) 12%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card:hover {
+        translate: 0;
+    }
 }
 
 /* Small icon container (rounded square with a tinted background and
@@ -557,7 +622,7 @@ site-footer {
 /* ── Capability cards ────────────────────────────────────────────── */
 
 .capability-card {
-    padding: 40px;
+    padding: var(--pad-card-xl);
 }
 
 .icon-box {
@@ -645,8 +710,8 @@ site-footer {
 }
 
 .orion-desc-card {
-    padding: 32px;
-    margin-bottom: 32px;
+    padding: var(--pad-card-lg);
+    margin-bottom: var(--space-7);
 }
 
 .orion-desc-card p {
@@ -809,19 +874,23 @@ site-footer {
     align-items: stretch;
 }
 
+/* Surface (bg/border/radius/shadow) comes from .card — added in the JSX.
+   These rules add only the padding, the per-card accent and the
+   before/after colour treatments. */
 .comparison-card {
-    padding: 48px;
-    border-radius: var(--radius-lg);
-    background: var(--bg-card);
+    padding: var(--pad-card-2xl);
+    border-radius: var(--radius-card);
     position: relative;
     overflow: hidden;
 }
 
 .before-card {
+    --card-accent: var(--accent-red);
     border: 1px solid rgba(239, 71, 111, 0.2);
 }
 
 .after-card {
+    --card-accent: var(--accent-teal);
     border: 1px solid var(--border-hover);
     background: linear-gradient(
         135deg,
@@ -942,7 +1011,7 @@ site-footer {
 
 /* Surface from .card; .audience-card adds layout + content typography. */
 .audience-card {
-    padding: 20px;
+    padding: var(--pad-card-sm);
     display: flex;
     flex-direction: column;
 }

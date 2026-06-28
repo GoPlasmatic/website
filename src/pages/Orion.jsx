@@ -405,7 +405,7 @@ export default function Orion() {
                             </p>
                         </div>
                         <div className="grid-2col comparison-grid">
-                            <div className="comparison-card before-card reveal-left">
+                            <div className="card comparison-card before-card reveal-left">
                                 <div
                                     className="label-mono label-mono-upper comparison-label"
                                     style={{ color: "var(--accent-blue)" }}
@@ -461,7 +461,7 @@ export default function Orion() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="comparison-card after-card reveal-right">
+                            <div className="card comparison-card after-card reveal-right">
                                 <div className="label-mono label-mono-upper comparison-label comparison-label-green">
                                     Security Layer
                                 </div>

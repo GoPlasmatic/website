@@ -123,7 +123,7 @@ export default function GuardrailsSimulator() {
     }
 
     return (
-        <div className="diagram-card reveal" style={{ padding: "24px" }}>
+        <div className="diagram-card card card-glass reveal" style={{ padding: "24px" }}>
             <div className="guardrails-visual-container">
                 <div className={`guard-step step-ai${pulse("step1")}`} id="step-1">
                     <div className="step-num">01</div>

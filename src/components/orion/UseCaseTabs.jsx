@@ -52,7 +52,7 @@ export default function UseCaseTabs() {
             </div>
 
             <div
-                className="use-case-display-card reveal-blur"
+                className="use-case-display-card card card-glass reveal-blur"
                 id="use-case-card"
                 style={{ "--reveal-delay": "0.2s" }}
             >

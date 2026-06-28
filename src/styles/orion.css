@@ -295,15 +295,12 @@ site-footer {
 
 /* ── Interactive Diagrams with Tabs ────────────────────────────── */
 
+/* Level-1 device card — surface/shadow/blur come from .card + .card-glass
+   (added in the JSX). Keep only layout + accent. */
 .diagram-card {
-    background: rgba(17, 27, 39, 0.4);
-    border: 1px solid rgba(17, 99, 125, 0.15);
-    border-radius: 12px;
-    padding: 24px;
-    margin-top: 32px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    --card-accent: var(--accent-blue);
+    padding: var(--space-6);
+    margin-top: var(--space-7);
     width: 100%;
 }
 
@@ -527,31 +524,26 @@ site-footer {
     width: 100%;
 }
 
+/* Level-2 nested panels: matte (no glass/lift), but their resting border
+   and hover/pulse glows now derive from a single per-step --card-accent. */
 .step-ai {
-    border-color: rgba(17, 159, 205, 0.2);
-}
-
-.step-ai:hover {
-    border-color: rgba(17, 159, 205, 0.5);
-    box-shadow: 0 0 20px rgba(17, 159, 205, 0.15);
+    --card-accent: var(--accent-blue);
+    border-color: color-mix(in srgb, var(--card-accent) 20%, transparent);
 }
 
 .step-human {
-    border-color: rgba(255, 209, 103, 0.2);
-}
-
-.step-human:hover {
-    border-color: rgba(255, 209, 103, 0.5);
-    box-shadow: 0 0 20px rgba(255, 209, 103, 0.15);
+    --card-accent: var(--accent-yellow);
+    border-color: color-mix(in srgb, var(--card-accent) 20%, transparent);
 }
 
 .step-orion {
-    border-color: rgba(76, 189, 151, 0.2);
+    --card-accent: var(--accent-teal);
+    border-color: color-mix(in srgb, var(--card-accent) 20%, transparent);
 }
 
-.step-orion:hover {
-    border-color: rgba(76, 189, 151, 0.5);
-    box-shadow: 0 0 20px rgba(76, 189, 151, 0.15);
+.guard-step:hover {
+    border-color: color-mix(in srgb, var(--card-accent) 50%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--card-accent) 15%, transparent);
 }
 
 .step-num {
@@ -619,17 +611,14 @@ site-footer {
 
 /* ── Clock Speed Simulator ───────────────────────────────────────── */
 
+/* Level-1 device card — surface/shadow/blur come from .card + .card-glass
+   (added in the JSX). Keep only layout + accent. */
 .simulator-card {
-    background: rgba(17, 27, 39, 0.45);
-    border: 1px solid rgba(17, 99, 125, 0.2);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    --card-accent: var(--accent-blue);
+    padding: var(--space-4);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--space-3);
     width: 100%;
 }
 
@@ -842,17 +831,14 @@ site-footer {
     box-shadow: 0 0 15px rgba(76, 189, 151, 0.1);
 }
 
+/* Level-1 device card — surface/shadow/blur come from .card + .card-glass
+   (added in the JSX). Keep only layout + accent. */
 .use-case-display-card {
-    background: rgba(17, 27, 39, 0.4);
-    border: 1px solid rgba(17, 99, 125, 0.15);
-    border-radius: 12px;
-    padding: 24px;
+    --card-accent: var(--accent-teal);
+    padding: var(--space-6);
     text-align: left;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     width: 100%;
-    margin-top: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-top: var(--space-4);
 }
 
 .use-case-display-card h4 {
@@ -1044,12 +1030,15 @@ site-footer {
 
 /* ── AI Guardrails Simulator ────────────────────────────────────── */
 
+/* Level-2 nested panel (lives inside .diagram-card): matte, no glass/lift;
+   border derived from --card-accent. */
 .proposal-simulator-card {
+    --card-accent: var(--accent-yellow);
     background: rgba(17, 27, 39, 0.5);
-    border: 1px solid rgba(255, 209, 103, 0.15);
-    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 15%, transparent);
+    border-radius: var(--radius-md);
     padding: 14px 20px;
-    margin-top: 16px;
+    margin-top: var(--space-4);
     text-align: left;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     width: 100%;
@@ -1187,20 +1176,9 @@ site-footer {
 /* ── Interactive Highlight States on Steps ─────────────────────── */
 
 .guard-step.pulse-active {
-    box-shadow: 0 0 30px rgba(255, 209, 103, 0.4);
+    border-color: var(--card-accent);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--card-accent) 40%, transparent);
     transform: scale(1.02);
-}
-.step-ai.pulse-active {
-    border-color: var(--accent-blue, #119FCD);
-    box-shadow: 0 0 30px rgba(17, 159, 205, 0.4);
-}
-.step-human.pulse-active {
-    border-color: #FFD167;
-    box-shadow: 0 0 30px rgba(255, 209, 103, 0.4);
-}
-.step-orion.pulse-active {
-    border-color: var(--accent-green, #4CBD97);
-    box-shadow: 0 0 30px rgba(76, 189, 151, 0.4);
 }
 
 .decouple-flows-comparison {
