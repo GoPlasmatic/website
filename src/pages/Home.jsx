@@ -14,10 +14,11 @@ import {
 import HeroCanvas from "../components/HeroCanvas.jsx";
 import SectionGraphic from "../components/SectionGraphic.jsx";
 import { usePageTitle } from "../hooks/usePageTitle.js";
+import { usePageStyles } from "../hooks/usePageStyles.js";
 import architectureCore from "../assets/architecture-core.svg";
 import fragmentation from "../assets/fragmentation.svg";
 import logoSvg from "../assets/logo.svg";
-import "../styles/home.css";
+import homeCss from "../styles/home.css?inline";
 
 // The GitHub mark used in the vanilla site (lucide's Github glyph differs), kept
 // verbatim so the brand icon renders identically.
@@ -38,6 +39,7 @@ function GithubMark() {
 
 export default function Home() {
     usePageTitle("Plasmatic – Systems for modern software");
+    usePageStyles(homeCss);
     return (
         <>
             {/* HERO */}

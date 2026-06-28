@@ -2,11 +2,13 @@ import { Mail } from "lucide-react";
 import SectionGraphic from "../components/SectionGraphic.jsx";
 import ContactForm from "../components/ContactForm.jsx";
 import { usePageTitle } from "../hooks/usePageTitle.js";
+import { usePageStyles } from "../hooks/usePageStyles.js";
 import logoSvg from "../assets/logo.svg";
-import "../styles/contact.css";
+import contactCss from "../styles/contact.css?inline";
 
 export default function Contact() {
     usePageTitle("Contact – Plasmatic");
+    usePageStyles(contactCss);
     return (
         <section className="section-contact" data-test-section="main">
             <SectionGraphic

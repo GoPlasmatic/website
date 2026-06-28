@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { usePageTitle } from "../hooks/usePageTitle.js";
-import "../styles/legal.css";
+import { usePageStyles } from "../hooks/usePageStyles.js";
+import legalCss from "../styles/legal.css?inline";
 
 export default function Terms() {
     usePageTitle("Terms of Service – Plasmatic");
+    usePageStyles(legalCss);
     return (
         <section className="section-legal" data-test-section="main">
             <div className="legal-container">

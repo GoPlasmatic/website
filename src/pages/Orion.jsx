@@ -6,10 +6,12 @@ import DeploySimulator from "../components/orion/DeploySimulator.jsx";
 import UseCaseTabs from "../components/orion/UseCaseTabs.jsx";
 import GuardrailsSimulator from "../components/orion/GuardrailsSimulator.jsx";
 import { usePageTitle } from "../hooks/usePageTitle.js";
-import "../styles/orion.css";
+import { usePageStyles } from "../hooks/usePageStyles.js";
+import orionCss from "../styles/orion.css?inline";
 
 export default function Orion() {
     usePageTitle("Plasmatic – Orion");
+    usePageStyles(orionCss);
     const heroTextRef = useRef(null);
 
     return (
