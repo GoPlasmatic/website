@@ -35,11 +35,12 @@ export default function UseCaseTabs() {
     const data = USE_CASES[active];
 
     return (
-        <>
-            <div
-                className="use-case-tabs reveal-blur"
-                style={{ "--reveal-delay": "0.15s" }}
-            >
+        <div
+            className="use-case-display-card card card-glass reveal-blur"
+            id="use-case-card"
+            style={{ "--reveal-delay": "0.2s" }}
+        >
+            <div className="use-case-tabs">
                 {TABS.map((t) => (
                     <button
                         key={t.key}
@@ -51,24 +52,18 @@ export default function UseCaseTabs() {
                 ))}
             </div>
 
-            <div
-                className="use-case-display-card card card-glass reveal-blur"
-                id="use-case-card"
-                style={{ "--reveal-delay": "0.2s" }}
-            >
-                <h4>{data.title}</h4>
-                <p>{data.desc}</p>
-                <div className="use-case-comparison">
-                    <div className="comp-col comp-col-before">
-                        <strong>Before Orion (Engineering Clock)</strong>
-                        <p>{data.before}</p>
-                    </div>
-                    <div className="comp-col comp-col-after">
-                        <strong>With Orion (Business Clock)</strong>
-                        <p>{data.after}</p>
-                    </div>
+            <h4>{data.title}</h4>
+            <p>{data.desc}</p>
+            <div className="use-case-comparison">
+                <div className="comp-col comp-col-before">
+                    <strong>Before Orion (Engineering Clock)</strong>
+                    <p>{data.before}</p>
+                </div>
+                <div className="comp-col comp-col-after">
+                    <strong>With Orion (Business Clock)</strong>
+                    <p>{data.after}</p>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

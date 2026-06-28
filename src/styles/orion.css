@@ -156,48 +156,60 @@ site-footer {
 
 .guard-step {
     flex: 1;
-    background: rgba(9, 15, 22, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(135deg, rgba(9, 15, 22, 0.6), rgba(4, 8, 12, 0.8)) padding-box,
+                linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) border-box;
+    border: 1px solid transparent;
     border-radius: 12px;
     padding: 24px;
     text-align: center;
     position: relative;
-    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform var(--dur-card) var(--ease-card), border-color var(--dur-card) var(--ease-card), box-shadow var(--dur-card) var(--ease-card);
     min-height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
 }
 
 /* Level-2 nested panels: matte (no glass/lift), but their resting border
    and hover/pulse glows now derive from a single per-step --card-accent. */
 .step-ai {
     --card-accent: var(--accent-blue);
-    border-color: color-mix(in srgb, var(--card-accent) 20%, transparent);
+    background: linear-gradient(135deg, rgba(17, 159, 205, 0.01), rgba(7, 17, 26, 0.85)) padding-box,
+                linear-gradient(135deg, rgba(17, 159, 205, 0.1), rgba(255, 255, 255, 0.01)) border-box;
 }
 
 .step-human {
     --card-accent: var(--accent-yellow);
-    border-color: color-mix(in srgb, var(--card-accent) 20%, transparent);
+    background: linear-gradient(135deg, rgba(255, 209, 103, 0.01), rgba(7, 17, 26, 0.85)) padding-box,
+                linear-gradient(135deg, rgba(255, 209, 103, 0.1), rgba(255, 255, 255, 0.01)) border-box;
 }
 
 .step-orion {
     --card-accent: var(--accent-teal);
-    border-color: color-mix(in srgb, var(--card-accent) 20%, transparent);
+    background: linear-gradient(135deg, rgba(76, 189, 151, 0.01), rgba(7, 17, 26, 0.85)) padding-box,
+                linear-gradient(135deg, rgba(76, 189, 151, 0.1), rgba(255, 255, 255, 0.01)) border-box;
 }
 
 .guard-step:hover {
-    border-color: color-mix(in srgb, var(--card-accent) 50%, transparent);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--card-accent) 15%, transparent);
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(12, 21, 31, 0.75), rgba(6, 12, 18, 0.95)) padding-box,
+                linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 35%, transparent), rgba(255, 255, 255, 0.01)) border-box;
+    box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+        0 8px 24px -6px color-mix(in srgb, var(--card-accent) 20%, transparent);
 }
 
 .step-num {
     font-family: var(--font-code, "DM Mono"), monospace;
-    font-size: 14px;
+    font-size: 13px;
     color: rgba(255, 255, 255, 0.3);
     margin-bottom: 8px;
     font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .guard-step h4 {
@@ -205,6 +217,7 @@ site-footer {
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 8px;
+    letter-spacing: -0.2px;
 }
 
 .step-ai h4 { color: var(--accent-blue, #119FCD); }
@@ -214,16 +227,21 @@ site-footer {
 .guard-step p {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.6);
-    line-height: 1.4;
+    line-height: 1.5;
     margin-bottom: 16px;
 }
 
 .step-icon {
     font-size: 20px;
-    opacity: 0.7;
+    opacity: 0.75;
     margin-top: auto;
     display: flex;
     justify-content: center;
+    transition: transform var(--dur-card) var(--ease-spring);
+}
+
+.guard-step:hover .step-icon {
+    transform: scale(1.15);
 }
 
 .step-ai .step-icon { color: var(--accent-blue, #119FCD); }
@@ -232,7 +250,7 @@ site-footer {
 
 .step-arrow {
     font-size: 24px;
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.15);
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-weight: 300;
 }
@@ -253,20 +271,22 @@ site-footer {
 .simulator-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     padding-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .simulator-header .dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    opacity: 0.8;
 }
 
-.dot-red { background: #ff5f56; }
-.dot-yellow { background: #ffbd2e; }
-.dot-green { background: #27c93f; }
+.dot-red { background: #ff5f56; box-shadow: 0 0 6px rgba(255, 95, 86, 0.4); }
+.dot-yellow { background: #ffbd2e; box-shadow: 0 0 6px rgba(255, 189, 46, 0.4); }
+.dot-green { background: #27c93f; box-shadow: 0 0 6px rgba(39, 201, 63, 0.4); }
 
 .simulator-title {
     font-family: var(--font-code, "DM Mono"), monospace;
@@ -395,35 +415,40 @@ site-footer {
 /* ── Use Case Selector ──────────────────────────────────────────── */
 
 .use-case-tabs {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin: 32px 0 16px;
+    display: inline-flex;
+    gap: 4px;
+    background: rgba(7, 17, 26, 0.65) padding-box,
+                linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)) border-box;
+    border: 1px solid transparent;
+    border-radius: 99px;
+    padding: 4px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .use-case-btn {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
-    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    color: rgba(127, 175, 192, 0.55);
+    padding: 8px 16px;
     font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    border-radius: 30px;
+    border-radius: 99px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s var(--ease-card);
 }
 
 .use-case-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .use-case-btn.active {
-    color: var(--accent-green, #4CBD97);
-    background: rgba(76, 189, 151, 0.1);
-    border-color: rgba(76, 189, 151, 0.3);
-    box-shadow: 0 0 15px rgba(76, 189, 151, 0.1);
+    color: var(--accent-green, #4cbd97);
+    background: rgba(76, 189, 151, 0.12) padding-box,
+                linear-gradient(135deg, var(--accent-green), rgba(76, 189, 151, 0.1)) border-box;
+    box-shadow: 0 2px 8px rgba(76, 189, 151, 0.15);
 }
 
 /* Level-1 device card — surface/shadow/blur come from .card + .card-glass
@@ -495,21 +520,23 @@ site-footer {
 
 .btn-deploy {
     background: var(--accent-blue, #119FCD);
-    border: none;
-    color: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--bg-deep);
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-weight: 700;
     font-size: 11px;
     padding: 6px 12px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 0 10px rgba(17, 159, 205, 0.3);
+    transition: all 0.25s var(--ease-card);
+    box-shadow: 0 4px 10px rgba(17, 159, 205, 0.25);
 }
 
 .btn-deploy:hover {
     background: #ffffff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    color: var(--bg-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.35);
 }
 
 /* ── AI Guardrails Simulator ────────────────────────────────────── */
@@ -518,13 +545,14 @@ site-footer {
    border derived from --card-accent. */
 .proposal-simulator-card {
     --card-accent: var(--accent-yellow);
-    background: rgba(17, 27, 39, 0.5);
-    border: 1px solid color-mix(in srgb, var(--card-accent) 15%, transparent);
+    background: linear-gradient(135deg, rgba(17, 27, 39, 0.5), rgba(7, 17, 26, 0.8)) padding-box,
+                linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)) border-box;
+    border: 1px solid transparent;
     border-radius: var(--radius-md);
-    padding: 14px 20px;
+    padding: 18px 24px;
     margin-top: var(--space-4);
     text-align: left;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     width: 100%;
 }
 
@@ -532,7 +560,7 @@ site-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 12px;
     margin-bottom: 16px;
 }
@@ -542,11 +570,13 @@ site-footer {
     font-size: 10px;
     font-weight: 700;
     color: #FFD167;
-    background: rgba(255, 209, 103, 0.1);
-    border: 1px solid rgba(255, 209, 103, 0.25);
-    padding: 3px 8px;
+    background: rgba(255, 209, 103, 0.08) padding-box,
+                linear-gradient(135deg, rgba(255, 209, 103, 0.25), rgba(255, 255, 255, 0.02)) border-box;
+    border: 1px solid transparent;
+    padding: 4px 10px;
     border-radius: 20px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .pulsing {
@@ -554,8 +584,8 @@ site-footer {
 }
 
 @keyframes simPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.98); }
 }
 
 .proposal-body {
@@ -566,7 +596,7 @@ site-footer {
 .proposal-details code {
     font-family: var(--font-code, "DM Mono"), monospace;
     background: rgba(255, 255, 255, 0.05);
-    padding: 2px 6px;
+    padding: 3px 6px;
     border-radius: 4px;
     color: #FFD167;
 }
@@ -579,54 +609,58 @@ site-footer {
 
 .btn-approve {
     background: var(--accent-green, #4CBD97);
-    border: none;
-    color: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--bg-deep);
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-weight: 700;
     font-size: 12px;
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 0 10px rgba(76, 189, 151, 0.2);
+    transition: all 0.25s var(--ease-card);
+    box-shadow: 0 4px 12px rgba(76, 189, 151, 0.25);
 }
 
 .btn-approve:hover {
     background: #ffffff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    color: var(--bg-deep);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.35);
 }
 
 .btn-reject {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-weight: 600;
     font-size: 12px;
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s var(--ease-card);
 }
 
 .btn-reject:hover {
     border-color: #ff5f56;
     color: #ff5f56;
-    background: rgba(255, 95, 86, 0.05);
+    background: rgba(255, 95, 86, 0.08);
+    transform: translateY(-1px);
 }
 
 .sim-log {
     font-family: var(--font-code, "DM Mono"), monospace;
     color: #64748b;
     padding: 12px;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.25);
     border-radius: 6px;
+    font-size: 11px;
 }
 
 .sim-success-box, .sim-rejected-box {
     padding: 16px;
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 .sim-success-box {
@@ -639,8 +673,8 @@ site-footer {
 
 .btn-undo {
     background: transparent;
-    border: 1px dashed rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.7);
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.6);
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-size: 11px;
     font-weight: 600;
@@ -648,7 +682,7 @@ site-footer {
     border-radius: 4px;
     margin-top: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s var(--ease-card);
 }
 
 .btn-undo:hover {
@@ -660,9 +694,12 @@ site-footer {
 /* ── Interactive Highlight States on Steps ─────────────────────── */
 
 .guard-step.pulse-active {
-    border-color: var(--card-accent);
-    box-shadow: 0 0 30px color-mix(in srgb, var(--card-accent) 40%, transparent);
-    transform: scale(1.02);
+    background: linear-gradient(135deg, rgba(12, 21, 31, 0.8), rgba(6, 12, 18, 0.95)) padding-box,
+                linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 55%, transparent), rgba(255, 255, 255, 0.02)) border-box;
+    box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+        0 0 24px color-mix(in srgb, var(--card-accent) 30%, transparent);
+    transform: scale(1.02) translateY(-2px);
 }
 
 .decouple-flows-comparison {
@@ -698,12 +735,14 @@ site-footer {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    background: linear-gradient(135deg, rgba(7, 17, 26, 0.4), rgba(4, 8, 12, 0.6)) padding-box,
+                linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)) border-box;
+    border: 1px solid transparent;
     border-radius: 12px;
     padding: 24px 16px;
     min-height: 280px;
     justify-content: center;
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
 }
 
 .flow-arrow {
@@ -719,13 +758,14 @@ site-footer {
     align-items: center;
     gap: 10px;
     padding: 10px 14px;
-    background: #060a0f;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(6, 10, 15, 0.9), rgba(3, 5, 8, 0.95)) padding-box,
+                linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) border-box;
+    border: 1px solid transparent;
     border-radius: 8px;
     width: 100%;
     max-width: 200px;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.3s var(--ease-card);
 }
 
 .orion-style-node .node-dot {
@@ -783,18 +823,27 @@ site-footer {
 
 /* Glow styles matching nodes health states */
 .orion-style-node.active {
-    box-shadow: 0 0 16px -4px rgba(76, 189, 151, 0.45);
-    border-color: rgba(76, 189, 151, 0.3);
+    box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+        0 0 16px -4px rgba(76, 189, 151, 0.45);
+    background: linear-gradient(135deg, rgba(6, 10, 15, 0.9), rgba(3, 5, 8, 0.95)) padding-box,
+                linear-gradient(135deg, rgba(76, 189, 151, 0.3), rgba(255, 255, 255, 0.02)) border-box;
 }
 
 .orion-style-node.draft {
-    box-shadow: 0 0 16px -4px rgba(17, 159, 205, 0.45);
-    border-color: rgba(17, 159, 205, 0.3);
+    box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+        0 0 16px -4px rgba(17, 159, 205, 0.45);
+    background: linear-gradient(135deg, rgba(6, 10, 15, 0.9), rgba(3, 5, 8, 0.95)) padding-box,
+                linear-gradient(135deg, rgba(17, 159, 205, 0.3), rgba(255, 255, 255, 0.02)) border-box;
 }
 
 .orion-style-node.error-node {
-    box-shadow: 0 0 16px -4px rgba(255, 209, 103, 0.45);
-    border-color: rgba(255, 209, 103, 0.3);
+    box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+        0 0 16px -4px rgba(255, 209, 103, 0.45);
+    background: linear-gradient(135deg, rgba(6, 10, 15, 0.9), rgba(3, 5, 8, 0.95)) padding-box,
+                linear-gradient(135deg, rgba(255, 209, 103, 0.3), rgba(255, 255, 255, 0.02)) border-box;
 }
 
 .orion-style-node.unresolved {
