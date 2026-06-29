@@ -11,5 +11,5 @@ export default function OrionCanvas({ heroTextRef }) {
             heroText: heroTextRef?.current,
         }),
     );
-    return <canvas id="bg" ref={ref} />;
+    return <canvas id="bg" ref={ref} aria-hidden="true" />;
 }

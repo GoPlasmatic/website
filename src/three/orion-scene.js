@@ -191,6 +191,11 @@ function weightedChoice(weights, n, rng) {
 
 async function loadNervousSystem(binUrl) {
     const resp = await fetch(binUrl);
+    if (!resp.ok) {
+        throw new Error(
+            `Failed to fetch ${binUrl}: ${resp.status} ${resp.statusText}`,
+        );
+    }
     const buf = await resp.arrayBuffer();
     const view = new DataView(buf);
 
@@ -463,7 +468,28 @@ export async function initOrionScene(canvas, options = {}) {
 
     /* ── Build geometry from data ──────────────────────────────────── */
 
-    const data = await loadNervousSystem(binUrl);
+    let data;
+    try {
+        data = await loadNervousSystem(binUrl);
+    } catch (err) {
+        // Graceful degradation: if the binary fails to load (404, network,
+        // corrupt payload) keep the page usable — paint the deep-space
+        // background so the hero copy stays legible, release the GPU context,
+        // and still flip the sceneReady gate so nothing waits on it forever.
+        console.error("[orion-scene] nervous-system load failed:", err);
+        renderer.setClearColor(0x07111a, 1);
+        renderer.clear();
+        document.body.dataset.sceneReady = "true";
+        return function dispose() {
+            offs.forEach((off) => off());
+            bloomPass.dispose?.();
+            composer.dispose?.();
+            renderTarget.dispose();
+            renderer.dispose();
+            renderer.forceContextLoss?.();
+            delete document.body.dataset.sceneReady;
+        };
+    }
     const { lines, numLines, brainVerts, brainEdges, numBrainEdges } = data;
 
     // Center the model
@@ -986,7 +1012,7 @@ export async function initOrionScene(canvas, options = {}) {
     const clock = new THREE.Clock();
     let firstFrame = true;
     let rafId = 0;
-    (function animate() {
+    function animate() {
         rafId = requestAnimationFrame(animate);
         const dt = clock.getDelta();
         const elapsed = clock.getElapsedTime();
@@ -1011,7 +1037,24 @@ export async function initOrionScene(canvas, options = {}) {
             firstFrame = false;
             document.body.dataset.sceneReady = "true";
         }
-    })();
+    }
+    animate();
+
+    // Pause/resume the loop across GPU context loss (driver reset, tab
+    // eviction) so it neither throws against a dead context nor stays frozen
+    // after the browser restores it.
+    let contextLost = false;
+    on(canvas, "webglcontextlost", (e) => {
+        e.preventDefault();
+        contextLost = true;
+        cancelAnimationFrame(rafId);
+    });
+    on(canvas, "webglcontextrestored", () => {
+        if (!contextLost) return;
+        contextLost = false;
+        clock.getDelta(); // drop the gap accumulated while paused
+        animate();
+    });
 
     /* ── Teardown ──────────────────────────────────────────────────── */
 

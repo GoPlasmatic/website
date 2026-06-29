@@ -184,7 +184,7 @@ export function initHomeScene(canvas, options = {}) {
     const clock = new THREE.Clock();
     let firstFrame = true;
     let rafId = 0;
-    (function animate() {
+    function animate() {
         rafId = requestAnimationFrame(animate);
         if (!reduced) {
             const t = clock.getElapsedTime();
@@ -205,7 +205,22 @@ export function initHomeScene(canvas, options = {}) {
             firstFrame = false;
             document.body.dataset.sceneReady = "true";
         }
-    })();
+    }
+    animate();
+
+    // Pause/resume across GPU context loss so the loop neither throws against a
+    // dead context nor stays frozen after the browser restores it.
+    let contextLost = false;
+    on(canvas, "webglcontextlost", (e) => {
+        e.preventDefault();
+        contextLost = true;
+        cancelAnimationFrame(rafId);
+    });
+    on(canvas, "webglcontextrestored", () => {
+        if (!contextLost) return;
+        contextLost = false;
+        animate();
+    });
 
     return function dispose() {
         cancelAnimationFrame(rafId);

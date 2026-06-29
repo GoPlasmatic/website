@@ -13,7 +13,8 @@ import {
 } from "lucide-react";
 import HeroCanvas from "../components/HeroCanvas.jsx";
 import SectionGraphic from "../components/SectionGraphic.jsx";
-import { usePageTitle } from "../hooks/usePageTitle.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { ROUTES } from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import architectureCore from "../assets/architecture-core.svg";
 import fragmentation from "../assets/fragmentation.svg";
@@ -38,7 +39,7 @@ function GithubMark() {
 }
 
 export default function Home() {
-    usePageTitle("Plasmatic – Declarative services runtime");
+    usePageMeta(ROUTES["/"]);
     usePageStyles(homeCss);
     return (
         <>

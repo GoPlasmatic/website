@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { usePageTitle } from "../hooks/usePageTitle.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { ROUTES } from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import legalCss from "../styles/legal.css?inline";
 
 export default function Terms() {
-    usePageTitle("Terms of Service – Plasmatic");
+    usePageMeta(ROUTES["/terms"]);
     usePageStyles(legalCss);
     return (
         <section className="section-legal" data-test-section="main">

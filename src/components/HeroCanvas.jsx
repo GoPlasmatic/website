@@ -5,5 +5,5 @@ import { initHomeScene } from "../three/home-scene.js";
 // the canvas's parent (.hero), so this must render inside the hero section.
 export default function HeroCanvas() {
     const ref = useScene((canvas) => initHomeScene(canvas));
-    return <canvas id="hero-bg" className="hero-bg" ref={ref} />;
+    return <canvas id="hero-bg" className="hero-bg" ref={ref} aria-hidden="true" />;
 }

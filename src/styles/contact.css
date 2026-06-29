@@ -116,6 +116,8 @@ html.snap-ready {
 
 .form-row input:focus,
 .form-row textarea:focus {
+    /* The gradient border + glow below is the focus indicator, so opt out of
+       the global :focus-visible outline to avoid a doubled ring. */
     outline: none;
     background: rgba(7, 17, 26, 0.8) padding-box,
                 linear-gradient(135deg, var(--accent-blue), rgba(17, 159, 205, 0.2)) border-box;

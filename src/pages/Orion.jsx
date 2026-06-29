@@ -5,12 +5,13 @@ import OrionCanvas from "../components/OrionCanvas.jsx";
 import DeploySimulator from "../components/orion/DeploySimulator.jsx";
 import UseCaseTabs from "../components/orion/UseCaseTabs.jsx";
 import GuardrailsSimulator from "../components/orion/GuardrailsSimulator.jsx";
-import { usePageTitle } from "../hooks/usePageTitle.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { ROUTES } from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import orionCss from "../styles/orion.css?inline";
 
 export default function Orion() {
-    usePageTitle("Plasmatic – Orion");
+    usePageMeta(ROUTES["/orion"]);
     usePageStyles(orionCss);
     const heroTextRef = useRef(null);
 
