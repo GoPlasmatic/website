@@ -69,3 +69,11 @@ Fonts: Montserrat (display), DM Sans (body), DM Mono (code) — Google Fonts + A
 ## Tests
 
 `npm run screenshots` runs Playwright (`tests/visual/`) against the Vite dev server: per-section / full-page / mobile-nav captures + layout probes across 11 viewports × 5 routes, gated on `sceneReady`. Output (git-ignored) lands in `tests/visual/__screenshots__/`.
+
+Each viewport in `tests/visual/viewports.js` becomes a Playwright **project**, so narrow a run by project (viewport) or by title — there's no per-route project:
+```bash
+npx playwright test --project=desktop-wide      # one viewport, all routes
+npx playwright test -g orion                    # one route, all viewports
+npx playwright test --project=mobile-portrait-small -g orion
+```
+The harness is serial by design (`workers: 1`, `fullyParallel: false`) so captures stay deterministic against the single shared dev server — don't parallelize it.
