@@ -57,7 +57,15 @@ export default function Orion() {
                     <div className="section-container">
                         <div className="grid-2col">
                             <div className="col-content reveal-left">
-                                <div className="eyebrow">
+                                <div
+                                    className="eyebrow"
+                                    style={{
+                                        "--accent-teal": "#ffd167",
+                                        borderColor: "rgba(255, 209, 103, 0.25)",
+                                        background:
+                                            "linear-gradient(135deg, rgba(255, 209, 103, 0.1), rgba(255, 209, 103, 0.05))",
+                                    }}
+                                >
                                     <span>Problem</span>
                                 </div>
                                 <h2 className="reveal-blur">
@@ -554,8 +562,8 @@ export default function Orion() {
                     <div className="section-container">
                         <div className="grid-2col orion-grid">
                             <div className="reveal-left">
-                                <div className="label-mono orion-label">
-                                    The Future
+                                <div className="eyebrow">
+                                    <span>The Future</span>
                                 </div>
                                 <h2 className="orion-heading reveal-blur">
                                     Software that adapts to the AI era.
