@@ -644,8 +644,8 @@ export default function Orion() {
                     <div className="section-container">
                         <div className="grid-2col">
                             <div className="cta-inner reveal-left">
-                                <div className="label-mono cta-label">
-                                    Get involved
+                                <div className="eyebrow">
+                                    <span>Get involved</span>
                                 </div>
                                 <h2 className="reveal-blur">
                                     Shape what comes next.

@@ -4,7 +4,7 @@ import {
     Zap,
     ShieldCheck,
     Shield,
-    TrendingDown,
+    Sparkles,
     Gauge,
     Network,
     Terminal,
@@ -279,8 +279,8 @@ export default function Home() {
                 <div className="section-container">
                     <div className="grid-2col orion-grid">
                         <div className="reveal-left">
-                            <div className="label-mono orion-label">
-                                Orion &mdash; Declarative Services Runtime
+                            <div className="eyebrow">
+                                <span>Orion &mdash; Declarative Services Runtime</span>
                             </div>
                             <h2 className="orion-heading reveal-blur">
                                 Build minimal.
@@ -322,7 +322,7 @@ export default function Home() {
                             </div>
                             <div className="card orion-feature-card">
                                 <div className="icon-chip orion-feature-icon">
-                                    <TrendingDown />
+                                    <Sparkles />
                                 </div>
                                 <h4>AI-Native &amp; Safe</h4>
                                 <p>
@@ -420,8 +420,8 @@ export default function Home() {
                 <div className="section-container">
                     <div className="grid-2col">
                         <div className="cta-inner reveal-left">
-                            <div className="label-mono cta-label">
-                                For developers
+                            <div className="eyebrow">
+                                <span>For developers</span>
                             </div>
                             <h2 className="reveal-blur">
                                 Start building with Plasmatic.

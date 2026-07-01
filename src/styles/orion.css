@@ -54,13 +54,14 @@ site-footer {
 }
 
 .section-header p {
-    font-size: 14px;
+    /* size/line-height inherit from common.css so the subtitle matches
+       the home page (20px). */
     margin-top: 4px;
 }
 
 .section-body {
-    font-size: 14px;
-    line-height: 1.6;
+    /* size (20px) + line-height inherit from common.css to match the home
+       page; keep the tighter bottom gap so dense snap sections still fit. */
     margin-bottom: 32px;
 }
 
@@ -69,18 +70,16 @@ site-footer {
     padding: 12px 16px;
 }
 
-.callout p {
-    font-size: 13px;
-    line-height: 1.4;
-}
+/* .callout p size (18px) + line-height inherit from common.css — matches home. */
 
 .hero h1 {
     font-size: clamp(40px, 6vw, 80px);
 }
 
-/* The hero <p> uses .lead from common.css; product needs more breathing
-   room before the CTA buttons (no .hero-support follows here). */
+/* The hero <p> uses .lead from common.css; match the home hero's 20px and
+   add more breathing room before the CTA buttons (no .hero-support here). */
 .hero .lead {
+    font-size: 20px;
     margin-bottom: 36px;
 }
 
@@ -107,7 +106,7 @@ site-footer {
 }
 
 .cta-desc {
-    font-size: 15px;
+    /* size (16px) inherits from common.css to match the home page. */
     margin-bottom: 30px;
     max-width: none;
 }
