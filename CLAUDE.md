@@ -11,7 +11,7 @@ Plasmatic marketing website — a **Vite + React** single-page app (plain JavaSc
 ```bash
 npm install        # one-time
 npm run dev        # Vite dev server on http://localhost:8000 (SPA fallback for deep routes)
-npm run build      # bundle + minify to dist/ (also copies index.html -> 404.html)
+npm run build      # bundle + minify to dist/ (+ per-route HTML stubs with baked meta)
 npm run preview    # serve the production build on http://localhost:8000
 ```
 
@@ -27,8 +27,9 @@ Reads `reference/blender-source/nervous-system.obj`, writes into `public/`. The 
 
 - **Three.js is bundled from the `three` npm package** (no CDN import map). Addon imports use `three/addons/...`, aliased to `three/examples/jsm` in `vite.config.js`.
 - **No property-mangling hazard.** Vite's esbuild minifier never renames object properties or string literals, so Three.js's by-name lookups are safe with zero config — `uniforms.uColor.value`, `setAttribute("aT", …)`, and GLSL kept inside template literals all survive. (This is what the old Python `build.py` worked to guarantee; esbuild gives it for free.) The `glsl` identity-tag helper remains in the scene files purely for readable shaders.
-- **Static files** live in `public/` and are copied to `dist/` root verbatim: `CNAME` (custom domain `goplasmatic.io`), `robots.txt`, `nervous-system.bin`, `favicon.svg`.
-- **GitHub Pages SPA routing:** `vite.config.js` has a plugin that copies `dist/index.html` → `dist/404.html` so deep links boot the SPA. Deploy runs via `.github/workflows/deploy.yml` (`npm ci && npm run build` → upload `dist/`).
+- **Static files** live in `public/` and are copied to `dist/` root verbatim: `robots.txt`, `sitemap.xml`, `nervous-system.bin`, `favicon.svg`, `og-image.png`.
+- **Deployment (Cloudflare Workers):** pushes to `main` trigger Workers Builds (CI), which builds and runs `wrangler deploy` per `wrangler.jsonc`. `dist/` is served as static assets on `goplasmatic.io` (canonical) and `goplasmatic.ai`; `worker/index.js` runs first on every request (`run_worker_first`) and 301s any `goplasmatic.ai` host to the same path on `.io`. SPA deep links get a 200 via `not_found_handling: "single-page-application"`; `html_handling: "drop-trailing-slash"` serves the prerendered `dist/orion/index.html` at `/orion`.
+- **SEO canonicalization:** all absolute URLs (canonical, OG, JSON-LD, sitemap, robots) point at `https://goplasmatic.io` via `SITE_URL` in `src/site-meta.js`; the `routePrerender` plugin in `vite.config.js` bakes per-route `<head>` metadata into static HTML stubs at build time.
 
 ## CSS isolation (important)
 

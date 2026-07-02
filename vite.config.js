@@ -1,28 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { copyFileSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { ROUTES, SITE_URL } from "./src/site-meta.js";
 
-// GitHub Pages serves a 404 page for any path it can't resolve to a file.
-// Copying the built index.html to 404.html lets deep links (/orion, /contact)
-// boot the SPA so React Router can render the right route client-side.
-function spa404Fallback() {
-  return {
-    name: "spa-404-fallback",
-    closeBundle() {
-      const dist = resolve(__dirname, "dist");
-      copyFileSync(resolve(dist, "index.html"), resolve(dist, "404.html"));
-    },
-  };
-}
-
 // Bake per-route <head> metadata into static HTML so non-JS crawlers / social
-// scrapers — and GitHub Pages, which would otherwise return HTTP 404 for deep
-// paths — get the right title/description/OG tags and a 200 for /orion,
-// /contact, etc. Each stub still loads the same SPA bundle, so React Router
-// renders normally. Route copy is the single source of truth in src/site-meta.js
-// (also used by the runtime usePageMeta hook).
+// scrapers get the right title/description/OG tags and a 200 for /orion,
+// /contact, etc. (Cloudflare's html_handling:"drop-trailing-slash" serves
+// dist/orion/index.html at /orion.) Each stub still loads the same SPA bundle,
+// so React Router renders normally. Route copy is the single source of truth
+// in src/site-meta.js (also used by the runtime usePageMeta hook).
 function escAttr(s) {
   return String(s)
     .replace(/&/g, "&amp;")
@@ -76,7 +63,7 @@ function routePrerender() {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), routePrerender(), spa404Fallback()],
+  plugins: [react(), routePrerender()],
   resolve: {
     alias: {
       // three 0.170 exports "./addons/*" natively, but pin the mapping so the

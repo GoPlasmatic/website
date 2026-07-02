@@ -4,6 +4,9 @@
 # Vite build output
 dist/
 
+# Wrangler local dev state
+.wrangler/
+
 # Node deps
 node_modules/
 

@@ -19,20 +19,24 @@ npm run dev        # Vite dev server on http://localhost:8000
 ## Build & Preview
 
 ```bash
-npm run build      # bundles + minifies to dist/ (also writes 404.html for SPA routing)
+npm run build      # bundles + minifies to dist/ (+ per-route HTML stubs with baked meta)
 npm run preview    # serve the production build on http://localhost:8000
 ```
 
-`dist/` is git-ignored. The static assets in `public/` (`CNAME`, `robots.txt`,
-`nervous-system.bin`, `favicon.svg`) are copied to the root of `dist/` verbatim.
+`dist/` is git-ignored. The static assets in `public/` (`robots.txt`, `sitemap.xml`,
+`nervous-system.bin`, `favicon.svg`, `og-image.png`) are copied to the root of
+`dist/` verbatim.
 
 ## Deployment
 
-Pushes to `main` trigger `.github/workflows/deploy.yml`, which runs `npm ci &&
-npm run build` and publishes `dist/` to GitHub Pages at the custom domain
-`goplasmatic.io` (via `public/CNAME`). Deep links work because the build copies
-`index.html` to `404.html`, so GitHub Pages serves the SPA shell for any path
-and React Router renders the route client-side.
+Pushes to `main` trigger Cloudflare Workers Builds (CI), which runs the build and
+`wrangler deploy` per `wrangler.jsonc`. The Worker serves `dist/` as static assets
+on **goplasmatic.io** (canonical) and **goplasmatic.ai**; `worker/index.js` runs
+first on every request and 301-redirects any `goplasmatic.ai` host to the same
+path on `goplasmatic.io`. Deep links work via
+`not_found_handling: "single-page-application"` (unknown paths serve the SPA
+shell with a 200), and the prerendered per-route stubs give crawlers real
+`<head>` metadata at `/orion`, `/contact`, etc.
 
 ## Visual Tests
 
@@ -74,8 +78,10 @@ edit the `.bin` directly — regenerate it from source.
 
 ```
 index.html              Vite entry (SPA shell: fonts + #root)
-vite.config.js          Vite config (react plugin, three/addons alias, 404 SPA fallback)
-public/                 Static files copied to dist/ root (CNAME, robots.txt, .bin, favicon)
+vite.config.js          Vite config (react plugin, three/addons alias, route prerender)
+wrangler.jsonc          Cloudflare Workers deploy config (static assets + custom domains)
+worker/index.js         Edge Worker: 301s goplasmatic.ai → goplasmatic.io, serves assets
+public/                 Static files copied to dist/ root (robots.txt, sitemap, .bin, favicon)
 src/
   main.jsx              createRoot + <BrowserRouter>; imports global common.css
   App.jsx               <Routes> under a shared <Layout>

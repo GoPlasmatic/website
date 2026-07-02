@@ -1,22 +1,31 @@
 {
-  // Cloudflare Workers static-assets deployment for goplasmatic.ai.
-  // No Worker script (`main`) — this is an assets-only Worker that serves the
-  // Vite build output. goplasmatic.io stays on GitHub Pages and remains canonical.
+  // Cloudflare Workers static-assets deployment for both apex domains.
+  // goplasmatic.io is canonical; worker/index.js 301s goplasmatic.ai (and its
+  // subdomains) to the same path on goplasmatic.io, then serves the Vite build
+  // output for canonical requests via the ASSETS binding.
   "name": "website",
+  "main": "worker/index.js",
   "compatibility_date": "2024-12-01",
-  // No public *.workers.dev mirror — serve only on the custom domain below.
+  // No public *.workers.dev mirror — serve only on the custom domains below.
   "workers_dev": false,
-  // Bind to goplasmatic.ai. custom_domain:true makes wrangler create the DNS
-  // record + edge cert on deploy (the zone is already on Cloudflare here).
-  // goplasmatic.io stays canonical on GitHub Pages.
-  "routes": [{ "pattern": "goplasmatic.ai", "custom_domain": true }],
+  // custom_domain:true makes wrangler create the DNS record + edge cert on
+  // deploy (both zones live on Cloudflare).
+  "routes": [
+    { "pattern": "goplasmatic.io", "custom_domain": true },
+    { "pattern": "goplasmatic.ai", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    // Run the Worker before asset matching so the host check happens on every
+    // request — otherwise .ai requests that match a built file would be served
+    // directly and never redirect.
+    "run_worker_first": true,
     // Serve /index.html with a 200 for any path that doesn't match a built file,
     // so React Router deep links (/orion, /contact, /privacy, /terms) boot the SPA.
     "not_found_handling": "single-page-application",
     // Serve /orion directly (no auto-added trailing slash); /orion/ 307s to /orion.
-    // Keeps URLs matching the app's routes and the goplasmatic.io sitemap.
+    // Keeps URLs matching the app's routes and the sitemap.
     "html_handling": "drop-trailing-slash"
   }
 }
