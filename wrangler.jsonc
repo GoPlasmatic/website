@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers static-assets deployment for goplasmatic.ai.
+  // No Worker script (`main`) — this is an assets-only Worker that serves the
+  // Vite build output. goplasmatic.io stays on GitHub Pages and remains canonical.
+  "name": "plasmatic-website",
+  "compatibility_date": "2024-12-01",
+  "assets": {
+    "directory": "./dist",
+    // Serve /index.html with a 200 for any path that doesn't match a built file,
+    // so React Router deep links (/orion, /contact, /privacy, /terms) boot the SPA.
+    "not_found_handling": "single-page-application"
+  }
+}
