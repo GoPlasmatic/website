@@ -1,0 +1,5 @@
+# Cloudflare Pages SPA fallback.
+# Static files (assets, og-image.png, nervous-system.bin, robots.txt, sitemap.xml)
+# are served first; only unmatched paths fall through to the SPA shell so deep
+# routes (/orion, /contact, /privacy, /terms) boot React Router with a 200 status.
+/*    /index.html    200
