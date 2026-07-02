@@ -14,6 +14,9 @@
     "directory": "./dist",
     // Serve /index.html with a 200 for any path that doesn't match a built file,
     // so React Router deep links (/orion, /contact, /privacy, /terms) boot the SPA.
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    // Serve /orion directly (no auto-added trailing slash); /orion/ 307s to /orion.
+    // Keeps URLs matching the app's routes and the goplasmatic.io sitemap.
+    "html_handling": "drop-trailing-slash"
   }
 }
