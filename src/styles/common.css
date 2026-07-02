@@ -1590,9 +1590,27 @@ section-graphic .sg-text-layer > .sg-text {
     .nav.open .nav-links {
         display: flex;
     }
-    .nav-links a {
-        padding: 14px 32px;
-        font-size: 16px;
+    /* Match the desktop rule's `:not(.btn-nav)` specificity (0,2,1) so this
+       override actually wins — media queries add no specificity, so a plain
+       `.nav-links a` (0,1,1) would lose to the base rule and the drawer links
+       would keep the desktop 14px / 6px 0 (small text, no left padding). */
+    .nav-links a:not(.btn-nav) {
+        padding: 16px 32px;
+        font-size: 18px;
+        font-weight: 500;
+        text-align: center;
+    }
+    /* The hover underline is absolutely positioned to the full-width anchor;
+       center it under the now-centered label instead of spanning edge-to-edge. */
+    .nav-links a:not(.btn-nav)::after {
+        left: 50%;
+        width: 48px;
+        transform: translateX(-50%) scaleX(0);
+        transform-origin: center;
+    }
+    .nav-links a:not(.btn-nav):hover::after {
+        transform: translateX(-50%) scaleX(1);
+        transform-origin: center;
     }
     .nav-links a.btn-nav {
         display: block;
