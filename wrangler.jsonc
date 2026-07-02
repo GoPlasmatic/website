@@ -4,6 +4,12 @@
   // Vite build output. goplasmatic.io stays on GitHub Pages and remains canonical.
   "name": "website",
   "compatibility_date": "2024-12-01",
+  // No public *.workers.dev mirror — serve only on the custom domain below.
+  "workers_dev": false,
+  // Bind to goplasmatic.ai. custom_domain:true makes wrangler create the DNS
+  // record + edge cert on deploy (the zone is already on Cloudflare here).
+  // goplasmatic.io stays canonical on GitHub Pages.
+  "routes": [{ "pattern": "goplasmatic.ai", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
     // Serve /index.html with a 200 for any path that doesn't match a built file,
