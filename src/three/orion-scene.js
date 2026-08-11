@@ -12,6 +12,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { BLOOM_COMPOSITE_GAIN } from "./neon-line.js";
 
 // Identity tagged template — keeps the GLSL readable; no build step needs it.
 const glsl = (s, ...v) => s.reduce((a, p, i) => a + p + (v[i] ?? ""), "");
@@ -398,7 +399,11 @@ function lineOpacity(rs) {
 
 function adaptedBloom(resScale) {
     return {
-        strength: THREE.MathUtils.clamp(0.6 * resScale, 0.25, 0.8),
+        // Divided by BLOOM_COMPOSITE_GAIN for the same reason as adaptBloom() —
+        // see the note in neon-line.js.
+        strength:
+            THREE.MathUtils.clamp(0.6 * resScale, 0.25, 0.8) /
+            BLOOM_COMPOSITE_GAIN,
         radius: THREE.MathUtils.clamp(0.85 / resScale, 0.6, 1.0),
     };
 }

@@ -118,9 +118,20 @@ export function getResScale(w, h) {
     return Math.sqrt((w * pr * h * pr) / REF_PIXELS);
 }
 
+// three r0.178 rewrote UnrealBloomPass: the composite step gained a hard-coded
+// `3.0 *` factor and the separable blur dropped its `diffuseSum / weightSum`
+// normalisation (the Gaussian coefficients now self-normalise via sigma = r/3).
+// Net effect: identical strength values bloom ~3x hotter than on r0.170, which
+// blows the neon cores past 1.0 and clips them into flat discs with a hard rim.
+// Keep the authored bloom constants in their original units and divide here, so
+// the clamp ranges below still mean what they meant when they were tuned.
+export const BLOOM_COMPOSITE_GAIN = 3;
+
 export function adaptBloom(bloom, rs) {
     return {
-        strength: THREE.MathUtils.clamp(bloom.strength * rs, 0.25, 0.9),
+        strength:
+            THREE.MathUtils.clamp(bloom.strength * rs, 0.25, 0.9) /
+            BLOOM_COMPOSITE_GAIN,
         radius: THREE.MathUtils.clamp(bloom.radius / rs, 0.15, 0.6),
     };
 }

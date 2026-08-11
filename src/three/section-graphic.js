@@ -646,7 +646,16 @@ export function initSectionGraphic(host, config) {
             alpha: true,
         });
         renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-        renderer.setClearColor(0x000000, 0);
+        // Clear to opaque black for background graphics. three r0.178 gave
+        // UnrealBloomPass's blend material `premultipliedAlpha: true` and made
+        // the composite emit `alpha = max(bloom.rgb)`, so unlit pixels now leave
+        // the canvas fully transparent. Before, the pass wrote a near-uniform
+        // partial alpha that veiled the section's CSS gradient; without that
+        // veil the gradient reads through and the glow sits on a lighter base,
+        // which shows up as a bright bubble bounded by the canvas rect. An
+        // opaque clear restores the flat dark ground the scenes were tuned for.
+        // Overlay graphics must stay transparent or they would occlude content.
+        renderer.setClearColor(0x000000, p.position === "background" ? 1 : 0);
 
         bloom = {
             strength: p.bloomStrength,
