@@ -41,7 +41,12 @@ export default function Orion() {
                             <Link to="/contact" className="btn-primary">
                                 Start a conversation &rarr;
                             </Link>
-                            <a href="#two-clocks" className="btn-secondary">
+                            <a
+                                href="https://docs.goplasmatic.io/"
+                                target="_blank"
+                                rel="noopener"
+                                className="btn-secondary"
+                            >
                                 Explore how it works
                             </a>
                         </div>

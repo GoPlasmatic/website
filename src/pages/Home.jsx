@@ -432,7 +432,7 @@ export default function Home() {
                             </p>
                             <div className="dev-links">
                                 <a
-                                    href="https://goplasmatic.github.io/Orion/"
+                                    href="https://docs.goplasmatic.io/"
                                     target="_blank"
                                     rel="noopener"
                                     className="card card-hoverable dev-link-card"
@@ -469,7 +469,7 @@ export default function Home() {
                                     </span>
                                 </a>
                                 <a
-                                    href="https://goplasmatic.github.io/Orion/tutorials/cli-setup.html#cli-setup"
+                                    href="https://docs.goplasmatic.io/getting-started/install.html"
                                     target="_blank"
                                     rel="noopener"
                                     className="card card-hoverable dev-link-card"
