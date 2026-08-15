@@ -48,7 +48,7 @@ export default function ContactForm() {
         <form
             id="contactForm"
             className="card card-elevated card-static contact-form"
-            action="https://formspree.io/f/movnyqor"
+            action="https://formspree.io/f/mpwjkral"
             method="POST"
             onSubmit={handleSubmit}
         >
