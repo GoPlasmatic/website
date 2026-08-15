@@ -10,7 +10,7 @@ export default function Privacy() {
         <section className="section-legal" data-test-section="main">
             <div className="legal-container">
                 <div className="label-mono legal-meta">
-                    Last updated: 28 April 2026
+                    Last updated: 15 August 2026
                 </div>
                 <h1>Privacy Policy</h1>
                 <p className="legal-lede">
@@ -37,7 +37,16 @@ export default function Privacy() {
                     >
                         goplasmatic.io
                     </a>{" "}
-                    (the “Site”) and any related communications or services.
+                    and its subdomains, including our product documentation at{" "}
+                    <a
+                        href="https://docs.goplasmatic.io"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        docs.goplasmatic.io
+                    </a>{" "}
+                    (together, the “Site”), and any related communications or
+                    services.
                 </p>
 
                 <h2>2. Personal data we collect</h2>
@@ -66,6 +75,12 @@ export default function Privacy() {
                     <li>
                         Usage data such as pages visited, time spent, and
                         interactions on the Site.
+                    </li>
+                    <li>
+                        Session replay data collected through our analytics
+                        provider (see Section 9), such as mouse movement,
+                        scrolling, clicks, and text typed into on-page controls
+                        (for example, the documentation search box).
                     </li>
                     <li>
                         Information collected through cookies and similar
@@ -198,6 +213,24 @@ export default function Privacy() {
                     correctly, remember preferences, and understand how the Site
                     is used. You can manage or disable cookies through your
                     browser settings; doing so may affect functionality.
+                </p>
+                <p>
+                    We use <strong>Microsoft Clarity</strong> to understand how
+                    visitors use the Site. Clarity sets cookies and records
+                    behavioural data such as page views, mouse movement,
+                    scrolling, clicks, and session replays, which may include
+                    text typed into on-page controls such as the documentation
+                    search box. Microsoft processes this data as described in
+                    the{" "}
+                    <a
+                        href="https://privacy.microsoft.com/privacystatement"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Microsoft Privacy Statement
+                    </a>
+                    . You can limit this collection by disabling cookies in
+                    your browser or by using a content-blocking extension.
                 </p>
 
                 <h2>10. Security</h2>
