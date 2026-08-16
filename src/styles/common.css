@@ -1,6 +1,13 @@
 /* ── Design tokens ───────────────────────────────────────────────── */
 
 :root {
+    /* Display face token. orion.css references var(--font-display, "Montserrat")
+       throughout; defining it here makes the fallback explicit and gives the
+       future display-face decision a single switch. */
+    --font-display: "Montserrat", sans-serif;
+    /* Code face token: every var(--font-code, "DM Mono") consumer resolves
+       here instead of through its own carried fallback. */
+    --font-code: "DM Mono", monospace;
     --bg-deep: #07111a;
     --bg-section: #063b4c;
     --bg-card: #0f2030;
@@ -555,7 +562,7 @@ site-footer {
 .grid-2x2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 32px;
+    gap: 24px;
 }
 
 .grid-3col {
@@ -795,7 +802,7 @@ site-footer {
 /* Mono caption typography. Add .label-mono-upper for uppercase
    variants. Color/margin/etc. stay on the page-level class. */
 .label-mono {
-    font-family: "DM Mono", monospace;
+    font-family: var(--font-code, "DM Mono"), monospace;
     font-size: 12px;
 }
 
@@ -1341,6 +1348,12 @@ site-footer {
     scroll-snap-align: end;
 }
 
+.footer-strap {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
 .footer-bottom {
     display: flex;
     align-items: center;
@@ -1738,5 +1751,118 @@ section-graphic .sg-text-layer > .sg-text {
     .cta-buttons {
         flex-direction: column;
         align-items: center;
+    }
+}
+
+/* ── Compact height (short laptops, tablets in landscape) ─────────
+   Snap viewports under 1080px tall get a tighter vertical rhythm so each
+   section fits its snap frame. Snap stays `y mandatory` (proximity was tried
+   here and made snapping feel absent); mandatory is safe because a snap area
+   taller than the snapport still scrolls freely within itself per spec.
+   `html`-prefixed selectors so these also win over the per-page stylesheets
+   injected after this file. Per-page compact companions that override one of
+   these selectors must repeat the `html` prefix or they lose on specificity. */
+@media (min-width: 951px) and (max-height: 1079px) {
+    html .section-full,
+    html .section-orion,
+    html .section-cta {
+        padding-top: 64px;
+        padding-bottom: 48px;
+    }
+    html section:has(> section-graphic[position="background"]) > .section-container {
+        /* Tunable per page: contact.css raises this on .section-contact,
+           whose section starts at the page top and must clear the fixed nav. */
+        padding-top: var(--compact-graphic-pad-top, 64px);
+        padding-bottom: 48px;
+    }
+    html .section-header {
+        margin-bottom: 32px;
+    }
+    html .section-header h2,
+    html .col-content h2,
+    html .orion-heading {
+        font-size: clamp(26px, 3vw, 40px);
+        margin-bottom: 20px;
+    }
+    html .section-header p {
+        font-size: 17px;
+    }
+    html .section-body {
+        font-size: 17px;
+        margin-bottom: 18px;
+    }
+    html .hero h1 {
+        font-size: clamp(30px, 4vw, 54px);
+        margin-bottom: 18px;
+    }
+    html .eyebrow {
+        margin-bottom: 20px;
+    }
+    html .callout {
+        margin-top: 20px;
+    }
+    html .callout p {
+        font-size: 16px;
+    }
+    html .pain-points {
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    html .grid-2col {
+        gap: 48px;
+    }
+    html .grid-2x2,
+    html .grid-3col {
+        gap: 18px;
+    }
+    html .capability-card {
+        padding: var(--pad-card-md);
+    }
+    html .capability-card h3 {
+        font-size: 19px;
+    }
+    html .icon-box {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 14px;
+    }
+    html .icon-box svg {
+        width: 22px;
+        height: 22px;
+    }
+    html .orion-feature-list {
+        gap: 14px;
+    }
+    html .orion-feature-card {
+        padding: 18px 24px 18px 76px;
+        min-height: 72px;
+    }
+    html .orion-feature-icon {
+        top: 18px;
+    }
+    html .orion-desc-card {
+        padding: var(--pad-card-md);
+        margin-bottom: 20px;
+    }
+    html .cta-desc {
+        margin-bottom: 22px;
+    }
+    html .dev-links {
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    html .dev-link-card {
+        padding: 12px 18px;
+    }
+    html .audience-grid {
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+    html .comparison-card {
+        padding: var(--pad-card-lg);
+    }
+    html .comparison-card h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
     }
 }

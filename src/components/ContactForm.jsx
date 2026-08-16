@@ -82,6 +82,22 @@ export default function ContactForm() {
                 />
             </div>
             <div className="form-row">
+                <label htmlFor="contact-interest">I'm interested in</label>
+                <select
+                    id="contact-interest"
+                    name="interest"
+                    defaultValue=""
+                >
+                    <option value="">Choose one (optional)</option>
+                    <option value="Enterprise pilot">Enterprise pilot</option>
+                    <option value="Support & services">
+                        Support &amp; services
+                    </option>
+                    <option value="Partnership">Partnership</option>
+                    <option value="Something else">Something else</option>
+                </select>
+            </div>
+            <div className="form-row">
                 <label htmlFor="contact-message">Message</label>
                 <textarea
                     id="contact-message"

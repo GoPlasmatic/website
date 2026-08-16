@@ -2,7 +2,7 @@ import { Mail } from "lucide-react";
 import SectionGraphic from "../components/SectionGraphic.jsx";
 import ContactForm from "../components/ContactForm.jsx";
 import { usePageMeta } from "../hooks/usePageMeta.js";
-import { ROUTES } from "../site-meta.js";
+import { DOCS_INSTALL_URL, ROUTES } from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import logoSvg from "../assets/logo.svg";
 import contactCss from "../styles/contact.css?inline";
@@ -35,8 +35,9 @@ export default function Contact() {
                             <span className="gradient-text">your systems.</span>
                         </h1>
                         <p className="section-body">
-                            Tell us about what you're building. We'll get back to
-                            you within a couple of business days.
+                            Thirty minutes with a founding engineer. We'll
+                            scope a pilot on one of your real services, and we
+                            reply within a couple of business days.
                         </p>
                         <div className="contact-direct">
                             <a
@@ -47,6 +48,21 @@ export default function Contact() {
                                 <span>enquiries@goplasmatic.io</span>
                             </a>
                         </div>
+                        <p
+                            className="section-body"
+                            style={{ marginTop: "28px", fontSize: "15px" }}
+                        >
+                            Not ready to talk? Orion installs in about a
+                            minute.{" "}
+                            <a
+                                href={DOCS_INSTALL_URL}
+                                target="_blank"
+                                rel="noopener"
+                                style={{ color: "var(--accent-blue)" }}
+                            >
+                                Quickstart &rarr;
+                            </a>
+                        </p>
                     </div>
                     <div className="reveal-right">
                         <ContactForm />

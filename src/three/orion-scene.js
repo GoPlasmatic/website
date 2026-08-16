@@ -1,6 +1,6 @@
 // Brain → spine nervous-system scene for the Orion page. Loads a compact
 // binary mesh, generates connection curves on the fly, and pilots the camera
-// through 9 keyframes driven by scroll position.
+// through 10 keyframes driven by scroll position.
 //
 // Exposed as initOrionScene(canvas, opts) => dispose(): the React hook owns the
 // <canvas> and the page's sections; this builds the scene, wires listeners, and
@@ -883,31 +883,32 @@ export async function initOrionScene(canvas, options = {}) {
 
     /* ── Scroll-driven camera (brain → spine journey) ──────────────── */
 
-    // One keyframe per snap-section (9 sections, 8 segments)
-    // Hero | Two Clocks | Orion | Decouple Diagram | AI & Trust | Guardrails Diagram | The Future | CTA | Footer
+    // One keyframe per snap-section (10 sections, 9 segments)
+    // Hero | Two Clocks | Solution | Modular Monolith | The Artifact | AI & Trust | Guardrails Diagram | The Future | CTA | Footer
     const maxLookY = spineBottomY * 0.45; // limit: don't let spine go above mid-screen
     const camKeyframes = [
         { posX: 1.5, lookY: brainCenterY, camZ: 5, camYOff: 0.5, rotOff: 0 }, // 0 Hero
         { posX: 1.5, lookY: brainCenterY, camZ: 6, camYOff: 0.4, rotOff: 0 }, // 1 Two Clocks
-        { posX: -1.5, lookY: brainCenterY * 0.3, camZ: 8, camYOff: 0.3, rotOff: 0 }, // 2 Orion
-        { posX: 0, lookY: 0, camZ: 9, camYOff: 0.2, rotOff: 0 }, // 3 Decouple Diagram
-        { posX: 0, lookY: spineBottomY * 0.25, camZ: 10, camYOff: 0.1, rotOff: 0 }, // 4 AI & Trust
-        { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 5 Guardrails Diagram
-        { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 6 The Future
+        { posX: -1.5, lookY: brainCenterY * 0.3, camZ: 8, camYOff: 0.3, rotOff: 0 }, // 2 Solution
+        { posX: -0.8, lookY: brainCenterY * 0.15, camZ: 9, camYOff: 0.25, rotOff: 0 }, // 3 Modular Monolith
+        { posX: 0, lookY: 0, camZ: 9, camYOff: 0.2, rotOff: 0 }, // 4 The Artifact
+        { posX: 0, lookY: spineBottomY * 0.25, camZ: 10, camYOff: 0.1, rotOff: 0 }, // 5 AI & Trust
+        { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 6 Guardrails Diagram
+        { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 7 The Future
         {
             posX: 2.4,
             lookY: brainCenterY * 0.4,
             camZ: 10,
             camYOff: 0.3,
             rotOff: -Math.PI / 2,
-        }, // 7 CTA
+        }, // 8 CTA
         {
             posX: 2.4,
             lookY: brainCenterY * 0.4,
             camZ: 10,
             camYOff: 0.3,
             rotOff: -Math.PI / 2,
-        }, // 8 Footer
+        }, // 9 Footer
     ];
 
     // Map scroll position to keyframe progress via the actual snap sections.
@@ -921,6 +922,14 @@ export async function initOrionScene(canvas, options = {}) {
                 ".hero, .section-full, .section-orion, .section-cta, footer.footer",
             ),
         ];
+        // camKeyframes is hand-synced to the page's section list; a mismatch
+        // silently compresses/misaligns the camera path, so surface it here.
+        if (_sections.length && _sections.length !== camKeyframes.length) {
+            console.warn(
+                `orion-scene: ${_sections.length} snap sections but ` +
+                    `${camKeyframes.length} camera keyframes — update camKeyframes.`,
+            );
+        }
     };
     refreshSections();
     on(window, "load", refreshSections);
@@ -954,7 +963,7 @@ export async function initOrionScene(canvas, options = {}) {
     const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
     function lerpKeyframes(p) {
-        const n = camKeyframes.length - 1; // 7 segments
+        const n = camKeyframes.length - 1; // segments between keyframes
         const raw = p * n;
         const seg = Math.min(Math.floor(raw), n - 1);
         const t = ease(raw - seg);

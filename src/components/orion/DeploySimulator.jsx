@@ -1,28 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 
-// Deployment-speed comparison (the two-clocks simulator). The Orion clock fills
-// all stages near-instantly (staggered 100ms); the engineering clock advances
-// one stage every 600ms. Auto-runs once shortly after mount, and on the button.
-// Ports triggerParallelDeploy() to React state with timer cleanup on unmount.
+// Same change, two paths. The conventional pipeline advances one stage every
+// 600ms; the Orion lifecycle fills its stages on a staggered schedule in which
+// "Review & approve" deliberately takes the longest hold, because the review is
+// the whole job once the build and rollout machinery is gone. No printed
+// timings: the animation paces the story, it does not claim numbers.
+// Auto-runs once shortly after mount, and on the button.
 
-const ENG_STAGES = [
-    { name: "Commit & PR Push", duration: "10s" },
-    { name: "Container Build", duration: "35s" },
-    { name: "CI/CD Testing", duration: "30s" },
-    { name: "Rolling Deploy", duration: "15s" },
+const PIPELINE_STAGES = [
+    { name: "Commit & PR" },
+    { name: "Review" },
+    { name: "Build & CI" },
+    { name: "Rolling deploy" },
 ];
-const BIZ_STAGES = [
-    { name: "Schema Check", duration: "2ms" },
-    { name: "Policy Guardrails", duration: "3ms" },
-    { name: "Edge Promotion", duration: "7ms" },
+// Each Orion stage carries its own fill delay. The long hold before
+// "Canary & activate" is the review hold: everything mechanical is
+// near-instant, the human read is not.
+const ORION_STAGES = [
+    { name: "Draft", note: "no traffic", delay: 0 },
+    { name: "Dry-run", note: "trace", delay: 150 },
+    { name: "Review & approve", note: "diff", delay: 350 },
+    { name: "Canary & activate", note: "atomic swap", delay: 1250 },
 ];
 
 const blank = (stages) => stages.map(() => ({ active: false, fill: false }));
 
 export default function DeploySimulator() {
     const [running, setRunning] = useState(false);
-    const [eng, setEng] = useState(() => blank(ENG_STAGES));
-    const [biz, setBiz] = useState(() => blank(BIZ_STAGES));
+    const [pipeline, setPipeline] = useState(() => blank(PIPELINE_STAGES));
+    const [orion, setOrion] = useState(() => blank(ORION_STAGES));
     const timers = useRef([]);
     const runningRef = useRef(false);
 
@@ -40,43 +46,43 @@ export default function DeploySimulator() {
         runningRef.current = true;
         setRunning(true);
         clearTimers();
-        setEng(blank(ENG_STAGES));
-        setBiz(blank(BIZ_STAGES));
+        setPipeline(blank(PIPELINE_STAGES));
+        setOrion(blank(ORION_STAGES));
 
-        // Orion clock — staggered start, instant fill.
-        BIZ_STAGES.forEach((_, idx) => {
+        // Orion lifecycle: staggered fills with the review hold in the middle.
+        ORION_STAGES.forEach((stage, idx) => {
             schedule(() => {
-                setBiz((prev) =>
+                setOrion((prev) =>
                     prev.map((s, i) =>
                         i === idx ? { active: true, fill: true } : s,
                     ),
                 );
-            }, idx * 100);
+            }, stage.delay);
         });
 
-        // Engineering clock — slow sequential stages.
+        // Conventional pipeline: slow sequential stages.
         let cur = 0;
-        const nextEng = () => {
-            if (cur < ENG_STAGES.length) {
+        const nextStage = () => {
+            if (cur < PIPELINE_STAGES.length) {
                 const idx = cur;
-                setEng((prev) =>
+                setPipeline((prev) =>
                     prev.map((s, i) => (i === idx ? { ...s, active: true } : s)),
                 );
                 schedule(() => {
-                    setEng((prev) =>
+                    setPipeline((prev) =>
                         prev.map((s, i) =>
                             i === idx ? { ...s, fill: true } : s,
                         ),
                     );
                 }, 50);
                 cur++;
-                schedule(nextEng, 600);
+                schedule(nextStage, 600);
             } else {
                 runningRef.current = false;
                 setRunning(false);
             }
         };
-        nextEng();
+        nextStage();
     }
 
     // Run once after mount to show the user the comparison.
@@ -89,7 +95,16 @@ export default function DeploySimulator() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const column = (label, color, badgeClass, badge, chartId, stages, state) => (
+    const column = ({
+        label,
+        color,
+        badgeClass,
+        badge,
+        support,
+        chartId,
+        stages,
+        state,
+    }) => (
         <div className="sim-column">
             <div className="sim-column-header">
                 <span className="slider-label" style={{ color }}>
@@ -102,6 +117,7 @@ export default function DeploySimulator() {
                     {badge}
                 </span>
             </div>
+            <div className="label-mono sim-support">{support}</div>
             <div className="stages-chart" id={chartId}>
                 {stages.map((s, i) => (
                     <div
@@ -110,7 +126,9 @@ export default function DeploySimulator() {
                     >
                         <div className="stage-info">
                             <span className="stage-name">{s.name}</span>
-                            <span className="stage-duration">{s.duration}</span>
+                            {s.note ? (
+                                <span className="stage-duration">{s.note}</span>
+                            ) : null}
                         </div>
                         <div className="stage-progress-bar">
                             <div
@@ -134,31 +152,35 @@ export default function DeploySimulator() {
                 <span className="dot dot-red"></span>
                 <span className="dot dot-yellow"></span>
                 <span className="dot dot-green"></span>
-                <span className="simulator-title">
-                    Deployment Speed Comparison
-                </span>
+                <span className="simulator-title">Same change, two paths</span>
             </div>
             <div className="simulator-body">
                 <div className="sim-columns">
-                    {column(
-                        "Engineering Clock",
-                        "#ffd167",
-                        "speed-slow",
-                        "90s Delay",
-                        "eng-stages-chart",
-                        ENG_STAGES,
-                        eng,
-                    )}
-                    {column(
-                        "Orion Clock",
-                        "#4cbd97",
-                        "speed-fast",
-                        "12ms Hot-Swap",
-                        "biz-stages-chart",
-                        BIZ_STAGES,
-                        biz,
-                    )}
+                    {column({
+                        label: "Conventional pipeline",
+                        color: "#ffd167",
+                        badgeClass: "speed-slow",
+                        badge: "Minutes to days",
+                        support: "per change, per service",
+                        chartId: "eng-stages-chart",
+                        stages: PIPELINE_STAGES,
+                        state: pipeline,
+                    })}
+                    {column({
+                        label: "Orion lifecycle",
+                        color: "#4cbd97",
+                        badgeClass: "speed-fast",
+                        badge: "Live on activation",
+                        support: "no restart, no dropped request",
+                        chartId: "biz-stages-chart",
+                        stages: ORION_STAGES,
+                        state: orion,
+                    })}
                 </div>
+                <p className="artifact-caption">
+                    The review is the whole job. The build, packaging, and
+                    rollout machinery is gone.
+                </p>
                 <div
                     style={{
                         display: "flex",

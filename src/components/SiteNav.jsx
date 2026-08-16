@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logoUrl from "../assets/plasmatic-logo.svg";
+import { DOCS_URL } from "../site-meta.js";
 
 // Port of the <site-nav> custom element from the vanilla site. Rendered inside
 // a literal <site-nav> tag so the `site-nav { display:block }` CSS still
@@ -53,6 +54,9 @@ export default function SiteNav() {
                     <Link to="/orion" {...current("product")}>
                         Product
                     </Link>
+                    <a href={DOCS_URL} target="_blank" rel="noopener">
+                        Docs
+                    </a>
                     <Link to="/contact" {...current("contact")}>
                         Contact
                     </Link>
@@ -64,7 +68,7 @@ export default function SiteNav() {
                         GitHub
                     </a>
                     <Link to="/contact" className="btn-nav">
-                        Get started
+                        Talk to an engineer
                     </Link>
                 </div>
             </nav>

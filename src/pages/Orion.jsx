@@ -1,14 +1,23 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { Radio, Cpu, GitCommit, GitBranch, Plug, Clock, Layers, ShieldCheck } from "lucide-react";
+import { Clock, Layers, ShieldCheck } from "lucide-react";
 import OrionCanvas from "../components/OrionCanvas.jsx";
 import DeploySimulator from "../components/orion/DeploySimulator.jsx";
 import UseCaseTabs from "../components/orion/UseCaseTabs.jsx";
 import GuardrailsSimulator from "../components/orion/GuardrailsSimulator.jsx";
 import { usePageMeta } from "../hooks/usePageMeta.js";
-import { ROUTES } from "../site-meta.js";
+import { DOCS_INSTALL_URL, DOCS_URL, ROUTES } from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import orionCss from "../styles/orion.css?inline";
+
+// "Compared honestly" callout links into the docs' comparison pages.
+const COMPARE_LINKS = [
+    { path: "compare/durable-execution.html", label: "Durable execution" },
+    { path: "compare/api-gateways.html", label: "API gateways" },
+    { path: "compare/automation-platforms.html", label: "Automation platforms" },
+    { path: "compare/rule-engines.html", label: "Rule engines" },
+    { path: "comparison.html", label: "Is Orion right for you?" },
+];
 
 export default function Orion() {
     usePageMeta(ROUTES["/orion"]);
@@ -24,30 +33,37 @@ export default function Orion() {
                 <section className="hero" data-test-section="hero">
                     <div className="hero-text" id="heroText" ref={heroTextRef}>
                         <div className="eyebrow">
-                            <span>Build | Deploy | Govern</span>
+                            <span>Orion 1.0 &middot; Open Source &middot; Apache-2.0</span>
                         </div>
                         <h1 className="reveal-blur">
                             <span className="gradient-text">Orion</span>
                         </h1>
-                        <h1 className="reveal-blur" style={{ "--reveal-delay": "0.12s" }}>
-                            The nervous system for modern software.
+                        <h1
+                            className="reveal-blur hero-tagline"
+                            style={{ "--reveal-delay": "0.12s" }}
+                        >
+                            Safe enough to let an AI write your services.
+                            Fast enough to run them in production.
                         </h1>
                         <p className="lead">
-                            Orion separates business logic from application code,
-                            allowing changes to evolve independently and
-                            instantly.
+                            Orion is the nervous system for your services: one
+                            runtime that carries every request and every change
+                            through the same governed pathways. Your engineers
+                            and their AI assistants write the business logic;
+                            the runtime enforces the lifecycle: draft, dry-run,
+                            canary, one-call rollback.
                         </p>
                         <div className="hero-ctas">
                             <Link to="/contact" className="btn-primary">
-                                Start a conversation &rarr;
+                                Talk to an engineer &rarr;
                             </Link>
                             <a
-                                href="https://docs.goplasmatic.io/"
+                                href={DOCS_INSTALL_URL}
                                 target="_blank"
                                 rel="noopener"
                                 className="btn-secondary"
                             >
-                                Explore how it works
+                                Install in a minute
                             </a>
                         </div>
                     </div>
@@ -74,22 +90,22 @@ export default function Orion() {
                                     <span>Problem</span>
                                 </div>
                                 <h2 className="reveal-blur">
-                                    Business logic lives on the engineering clock
+                                    AI writes the change in minutes. The
+                                    pipeline still ships it in days.
                                 </h2>
                                 <p className="section-body">
                                     Every business runs on two clocks. The
                                     business clock moves at the speed of
-                                    opportunity: markets, customers, competition.
-                                    The engineering clock moves at the speed of
-                                    the release cycle: design, build, test,
-                                    deploy. Both are necessary. But most business
-                                    logic lives on the engineering clock.
+                                    opportunity; the engineering clock moves at
+                                    the speed of the release cycle. AI hasn't
+                                    changed that, because the pipeline doesn't
+                                    care who wrote the code.
                                 </p>
                                 <div className="callout reveal-blur">
                                     <p>
-                                        So every pricing change, every fraud
-                                        rule, and every new customer experience
-                                        becomes a software release.{" "}
+                                        The bottleneck moved from{" "}
+                                        <em>writing</em> software to{" "}
+                                        <em>shipping and governing</em> it.{" "}
                                         <strong>And the business waits.</strong>
                                     </p>
                                 </div>
@@ -108,7 +124,7 @@ export default function Orion() {
                     </div>
                 </section>
 
-                {/* ORION (Solution) */}
+                {/* SOLUTION */}
                 <section className="section-full" data-test-section="solution">
                     <div className="section-container">
                         <div className="grid-2col">
@@ -118,13 +134,16 @@ export default function Orion() {
                                     <span>Solution</span>
                                 </div>
                                 <h2 className="reveal-blur">
-                                    Unlock the business logic
+                                    The logic is yours. The architecture is the
+                                    runtime's.
                                 </h2>
                                 <p className="section-body">
-                                    Orion allows you to separate business logic
-                                    from application code. Engineering builds the
-                                    platform. Business logic evolves
-                                    independently.
+                                    A service is one JSON document: logic,
+                                    connectors, endpoint. Post it and it's live
+                                    a second later, with the guards you
+                                    declared enforced before any logic runs. A
+                                    review only has to catch logic errors,
+                                    never architecture errors.
                                 </p>
 
                                 <UseCaseTabs />
@@ -133,7 +152,80 @@ export default function Orion() {
                     </div>
                 </section>
 
-                {/* DECOUPLE DIAGRAM */}
+                {/* MODULAR MONOLITH */}
+                <section
+                    className="section-full section-dimmed"
+                    data-test-section="architecture-freedom"
+                >
+                    <div className="section-container">
+                        <div className="grid-2col">
+                            <div className="col-content reveal-left">
+                                <div className="eyebrow">
+                                    <span>Architecture</span>
+                                </div>
+                                <h2 className="reveal-blur">
+                                    Design the architecture.{" "}
+                                    <span className="gradient-text">
+                                        Defer the topology.
+                                    </span>
+                                </h2>
+                                <p className="section-body">
+                                    Orion runs as a modular monolith: one
+                                    runtime holding many small services, each
+                                    with its own endpoint, versions, and
+                                    rollout, composed in-process with no
+                                    network hop. Your architects draw the
+                                    boundaries the domain wants, not the ones
+                                    the deployment diagram forces. And when the
+                                    estate grows, the topology changes while
+                                    the architecture doesn't.
+                                </p>
+                                <div className="callout reveal-blur">
+                                    <p>
+                                        Decide the microservices question when
+                                        production answers it,{" "}
+                                        <strong>not on day one.</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                className="reveal-right"
+                                style={{ "--reveal-delay": "0.1s" }}
+                            >
+                                <div className="feature-cards-stack">
+                                    <div className="feature-card feature-card-blue">
+                                        <h3>Boundaries without sprawl</h3>
+                                        <p>
+                                            Each service ships on its own
+                                            schedule without becoming its own
+                                            deployment, pipeline, or on-call
+                                            surface.
+                                        </p>
+                                    </div>
+                                    <div className="feature-card feature-card-green">
+                                        <h3>Composition without the network</h3>
+                                        <p>
+                                            In-process calls between services,
+                                            with the callee's guards still
+                                            applied and cycles refused.
+                                        </p>
+                                    </div>
+                                    <div className="feature-card feature-card-yellow">
+                                        <h3>Scale as a topology decision</h3>
+                                        <p>
+                                            SQLite to start; PostgreSQL, Redis,
+                                            and replicas when you need them. A
+                                            configuration change, not a
+                                            rewrite.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* THE ARTIFACT */}
                 <section
                     className="section-full section-dimmed"
                     data-test-section="decouple"
@@ -141,261 +233,100 @@ export default function Orion() {
                     <div className="section-container">
                         <div className="section-header reveal">
                             <div className="eyebrow">
-                                <span>Architecture</span>
+                                <span>The Artifact</span>
                             </div>
-                            <h2 className="reveal-blur">The Decouple</h2>
+                            <h2 className="reveal-blur">
+                                The AI writes one document. You review one
+                                document.
+                            </h2>
                             <p>
-                                Orion lifts logic out of compiled services and
-                                runs it in a dynamic, runtime-swappable
-                                environment.
+                                Spend your tokens on business logic, not on
+                                rewriting the same guardrails for every
+                                service.
                             </p>
                         </div>
 
                         <div
                             className="grid-2col reveal"
-                            style={{ gap: "32px", marginTop: "40px" }}
+                            style={{ gap: "32px", alignItems: "start" }}
                         >
-                            {/* Column 1: Where business logic sits */}
                             <div className="col-content">
-                                <h3
-                                    style={{
-                                        fontSize: "20px",
-                                        fontWeight: 600,
-                                        color: "#f8fafc",
-                                        marginBottom: "12px",
-                                    }}
-                                >
-                                    Where Orion Changes The Architecture
-                                </h3>
+                                <p className="section-body">
+                                    Ask an AI for a conventional service and
+                                    most of what it generates is
+                                    infrastructure, every line yours to review,
+                                    every copy slightly different. On Orion the
+                                    entire output is the service definition;
+                                    the guardrails are declared in
+                                    configuration and enforced by the runtime.
+                                    The same arithmetic holds for a pipeline, a
+                                    webhook handler, or an agent tool.
+                                </p>
+                            </div>
 
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "16px",
-                                    }}
-                                >
+                            <div className="decouple-flows-comparison">
+                                <div className="decouple-flow-column">
                                     <div
-                                        className="approach-box old-way"
+                                        className="decouple-flow-header"
                                         style={{
-                                            background: "rgba(255, 209, 103, 0.03)",
-                                            border: "1px solid rgba(255, 209, 103, 0.1)",
-                                            borderRadius: "8px",
-                                            padding: "16px",
+                                            color: "#ffd167",
+                                            borderColor:
+                                                "rgba(255, 209, 103, 0.2)",
                                         }}
                                     >
-                                        <h4
-                                            style={{
-                                                fontSize: "14px",
-                                                fontWeight: 600,
-                                                color: "#ffd167",
-                                                marginBottom: "6px",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "8px",
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    width: "6px",
-                                                    height: "6px",
-                                                    borderRadius: "50%",
-                                                    background: "#ffd167",
-                                                }}
-                                            ></span>
-                                            Old Approach: Coupled
-                                        </h4>
-                                        <p
-                                            style={{
-                                                fontSize: "13px",
-                                                color: "#cbd5e1",
-                                                lineHeight: 1.5,
-                                                margin: 0,
-                                            }}
-                                        >
-                                            Logic is compiled directly into
-                                            microservices. Adjusting a threshold
-                                            requires a git branch, code reviews,
-                                            Docker builds, integration tests, and
-                                            rolling K8s deployments.
-                                        </p>
+                                        A conventional service, AI-generated
                                     </div>
-                                    <div
-                                        className="approach-box orion-way"
-                                        style={{
-                                            background: "rgba(76, 189, 151, 0.03)",
-                                            border: "1px solid rgba(76, 189, 151, 0.1)",
-                                            borderRadius: "8px",
-                                            padding: "16px",
-                                        }}
-                                    >
-                                        <h4
-                                            style={{
-                                                fontSize: "14px",
-                                                fontWeight: 600,
-                                                color: "#4cbd97",
-                                                marginBottom: "6px",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "8px",
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    width: "6px",
-                                                    height: "6px",
-                                                    borderRadius: "50%",
-                                                    background: "#4cbd97",
-                                                }}
-                                            ></span>
-                                            Orion Approach: Decoupled
-                                        </h4>
-                                        <p
-                                            style={{
-                                                fontSize: "13px",
-                                                color: "#cbd5e1",
-                                                lineHeight: 1.5,
-                                                margin: 0,
-                                            }}
-                                        >
-                                            Logic runs as an independent,
-                                            declarative graph. Swapping rules
-                                            happens dynamically at runtime in 8ms
-                                            with safety validations and zero
-                                            gateway downtime.
+                                    <div className="decouple-flow-canvas">
+                                        <pre className="artifact-doc">
+{`order-service/
+  main.py
+  middleware/
+    auth.py
+    rate_limit.py
+  retry.py
+  metrics.py
+`}<span className="hl">{`  logic.py`}</span>{`
+  Dockerfile
+  ci.yaml
+  k8s.yaml`}
+                                        </pre>
+                                        <p className="artifact-caption">
+                                            The business logic is the smallest
+                                            file in the tree.
                                         </p>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Column 2: Flow comparison */}
-                            <div>
-                                <h3
-                                    style={{
-                                        fontSize: "20px",
-                                        fontWeight: 600,
-                                        color: "#f8fafc",
-                                        marginBottom: "12px",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    Rule Flow Comparison
-                                </h3>
-                                <div className="decouple-flows-comparison">
-                                    {/* Before (Coupled) */}
-                                    <div className="decouple-flow-column">
-                                        <div
-                                            className="decouple-flow-header"
-                                            style={{
-                                                color: "#ffd167",
-                                                borderColor:
-                                                    "rgba(255, 209, 103, 0.2)",
-                                            }}
-                                        >
-                                            Before (Coupled Code)
-                                        </div>
-                                        <div className="decouple-flow-canvas">
-                                            <div className="orion-style-node unresolved">
-                                                <span className="node-dot bg-gray"></span>
-                                                <Radio className="node-icon" />
-                                                <div className="node-text">
-                                                    <div className="node-label">
-                                                        POST /checkout
-                                                    </div>
-                                                    <div className="node-kind">
-                                                        Channel
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flow-arrow">
-                                                &darr;
-                                            </div>
-                                            <div className="orion-style-node draft">
-                                                <span className="node-dot bg-blue"></span>
-                                                <Cpu className="node-icon" />
-                                                <div className="node-text">
-                                                    <div className="node-label">
-                                                        App Code (Monolith)
-                                                    </div>
-                                                    <div className="node-kind">
-                                                        Hardcoded Logic
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flow-arrow">
-                                                &darr;
-                                            </div>
-                                            <div className="orion-style-node error-node">
-                                                <span className="node-dot bg-yellow"></span>
-                                                <GitCommit className="node-icon" />
-                                                <div className="node-text">
-                                                    <div className="node-label">
-                                                        fraudScore &gt; 80
-                                                    </div>
-                                                    <div className="node-kind">
-                                                        Hardcoded Rule
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div className="decouple-flow-column">
+                                    <div
+                                        className="decouple-flow-header"
+                                        style={{
+                                            color: "#4cbd97",
+                                            borderColor:
+                                                "rgba(76, 189, 151, 0.2)",
+                                        }}
+                                    >
+                                        The same service on Orion
                                     </div>
-
-                                    {/* After (Orion Decoupled) */}
-                                    <div className="decouple-flow-column">
-                                        <div
-                                            className="decouple-flow-header"
-                                            style={{
-                                                color: "#4cbd97",
-                                                borderColor:
-                                                    "rgba(76, 189, 151, 0.2)",
-                                            }}
-                                        >
-                                            After (Orion Decoupled)
-                                        </div>
-                                        <div className="decouple-flow-canvas">
-                                            <div className="orion-style-node active">
-                                                <span className="node-dot bg-green"></span>
-                                                <Radio className="node-icon" />
-                                                <div className="node-text">
-                                                    <div className="node-label">
-                                                        POST /orders
-                                                    </div>
-                                                    <div className="node-kind">
-                                                        Channel
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flow-arrow">
-                                                &darr;
-                                            </div>
-                                            <div className="orion-style-node active">
-                                                <span className="node-dot bg-green"></span>
-                                                <GitBranch className="node-icon" />
-                                                <div className="node-text">
-                                                    <div className="node-label">
-                                                        payment-fraud-check
-                                                    </div>
-                                                    <div className="node-kind">
-                                                        Workflow
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flow-arrow">
-                                                &darr;
-                                            </div>
-                                            <div className="orion-style-node active">
-                                                <span className="node-dot bg-green"></span>
-                                                <Plug className="node-icon" />
-                                                <div className="node-text">
-                                                    <div className="node-label">
-                                                        gateway-connector
-                                                    </div>
-                                                    <div className="node-kind">
-                                                        Connector
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div className="decouple-flow-canvas">
+                                        <pre className="artifact-doc">
+{`{
+  "workflow": "order-triage",
+  "tasks": [
+    { "function": "parse_json" },
+    { "function": "map",
+      "condition": { ">": [
+        { "var": "amount" }, 10000 ] },
+      "set": { "risk_level": "review" }
+    }
+  ],
+  "channel": { "route": "POST /orders" }
+}`}
+                                        </pre>
+                                        <p className="artifact-caption">
+                                            One document: logic, endpoint,
+                                            connections. Reviewed as a diff.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -415,7 +346,8 @@ export default function Orion() {
                             </div>
                             <h2 className="reveal-blur">AI &amp; Trust</h2>
                             <p>
-                                Adaptability only matters when you can trust it.
+                                What happens when the AI writes something
+                                wrong? A person and a lifecycle, not luck.
                             </p>
                         </div>
                         <div className="grid-2col comparison-grid">
@@ -424,9 +356,9 @@ export default function Orion() {
                                     className="label-mono label-mono-upper comparison-label"
                                     style={{ color: "var(--accent-blue)" }}
                                 >
-                                    AI Optimization
+                                    The assistant
                                 </div>
-                                <h3>AI Proposes</h3>
+                                <h3>AI builds</h3>
                                 <p
                                     className="section-body"
                                     style={{
@@ -435,9 +367,8 @@ export default function Orion() {
                                         color: "rgba(255, 255, 255, 0.7)",
                                     }}
                                 >
-                                    Because business logic lives in its own
-                                    layer, AI can safely optimize workflows,
-                                    rules, and system behavior:
+                                    Over MCP, an assistant works through the
+                                    same admin API your engineers use:
                                 </p>
                                 <div className="comparison-points">
                                     <div className="comparison-point">
@@ -448,8 +379,9 @@ export default function Orion() {
                                             }}
                                         ></span>
                                         <p>
-                                            A sharper fraud rule suggested at
-                                            runtime
+                                            One paragraph of English becomes a
+                                            drafted workflow with a real
+                                            execution trace
                                         </p>
                                     </div>
                                     <div className="comparison-point">
@@ -460,8 +392,8 @@ export default function Orion() {
                                             }}
                                         ></span>
                                         <p>
-                                            A better pricing ruleset matching
-                                            market change
+                                            Reviewed as a diff, not as
+                                            generated code
                                         </p>
                                     </div>
                                     <div className="comparison-point">
@@ -471,15 +403,18 @@ export default function Orion() {
                                                 background: "var(--accent-blue)",
                                             }}
                                         ></span>
-                                        <p>A smarter customer experience flow</p>
+                                        <p>
+                                            Nothing it creates serves traffic
+                                            until it is activated
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                             <div className="card comparison-card after-card reveal-right">
                                 <div className="label-mono label-mono-upper comparison-label comparison-label-green">
-                                    Security Layer
+                                    The gate
                                 </div>
-                                <h3>Human Approves</h3>
+                                <h3>You approve. The runtime governs.</h3>
                                 <p
                                     className="section-body"
                                     style={{
@@ -488,9 +423,9 @@ export default function Orion() {
                                         color: "rgba(255, 255, 255, 0.7)",
                                     }}
                                 >
-                                    Every change is executed inside a structured
-                                    trust model, fully reviewable and with
-                                    complete auditability:
+                                    Versions are immutable, so approving the
+                                    diff is approving the exact bytes that will
+                                    run:
                                 </p>
                                 <div className="comparison-points">
                                     <div className="comparison-point">
@@ -502,8 +437,9 @@ export default function Orion() {
                                             }}
                                         ></span>
                                         <p>
-                                            Validated: Checked against system
-                                            constraints
+                                            Canary to 10% of traffic; each
+                                            caller consistently sees one
+                                            version
                                         </p>
                                     </div>
                                     <div className="comparison-point">
@@ -515,8 +451,8 @@ export default function Orion() {
                                             }}
                                         ></span>
                                         <p>
-                                            Versioned &amp; Audited: Trace every
-                                            single change
+                                            Roll back with one call to the
+                                            previous immutable version
                                         </p>
                                     </div>
                                     <div className="comparison-point">
@@ -528,12 +464,22 @@ export default function Orion() {
                                             }}
                                         ></span>
                                         <p>
-                                            Instantly Reversible: Rollback
-                                            instantly if needed
+                                            Every change lands in the audit
+                                            log: who, what, when
                                         </p>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div
+                            className="callout reveal"
+                            style={{ maxWidth: "640px", margin: "28px auto 0" }}
+                        >
+                            <p>
+                                The AI follows the same safe path your
+                                engineers would,{" "}
+                                <strong>because no other path exists.</strong>
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -550,8 +496,9 @@ export default function Orion() {
                             </div>
                             <h2 className="reveal-blur">AI with Guardrails</h2>
                             <p>
-                                AI proposes &rarr; A human approves &rarr; Orion
-                                executes. Trustworthy runtime adaptability.
+                                An AI drafts &rarr; you approve &rarr; Orion
+                                executes, and every step below is a real
+                                product mechanic.
                             </p>
                         </div>
 
@@ -571,19 +518,22 @@ export default function Orion() {
                                     <span>The Future</span>
                                 </div>
                                 <h2 className="orion-heading reveal-blur">
-                                    Software that adapts to the AI era.
+                                    Written in minutes. Live in seconds.{" "}
+                                    <span className="gradient-text">
+                                        Reversible in one call.
+                                    </span>
                                 </h2>
                                 <div className="card orion-desc-card">
                                     <p>
-                                        The future isn’t software that gets
-                                        rebuilt every time the business changes.
-                                        It’s software that adapts. Two clocks.
-                                        Working together.
+                                        Business logic as a governed, living
+                                        artifact: written by your engineers and
+                                        their AI assistants in minutes, live in
+                                        seconds, reversible in one call.
                                     </p>
                                     <p
                                         style={{
-                                            marginTop: "24px",
-                                            fontSize: "28px",
+                                            marginTop: "16px",
+                                            fontSize: "26px",
                                             fontWeight: 800,
                                             fontFamily: "var(--font-display)",
                                             lineHeight: 1.2,
@@ -602,7 +552,7 @@ export default function Orion() {
                                     className="btn-primary"
                                     style={{ marginTop: "16px" }}
                                 >
-                                    Request early access &rarr;
+                                    Talk to an engineer &rarr;
                                 </Link>
                             </div>
                             <div className="orion-feature-list reveal-right">
@@ -610,36 +560,67 @@ export default function Orion() {
                                     <div className="icon-chip orion-feature-icon">
                                         <Clock />
                                     </div>
-                                    <h4>Synchronized Speed</h4>
+                                    <h4>Authoring and shipping on the same clock</h4>
                                     <p>
-                                        Unify the engineering clock and business
-                                        clock to launch pricing and rule updates
-                                        instantly.
+                                        An assistant drafts the change in
+                                        minutes; activation makes it live with
+                                        no restart.
                                     </p>
                                 </div>
                                 <div className="card orion-feature-card">
                                     <div className="icon-chip orion-feature-icon">
                                         <Layers />
                                     </div>
-                                    <h4>Decoupled Evolvability</h4>
+                                    <h4>One runtime, five kinds of service</h4>
                                     <p>
-                                        Separating logic from codebase means
-                                        engineering builds once, and logic adapts
-                                        indefinitely.
+                                        APIs, decisions, pipelines, ingestion,
+                                        and agent tools, with the same guards
+                                        and lifecycle.
                                     </p>
                                 </div>
                                 <div className="card orion-feature-card">
                                     <div className="icon-chip orion-feature-icon">
                                         <ShieldCheck />
                                     </div>
-                                    <h4>Governed AI Execution</h4>
+                                    <h4>Governance on every change</h4>
                                     <p>
-                                        Use AI to optimize business outcomes
-                                        while maintaining strict human-in-the-loop
-                                        review guardrails.
+                                        Versioned, audited, reversible. What
+                                        ran yesterday is still there to return
+                                        to.
                                     </p>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="callout reveal" style={{ marginTop: "28px" }}>
+                            <p>
+                                <strong>Compared honestly:</strong>{" "}
+                                {COMPARE_LINKS.map(({ path, label }, i) => (
+                                    <span key={path}>
+                                        {i > 0 && <> &middot; </>}
+                                        <a
+                                            href={`${DOCS_URL}/${path}`}
+                                            target="_blank"
+                                            rel="noopener"
+                                            style={{
+                                                color: "var(--accent-blue)",
+                                            }}
+                                        >
+                                            {label}
+                                        </a>
+                                    </span>
+                                ))}
+                            </p>
+                            <p
+                                style={{
+                                    marginTop: "6px",
+                                    fontSize: "14px",
+                                    color: "var(--text-body)",
+                                }}
+                            >
+                                The docs name where each neighbour wins; Orion
+                                is for request-shaped work in milliseconds.
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -650,59 +631,58 @@ export default function Orion() {
                         <div className="grid-2col">
                             <div className="cta-inner reveal-left">
                                 <div className="eyebrow">
-                                    <span>Get involved</span>
+                                    <span>Get started</span>
                                 </div>
                                 <h2 className="reveal-blur">
-                                    Shape what comes next.
+                                    Put a governed runtime under your business
+                                    logic.
                                 </h2>
                                 <p className="cta-desc">
-                                    Plasmatic is building in the open. Whether
-                                    you're an engineer, an organisation, or an
-                                    investor &mdash; there's a place for you in
-                                    this journey.
+                                    Thirty minutes with a founding engineer.
+                                    We'll scope a pilot on one of your real
+                                    services.
                                 </p>
                                 <div className="audience-grid">
                                     <div className="card audience-card">
                                         <h4>Organisations</h4>
                                         <p>
-                                            Early access to Orion for platform
-                                            and engineering teams building at
-                                            scale.
+                                            Run a pilot with the team behind
+                                            Orion, from first service to
+                                            production checklist.
                                         </p>
                                         <Link to="/contact" className="label-mono">
-                                            Get in touch &rarr;
-                                        </Link>
-                                    </div>
-                                    <div className="card audience-card">
-                                        <h4>Investors</h4>
-                                        <p>
-                                            Redefining how distributed systems
-                                            are governed, controlled and evolved.
-                                        </p>
-                                        <Link to="/contact" className="label-mono">
-                                            Get in touch &rarr;
+                                            Talk to an engineer &rarr;
                                         </Link>
                                     </div>
                                     <div className="card audience-card">
                                         <h4>Developers</h4>
                                         <p>
-                                            Explore repos, contribute, and shape
-                                            the platform alongside the core team.
+                                            One binary, installed in about a
+                                            minute; a live service in four API
+                                            calls.
                                         </p>
                                         <a
-                                            href="https://github.com/GoPlasmatic"
+                                            href="https://github.com/GoPlasmatic/Orion"
                                             target="_blank"
                                             rel="noopener"
                                             className="label-mono"
                                         >
-                                            github.com/GoPlasmatic &rarr;
+                                            github.com/GoPlasmatic/Orion &rarr;
                                         </a>
                                     </div>
                                 </div>
                                 <div className="cta-buttons">
                                     <Link to="/contact" className="btn-primary">
-                                        Request early access &rarr;
+                                        Talk to an engineer &rarr;
                                     </Link>
+                                    <a
+                                        href={DOCS_INSTALL_URL}
+                                        target="_blank"
+                                        rel="noopener"
+                                        className="btn-secondary"
+                                    >
+                                        Install in a minute
+                                    </a>
                                 </div>
                             </div>
                             <div></div>

@@ -7,24 +7,28 @@ export const SITE_URL = "https://goplasmatic.io";
 export const SITE_NAME = "Plasmatic";
 export const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
+// Documentation site, linked from nav/footer and page CTAs across routes.
+export const DOCS_URL = "https://docs.goplasmatic.io";
+export const DOCS_INSTALL_URL = `${DOCS_URL}/getting-started/install.html`;
+
 export const ROUTES = {
     "/": {
         path: "/",
-        title: "Plasmatic – Declarative services runtime",
+        title: "Plasmatic – Builders of Orion",
         description:
-            "Plasmatic builds declarative runtimes that decouple, execute, and govern business logic in modern software — change rules instantly, without redeploying.",
+            "Plasmatic builds Orion, the open-source declarative runtime where engineers and their AI assistants ship business logic, with guardrails, versioning, and one-call rollback enforced by the runtime.",
     },
     "/orion": {
         path: "/orion",
-        title: "Plasmatic – Orion",
+        title: "Orion – Declarative Services Runtime",
         description:
-            "Orion is a declarative services runtime: build the platform once, then change business rules instantly — no rebuilds, no redeploys — with governance built in.",
+            "Orion turns a JSON definition into a live, governed REST or Kafka service. Safe enough to let an AI write your services; fast enough to run them in production. Open source, Apache-2.0.",
     },
     "/contact": {
         path: "/contact",
         title: "Contact – Plasmatic",
         description:
-            "Get in touch with the Plasmatic team about Orion, partnerships, or investment.",
+            "Talk to the Plasmatic team about Orion pilots, enterprise support, or partnerships.",
     },
     "/privacy": {
         path: "/privacy",

@@ -28,6 +28,7 @@ const PAGES = [
             "hero",
             "problem",
             "solution",
+            "architecture-freedom",
             "decouple",
             "ai-trust",
             "guardrails",

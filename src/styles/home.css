@@ -126,3 +126,30 @@
     }
 }
 
+
+/* ── Built-in-the-open strip (developers CTA) ───────────────────── */
+
+.built-open-card {
+    padding: var(--pad-card-sm);
+    margin-bottom: 32px;
+}
+
+.built-open-card p {
+    font-size: 14px;
+    color: var(--text-body);
+    line-height: 1.6;
+}
+
+.built-open-card strong {
+    color: var(--text-heading);
+    font-weight: 500;
+}
+
+/* ── Compact height (short laptops, tablets in landscape) ─────────
+   Home-page companion to common.css's compact tier; `html`-prefixed to match
+   its specificity (see the note on the common.css block). */
+@media (min-width: 951px) and (max-height: 1079px) {
+    html .built-open-card {
+        margin-bottom: 22px;
+    }
+}

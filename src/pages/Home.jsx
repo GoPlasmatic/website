@@ -6,6 +6,7 @@ import {
     Shield,
     Sparkles,
     Gauge,
+    Activity,
     Network,
     Terminal,
     BookOpen,
@@ -14,12 +15,15 @@ import {
 import HeroCanvas from "../components/HeroCanvas.jsx";
 import SectionGraphic from "../components/SectionGraphic.jsx";
 import { usePageMeta } from "../hooks/usePageMeta.js";
-import { ROUTES } from "../site-meta.js";
+import { DOCS_INSTALL_URL, DOCS_URL, ROUTES } from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import architectureCore from "../assets/architecture-core.svg";
 import fragmentation from "../assets/fragmentation.svg";
 import logoSvg from "../assets/logo.svg";
 import homeCss from "../styles/home.css?inline";
+
+const BENCHMARK_URL =
+    "https://github.com/GoPlasmatic/Orion/blob/main/crates/orion-server/tests/benchmark/results/v1.0.0/SUMMARY.md";
 
 // The GitHub mark used in the vanilla site (lucide's Github glyph differs), kept
 // verbatim so the brand icon renders identically.
@@ -48,28 +52,27 @@ export default function Home() {
                 <HeroCanvas />
                 <div className="hero-text" id="heroText">
                     <div className="eyebrow">
-                        <span>Declarative Runtimes</span>
+                        <span>Plasmatic &middot; Builders of Orion</span>
                     </div>
                     <h1 className="reveal-blur">
-                        Plasmatic builds systems for{" "}
-                        <span className="gradient-text">modern software.</span>
+                        AI writes the software.{" "}
+                        <span className="gradient-text">
+                            We make running it safe.
+                        </span>
                     </h1>
                     <p className="lead hero-sub">
-                        We design and develop runtimes that decouple,
-                        execute, and govern business logic in modern applications.
+                        Orion is Plasmatic's open-source declarative runtime:
+                        engineers and their AI assistants write the business
+                        logic; the runtime enforces the guardrails, versioning,
+                        and rollback.
                     </p>
                     <div className="hero-ctas">
-                        <Link to="/orion" className="btn-primary">
-                            Explore Orion &rarr;
+                        <Link to="/contact" className="btn-primary">
+                            Talk to an engineer &rarr;
                         </Link>
-                        <a
-                            href="https://github.com/GoPlasmatic/Orion"
-                            target="_blank"
-                            rel="noopener"
-                            className="btn-secondary"
-                        >
-                            View on GitHub
-                        </a>
+                        <Link to="/orion" className="btn-secondary">
+                            Explore Orion
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -104,24 +107,27 @@ export default function Home() {
                     <div className="grid-2col">
                         <div className="col-content reveal-left">
                             <h2 className="reveal-blur">
-                                Software runtimes at the{" "}
+                                The architecture is the{" "}
                                 <span className="gradient-text">
-                                    core of modern systems.
+                                    runtime's job.
                                 </span>
                             </h2>
                             <p className="section-body">
-                                Plasmatic builds declarative runtimes that sit at the
-                                core of modern software.
-                            </p>
-                            <p className="section-body">
-                                We focus on how systems decouple business logic, execute
-                                workflows, and maintain architectural safety at scale.
+                                Every service needs the same architecture: rate
+                                limiting, retries, metrics, versioning,
+                                rollout. Plasmatic builds runtimes that enforce
+                                it at execution time, so the only thing your
+                                teams write and review is the logic that makes
+                                your business different.
                             </p>
                             <div className="callout">
                                 <p>
-                                    Our work enables organisations to move faster{" "}
+                                    Business logic becomes a governed,
+                                    versioned artifact:{" "}
                                     <strong>
-                                        without losing agility or architectural control.
+                                        changed in seconds by your engineers or
+                                        their AI assistants, reversible in one
+                                        call.
                                     </strong>
                                 </p>
                             </div>
@@ -162,23 +168,27 @@ export default function Home() {
                         <div></div>
                         <div className="col-content reveal-right">
                             <h2 className="reveal-blur">
-                                Organisations are no longer limited by{" "}
-                                <span className="gradient-text">speed.</span>
+                                AI moved one cost.{" "}
+                                <span className="gradient-text">
+                                    It left the other.
+                                </span>
                             </h2>
                             <p className="section-body">
-                                Software development has accelerated rapidly. AI
-                                is generating code. Teams are shipping faster than
-                                ever.
+                                Writing software accelerated. Shipping and
+                                governing it didn't.
                             </p>
                             <div className="pain-points">
                                 <div className="pain-point">
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            AI is generating code
+                                            AI writes code faster than you can
+                                            govern it
                                         </p>
                                         <p className="pain-desc">
-                                            Developer velocity has never been higher
+                                            Every generated service is more
+                                            unreviewed infrastructure, each
+                                            copy slightly different
                                         </p>
                                     </div>
                                 </div>
@@ -186,10 +196,12 @@ export default function Home() {
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            Release cycles are compressing
+                                            The release cycle didn't move
                                         </p>
                                         <p className="pain-desc">
-                                            Constant deployments create operational overhead
+                                            An AI drafts the change in minutes;
+                                            the pipeline still ships it in
+                                            days
                                         </p>
                                     </div>
                                 </div>
@@ -197,17 +209,20 @@ export default function Home() {
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            Business logic is coupled to code
+                                            Review is the new bottleneck
                                         </p>
                                         <p className="pain-desc">
-                                            Simple pricing or rule changes get blocked behind software releases
+                                            Most of what an AI generates is
+                                            plumbing, and every line is yours
+                                            to review
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             <div className="callout">
                                 <p>
-                                    They are limited by <strong>adaptability.</strong>
+                                    Speed without governance isn't velocity.{" "}
+                                    <strong>It's exposure.</strong>
                                 </p>
                             </div>
                         </div>
@@ -224,8 +239,8 @@ export default function Home() {
                     <div className="section-header reveal">
                         <h2 className="reveal-blur">A better way to build.</h2>
                         <p>
-                            System logic should not be tied to release cycles
-                            or compiled inside fragmented microservices.
+                            Logic as a governed artifact. Guardrails as
+                            configuration. One safe path for every change.
                         </p>
                     </div>
                     <div className="grid-3col">
@@ -233,38 +248,42 @@ export default function Home() {
                             <div className="icon-box icon-blue">
                                 <PenLine />
                             </div>
-                            <h3>Decouple logic</h3>
+                            <h3>Declare the logic</h3>
                             <p className="capability-subtitle">
-                                Clean separation
+                                Written by people or AI
                             </p>
                             <p>
-                                Business logic lives outside the codebase — not
-                                scattered across dozens of compiled services and deployment
-                                pipelines.
+                                Business logic is a JSON document: versioned
+                                like code, reviewed as a diff, writable by an
+                                engineer or an AI assistant.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
                             <div className="icon-box icon-teal">
                                 <Zap />
                             </div>
-                            <h3>Execute dynamically</h3>
+                            <h3>The runtime carries the rest</h3>
                             <p className="capability-subtitle">
-                                Declarative runtime
+                                Configured, not coded
                             </p>
                             <p>
-                                Run workflows on a high-performance engine. Hot-swap rules at runtime in under 8ms with zero downtime.
+                                Rate limiting, validation, caching, and
+                                backpressure enforced before any logic runs;
+                                circuit breakers and traces around every
+                                backend call.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
                             <div className="icon-box icon-yellow">
                                 <ShieldCheck />
                             </div>
-                            <h3>Govern automatically</h3>
+                            <h3>Every change is governed</h3>
                             <p className="capability-subtitle">
-                                Built-in guardrails
+                                Enforced, not promised
                             </p>
                             <p>
-                                Enforce rate limiting, circuit breakers, and payload validation automatically to ensure safe execution at scale.
+                                Draft, dry-run, canary, active. The same safe
+                                path for a 3 a.m. fix and an AI's proposal.
                             </p>
                         </div>
                     </div>
@@ -280,21 +299,27 @@ export default function Home() {
                     <div className="grid-2col orion-grid">
                         <div className="reveal-left">
                             <div className="eyebrow">
-                                <span>Orion &mdash; Declarative Services Runtime</span>
+                                <span>
+                                    Orion &middot; Declarative Services Runtime
+                                    &middot; v1.0 &middot; Apache-2.0
+                                </span>
                             </div>
                             <h2 className="orion-heading reveal-blur">
-                                Build minimal.
+                                One runtime.
                                 <br />
-                                Change everything{" "}
-                                <span className="gradient-text">instantly.</span>
+                                One safe path for{" "}
+                                <span className="gradient-text">
+                                    every change.
+                                </span>
                             </h2>
                             <div className="card orion-desc-card">
                                 <p>
-                                    Orion separates business logic from
-                                    application code. Engineering builds the
-                                    platform once, while business rules evolve
-                                    independently at the speed of opportunity—with
-                                    no rebuilds or redeployments.
+                                    Orion turns a JSON definition into a live
+                                    REST or Kafka service: APIs, decision
+                                    endpoints, event pipelines, webhook
+                                    ingestion, agent tools. Many services, one
+                                    runtime, as a modular monolith; scaling out
+                                    later is a topology change, not a rewrite.
                                 </p>
                             </div>
                             <Link to="/orion" className="btn-primary">
@@ -304,29 +329,35 @@ export default function Home() {
                         <div className="orion-feature-list reveal-right">
                             <div className="card orion-feature-card">
                                 <div className="icon-chip orion-feature-icon">
-                                    <Zap />
+                                    <Sparkles />
                                 </div>
-                                <h4>Zero Boilerplate</h4>
+                                <h4>Built for AI authorship</h4>
                                 <p>
-                                    Go from idea to a live REST or Kafka service in seconds. No Dockerfiles, no CI pipelines, and no server setup.
+                                    An assistant drafts, dry-runs, and rolls
+                                    back services over MCP, inside the same
+                                    lifecycle rules your engineers follow.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
                                 <div className="icon-chip orion-feature-icon">
                                     <Shield />
                                 </div>
-                                <h4>Architectural Guardrails</h4>
+                                <h4>Guardrails as configuration</h4>
                                 <p>
-                                    Observability, rate limiting, circuit breakers, and version history are baked into the runtime, not bolted on.
+                                    Rate limiting, circuit breakers,
+                                    validation, observability: declared once
+                                    per channel, not rewritten per service.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
                                 <div className="icon-chip orion-feature-icon">
-                                    <Sparkles />
+                                    <Gauge />
                                 </div>
-                                <h4>AI-Native &amp; Safe</h4>
+                                <h4>Production-grade, measured</h4>
                                 <p>
-                                    Structured JSON workflows are easy for LLMs to generate. Safe rollout pipelines ensure AI changes never break production.
+                                    Performance that's published, not promised.
+                                    One Rust binary; clustered replicas when
+                                    you grow.
                                 </p>
                             </div>
                         </div>
@@ -345,8 +376,8 @@ export default function Home() {
                             Built for modern architectures.
                         </h2>
                         <p>
-                            Open, high-performance, and designed to work with how
-                            distributed systems are actually built today.
+                            Open, measured, and designed for how distributed
+                            systems are actually run today.
                         </p>
                     </div>
                     <div className="grid-2x2">
@@ -356,23 +387,33 @@ export default function Home() {
                             </div>
                             <h3>Open source foundation</h3>
                             <p className="capability-subtitle">
-                                Community-driven
+                                Apache-2.0
                             </p>
                             <p>
-                                Built in the open. Inspect the core, contribute,
-                                and build on a foundation the community can trust.
+                                Developed in the open at GoPlasmatic/Orion;
+                                v1.0 shipped in August 2026.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
                             <div className="icon-box icon-blue">
-                                <Gauge />
+                                <Activity />
                             </div>
                             <h3>Rust-speed performance</h3>
                             <p className="capability-subtitle">
-                                Scale without compromise
+                                Measured, not claimed
                             </p>
                             <p>
-                                Built on Tokio and Axum. Achieves 6,000+ requests/sec per instance with single-digit millisecond latency.
+                                5.1K&ndash;5.7K workflow requests/sec per
+                                instance at single-digit milliseconds, on the{" "}
+                                <a
+                                    href={BENCHMARK_URL}
+                                    target="_blank"
+                                    rel="noopener"
+                                    style={{ color: "var(--accent-blue)" }}
+                                >
+                                    published v1.0 benchmark
+                                </a>
+                                .
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
@@ -384,7 +425,9 @@ export default function Home() {
                                 Built for the real world
                             </p>
                             <p>
-                                Natively supports HTTP/REST, Kafka event streams, and connectors to databases or external APIs out of the box.
+                                REST, HTTP, and Kafka in; PostgreSQL, MySQL,
+                                MongoDB, Elasticsearch, Redis, and any HTTP API
+                                out. Credentials stay on the connector.
                             </p>
                         </div>
                         <div className="card card-elevated card-hoverable capability-card reveal">
@@ -393,10 +436,12 @@ export default function Home() {
                             </div>
                             <h3>API-first &amp; developer-friendly</h3>
                             <p className="capability-subtitle">
-                                GitOps &amp; CLI integrated
+                                Admin API, CLI, MCP
                             </p>
                             <p>
-                                Manage everything through our clean HTTP Admin API, local CLI, or standard GitOps pipelines.
+                                Admin API, CLI, CI/CD packages, and an MCP
+                                server so an AI assistant operates the runtime
+                                the same governed way your engineers do.
                             </p>
                         </div>
                     </div>
@@ -421,18 +466,19 @@ export default function Home() {
                     <div className="grid-2col">
                         <div className="cta-inner reveal-left">
                             <div className="eyebrow">
-                                <span>For developers</span>
+                                <span>Evaluate Orion</span>
                             </div>
                             <h2 className="reveal-blur">
-                                Start building with Plasmatic.
+                                Two ways in. Both take minutes.
                             </h2>
                             <p className="cta-desc">
-                                Explore Orion, access documentation and start
-                                building with Plasmatic tools.
+                                Evaluating for your team? Talk to an engineer.
+                                Want proof first? It installs in about a
+                                minute.
                             </p>
                             <div className="dev-links">
                                 <a
-                                    href="https://docs.goplasmatic.io/"
+                                    href={DOCS_URL}
                                     target="_blank"
                                     rel="noopener"
                                     className="card card-hoverable dev-link-card"
@@ -443,8 +489,8 @@ export default function Home() {
                                     <div className="dev-link-body">
                                         <h4>View documentation</h4>
                                         <p>
-                                            Guides, API reference and integration
-                                            docs
+                                            Concepts, guides, honest
+                                            comparisons, API reference
                                         </p>
                                     </div>
                                     <span className="label-mono dev-link-arrow">
@@ -469,7 +515,7 @@ export default function Home() {
                                     </span>
                                 </a>
                                 <a
-                                    href="https://docs.goplasmatic.io/getting-started/install.html"
+                                    href={DOCS_INSTALL_URL}
                                     target="_blank"
                                     rel="noopener"
                                     className="card card-hoverable dev-link-card"
@@ -480,8 +526,8 @@ export default function Home() {
                                     <div className="dev-link-body">
                                         <h4>Quickstart</h4>
                                         <p>
-                                            Get Orion running in under five
-                                            minutes
+                                            A server in about a minute; a live
+                                            service in four API calls
                                         </p>
                                     </div>
                                     <span className="label-mono dev-link-arrow">
@@ -489,9 +535,18 @@ export default function Home() {
                                     </span>
                                 </a>
                             </div>
+                            <div className="card card-static built-open-card">
+                                <p>
+                                    <strong>Built in the open.</strong>{" "}
+                                    Apache-2.0, v1.0 shipped August 2026,
+                                    benchmark published. One binary, your data
+                                    in your own databases: nothing to migrate
+                                    off.
+                                </p>
+                            </div>
                             <div className="cta-buttons">
-                                <Link to="/orion" className="btn-primary">
-                                    Explore Orion &rarr;
+                                <Link to="/contact" className="btn-primary">
+                                    Talk to an engineer &rarr;
                                 </Link>
                                 <a
                                     href="https://github.com/GoPlasmatic/Orion"
