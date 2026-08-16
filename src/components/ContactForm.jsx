@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 // Port of contact.js: submits to Formspree via fetch so the user stays on the
 // page, with status messaging. The <form action>/method are kept so a no-JS
@@ -111,7 +112,7 @@ export default function ContactForm() {
                 className="btn-primary contact-submit"
                 disabled={sending}
             >
-                Send message &rarr;
+                Send message <ArrowRight aria-hidden="true" />
             </button>
             <p
                 className={`contact-status ${status.kind}`.trim()}

@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { Clock, Layers, ShieldCheck } from "lucide-react";
+import { ArrowRight, Clock, Layers, ShieldCheck } from "lucide-react";
 import OrionCanvas from "../components/OrionCanvas.jsx";
 import DeploySimulator from "../components/orion/DeploySimulator.jsx";
 import UseCaseTabs from "../components/orion/UseCaseTabs.jsx";
@@ -55,7 +55,8 @@ export default function Orion() {
                         </p>
                         <div className="hero-ctas">
                             <Link to="/contact" className="btn-primary">
-                                Talk to an engineer &rarr;
+                                Talk to an engineer{" "}
+                                <ArrowRight aria-hidden="true" />
                             </Link>
                             <a
                                 href={DOCS_INSTALL_URL}
@@ -78,15 +79,7 @@ export default function Orion() {
                     <div className="section-container">
                         <div className="grid-2col">
                             <div className="col-content reveal-left">
-                                <div
-                                    className="eyebrow"
-                                    style={{
-                                        "--accent-teal": "#ffd167",
-                                        borderColor: "rgba(255, 209, 103, 0.25)",
-                                        background:
-                                            "linear-gradient(135deg, rgba(255, 209, 103, 0.1), rgba(255, 209, 103, 0.05))",
-                                    }}
-                                >
+                                <div className="eyebrow eyebrow-amber">
                                     <span>Problem</span>
                                 </div>
                                 <h2 className="reveal-blur">
@@ -266,14 +259,7 @@ export default function Orion() {
 
                             <div className="decouple-flows-comparison">
                                 <div className="decouple-flow-column">
-                                    <div
-                                        className="decouple-flow-header"
-                                        style={{
-                                            color: "#ffd167",
-                                            borderColor:
-                                                "rgba(255, 209, 103, 0.2)",
-                                        }}
-                                    >
+                                    <div className="decouple-flow-header flow-amber">
                                         A conventional service, AI-generated
                                     </div>
                                     <div className="decouple-flow-canvas">
@@ -298,14 +284,7 @@ export default function Orion() {
                                 </div>
 
                                 <div className="decouple-flow-column">
-                                    <div
-                                        className="decouple-flow-header"
-                                        style={{
-                                            color: "#4cbd97",
-                                            borderColor:
-                                                "rgba(76, 189, 151, 0.2)",
-                                        }}
-                                    >
+                                    <div className="decouple-flow-header flow-teal">
                                         The same service on Orion
                                     </div>
                                     <div className="decouple-flow-canvas">
@@ -352,32 +331,17 @@ export default function Orion() {
                         </div>
                         <div className="grid-2col comparison-grid">
                             <div className="card comparison-card before-card reveal-left">
-                                <div
-                                    className="label-mono label-mono-upper comparison-label"
-                                    style={{ color: "var(--accent-blue)" }}
-                                >
+                                <div className="label-mono label-mono-upper comparison-label comparison-label-blue">
                                     The assistant
                                 </div>
                                 <h3>AI builds</h3>
-                                <p
-                                    className="section-body"
-                                    style={{
-                                        fontSize: "15px",
-                                        marginBottom: "20px",
-                                        color: "rgba(255, 255, 255, 0.7)",
-                                    }}
-                                >
+                                <p className="section-body comparison-intro">
                                     Over MCP, an assistant works through the
                                     same admin API your engineers use:
                                 </p>
                                 <div className="comparison-points">
                                     <div className="comparison-point">
-                                        <span
-                                            className="dot-sm"
-                                            style={{
-                                                background: "var(--accent-blue)",
-                                            }}
-                                        ></span>
+                                        <span className="dot-sm dot-sm-blue"></span>
                                         <p>
                                             One paragraph of English becomes a
                                             drafted workflow with a real
@@ -385,24 +349,14 @@ export default function Orion() {
                                         </p>
                                     </div>
                                     <div className="comparison-point">
-                                        <span
-                                            className="dot-sm"
-                                            style={{
-                                                background: "var(--accent-blue)",
-                                            }}
-                                        ></span>
+                                        <span className="dot-sm dot-sm-blue"></span>
                                         <p>
                                             Reviewed as a diff, not as
                                             generated code
                                         </p>
                                     </div>
                                     <div className="comparison-point">
-                                        <span
-                                            className="dot-sm"
-                                            style={{
-                                                background: "var(--accent-blue)",
-                                            }}
-                                        ></span>
+                                        <span className="dot-sm dot-sm-blue"></span>
                                         <p>
                                             Nothing it creates serves traffic
                                             until it is activated
@@ -415,27 +369,14 @@ export default function Orion() {
                                     The gate
                                 </div>
                                 <h3>You approve. The runtime governs.</h3>
-                                <p
-                                    className="section-body"
-                                    style={{
-                                        fontSize: "15px",
-                                        marginBottom: "20px",
-                                        color: "rgba(255, 255, 255, 0.7)",
-                                    }}
-                                >
+                                <p className="section-body comparison-intro">
                                     Versions are immutable, so approving the
                                     diff is approving the exact bytes that will
                                     run:
                                 </p>
                                 <div className="comparison-points">
                                     <div className="comparison-point">
-                                        <span
-                                            className="dot-sm"
-                                            style={{
-                                                background:
-                                                    "var(--accent-green)",
-                                            }}
-                                        ></span>
+                                        <span className="dot-sm dot-sm-green"></span>
                                         <p>
                                             Canary to 10% of traffic; each
                                             caller consistently sees one
@@ -443,26 +384,14 @@ export default function Orion() {
                                         </p>
                                     </div>
                                     <div className="comparison-point">
-                                        <span
-                                            className="dot-sm"
-                                            style={{
-                                                background:
-                                                    "var(--accent-green)",
-                                            }}
-                                        ></span>
+                                        <span className="dot-sm dot-sm-green"></span>
                                         <p>
                                             Roll back with one call to the
                                             previous immutable version
                                         </p>
                                     </div>
                                     <div className="comparison-point">
-                                        <span
-                                            className="dot-sm"
-                                            style={{
-                                                background:
-                                                    "var(--accent-green)",
-                                            }}
-                                        ></span>
+                                        <span className="dot-sm dot-sm-green"></span>
                                         <p>
                                             Every change lands in the audit
                                             log: who, what, when
@@ -534,7 +463,7 @@ export default function Orion() {
                                         style={{
                                             marginTop: "16px",
                                             fontSize: "26px",
-                                            fontWeight: 800,
+                                            fontWeight: 700,
                                             fontFamily: "var(--font-display)",
                                             lineHeight: 1.2,
                                         }}
@@ -552,7 +481,8 @@ export default function Orion() {
                                     className="btn-primary"
                                     style={{ marginTop: "16px" }}
                                 >
-                                    Talk to an engineer &rarr;
+                                    Talk to an engineer{" "}
+                                    <ArrowRight aria-hidden="true" />
                                 </Link>
                             </div>
                             <div className="orion-feature-list reveal-right">
@@ -602,9 +532,7 @@ export default function Orion() {
                                             href={`${DOCS_URL}/${path}`}
                                             target="_blank"
                                             rel="noopener"
-                                            style={{
-                                                color: "var(--accent-blue)",
-                                            }}
+                                            className="link"
                                         >
                                             {label}
                                         </a>
@@ -673,7 +601,8 @@ export default function Orion() {
                                 </div>
                                 <div className="cta-buttons">
                                     <Link to="/contact" className="btn-primary">
-                                        Talk to an engineer &rarr;
+                                        Talk to an engineer{" "}
+                                        <ArrowRight aria-hidden="true" />
                                     </Link>
                                     <a
                                         href={DOCS_INSTALL_URL}

@@ -8,6 +8,7 @@ import { DOCS_URL } from "../site-meta.js";
 // applies. `active` highlighting is derived from the current route.
 export default function SiteNav() {
     const [open, setOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const { pathname } = useLocation();
 
     const activeKey = pathname.startsWith("/orion")
@@ -29,12 +30,22 @@ export default function SiteNav() {
         return () => document.body.classList.remove("nav-open");
     }, [open]);
 
+    // Compact the bar once the page scrolls (see .nav.scrolled in common.css).
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 8);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
     const current = (key) =>
         key === activeKey ? { "aria-current": "page" } : {};
 
     return (
         <site-nav active={activeKey}>
-            <nav className={`nav${open ? " open" : ""}`}>
+            <nav
+                className={`nav${open ? " open" : ""}${scrolled ? " scrolled" : ""}`}
+            >
                 <Link to="/" aria-label="Plasmatic home" className="nav-logo-link">
                     <img src={logoUrl} alt="Plasmatic" className="nav-logo" />
                 </Link>

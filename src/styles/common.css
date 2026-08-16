@@ -1,22 +1,34 @@
 /* ── Design tokens ───────────────────────────────────────────────── */
 
 :root {
-    /* Display face token. orion.css references var(--font-display, "Montserrat")
-       throughout; defining it here makes the fallback explicit and gives the
-       future display-face decision a single switch. */
-    --font-display: "Montserrat", sans-serif;
+    /* Display face token. The site's display face is filson-pro (the wordmark
+       face, loaded from Typekit); Montserrat 700 stays in the Google Fonts
+       link purely as fallback and never downloads while filson resolves. */
+    --font-display: "filson-pro", "Montserrat", sans-serif;
     /* Code face token: every var(--font-code, "DM Mono") consumer resolves
        here instead of through its own carried fallback. */
     --font-code: "DM Mono", monospace;
     --bg-deep: #07111a;
     --bg-section: #063b4c;
-    --bg-card: #0f2030;
-    --text-heading: #ecf4f8;
-    --text-body: #7fafc0;
-    /* Raised from #3d6b7d (~3.3:1, sub-AA for body text) to ~5.3:1 on --bg-deep
-       while staying clearly dimmer than --text-body. */
-    --text-muted: #5f8da0;
+    /* Surface ramp: separation comes from lightness steps, not from layered
+       translucent gradients. surface-1 = content cards, surface-2 = panels
+       nested inside a device card, surface-3 = chips/inputs. */
+    --surface-1: #0c1e2e;
+    --surface-2: #102636;
+    --surface-3: #143048;
+    --bg-card: var(--surface-1);
+    --text-heading: #eff6fa;
+    /* Body raised from #7fafc0 (~5.9:1) to ~9.5:1 on --bg-deep; muted raised
+       from #5f8da0 in step so the hierarchy holds. */
+    --text-body: #a9c9d8;
+    --text-muted: #6e95a9;
+    /* Hairline strokes shared by cards, panels, chips, and inputs. */
+    --stroke-1: rgba(166, 209, 230, 0.1);
+    --stroke-2: rgba(166, 209, 230, 0.17);
     --accent-blue: #119fcd;
+    /* Bright interactive step — links and focus, where #119fcd is too dim
+       against the raised surfaces. */
+    --accent-blue-bright: #3bc1e8;
     --accent-green: #06d6a0;
     --accent-teal: #4cbd97;
     --accent-yellow: #ffd167;
@@ -26,6 +38,7 @@
     --radius-lg: 16px;
     --radius-md: 12px;
     --radius-sm: 10px;
+    --radius-xs: 8px;
 
     /* ── Card design system ──────────────────────────────────────── */
     /* Elevation (ambient depth, always on) */
@@ -126,7 +139,7 @@ site-footer {
    The :not() form leaves the UA default intact where :focus-visible is
    unsupported. */
 :focus-visible {
-    outline: 2px solid var(--accent-blue);
+    outline: 2px solid var(--accent-blue-bright);
     outline-offset: 2px;
 }
 :focus:not(:focus-visible) {
@@ -169,7 +182,7 @@ site-footer {
     padding: 128px 24px;
 }
 .error-fallback h1 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-size: clamp(28px, 4vw, 44px);
     color: var(--text-heading);
 }
@@ -194,9 +207,35 @@ site-footer {
     background: rgba(7, 17, 26, 0.6);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid transparent;
     pointer-events: auto;
     transition: background 0.3s ease, padding 0.3s ease;
+}
+
+/* Light-seam bottom edge — the gradient hairline the cards and section
+   dividers share, instead of a flat white border. */
+.nav::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(59, 193, 232, 0.35) 30%,
+        rgba(6, 214, 160, 0.35) 70%,
+        transparent
+    );
+    pointer-events: none;
+}
+
+/* Compact scrolled state — SiteNav toggles .scrolled past a small offset. */
+.nav.scrolled {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background: rgba(7, 17, 26, 0.85);
 }
 
 .nav-logo-link {
@@ -246,22 +285,39 @@ site-footer {
     transform-origin: left;
 }
 
+/* Current route (SiteNav sets aria-current="page"): brighter label plus the
+   gradient underline held on. Written after the hover rules so the equal-
+   specificity ::after declaration wins. */
+.nav-links a:not(.btn-nav)[aria-current="page"] {
+    color: var(--text-heading);
+}
+.nav-links a:not(.btn-nav)[aria-current="page"]::after {
+    transform: scaleX(1);
+}
+
+/* Nav CTA — the same primary gradient the hero buttons use, at nav scale,
+   instead of a third one-off green. */
 .btn-nav,
 .nav-links a.btn-nav {
     display: inline-block;
-    padding: 10px 20px;
-    background: var(--accent-green);
+    padding: 10px 18px;
+    background: linear-gradient(
+        135deg,
+        var(--accent-teal) 0%,
+        var(--accent-blue) 100%
+    );
     color: var(--bg-deep);
     font-family: "DM Sans", sans-serif;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13.5px;
+    letter-spacing: 0.2px;
     text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-xs);
     cursor: pointer;
-    box-shadow: 
-        0 4px 10px rgba(6, 214, 160, 0.15),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+        0 6px 18px -6px rgba(17, 159, 205, 0.5);
     transition:
         transform 0.25s var(--ease-card),
         box-shadow 0.25s var(--ease-card),
@@ -271,10 +327,10 @@ site-footer {
 .nav-links a.btn-nav:hover {
     color: var(--bg-deep);
     transform: translateY(-1.5px);
-    border-color: rgba(255, 255, 255, 0.35);
-    box-shadow: 
-        0 6px 15px rgba(6, 214, 160, 0.35),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+        0 10px 24px -6px rgba(17, 159, 205, 0.7);
 }
 .btn-nav:active,
 .nav-links a.btn-nav:active {
@@ -321,7 +377,7 @@ site-footer {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 15px 28px;
+    padding: 14px 26px;
     background: linear-gradient(
         135deg,
         var(--accent-teal) 0%,
@@ -329,29 +385,48 @@ site-footer {
     );
     color: var(--bg-deep);
     font-family: "DM Sans", sans-serif;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 15px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-sm);
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow: 
-        0 4px 15px rgba(17, 159, 205, 0.2),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.35),
+        0 8px 24px -8px rgba(17, 159, 205, 0.55);
     transition:
         transform 0.3s var(--ease-card),
         box-shadow 0.3s var(--ease-card),
         border-color 0.3s var(--ease-card);
     text-decoration: none;
 }
+/* Sheen sweep across the gradient on hover. */
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 70%
+    );
+    transform: translateX(-110%);
+    transition: transform 0.7s var(--ease-card);
+    pointer-events: none;
+}
 .btn-primary:hover {
     transform: translateY(-2px);
     border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 
-        0 6px 25px rgba(17, 159, 205, 0.45),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+        0 12px 32px -8px rgba(17, 159, 205, 0.75);
+}
+.btn-primary:hover::after {
+    transform: translateX(110%);
 }
 .btn-primary:active {
     transform: translateY(0);
@@ -361,18 +436,19 @@ site-footer {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 15px 28px;
-    background: rgba(255, 255, 255, 0.02);
+    padding: 14px 26px;
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     color: var(--text-heading);
     font-family: "DM Sans", sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+    border: 1px solid var(--stroke-2);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     transition:
         transform 0.3s var(--ease-card),
         border-color 0.3s var(--ease-card),
@@ -382,14 +458,26 @@ site-footer {
 }
 .btn-secondary:hover {
     transform: translateY(-2px);
-    border-color: rgba(17, 159, 205, 0.4);
+    border-color: rgba(59, 193, 232, 0.45);
     background: rgba(17, 159, 205, 0.08);
-    box-shadow: 
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-        0 4px 15px rgba(17, 159, 205, 0.1);
+    box-shadow: 0 8px 24px -10px rgba(17, 159, 205, 0.4);
 }
 .btn-secondary:active {
     transform: translateY(0);
+}
+
+/* Inline arrow icons inside buttons and action links slide on hover —
+   the shared "go" gesture. */
+.btn-primary svg,
+.btn-secondary svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform var(--dur-fast) var(--ease-card);
+}
+.btn-primary:hover svg,
+.btn-secondary:hover svg {
+    transform: translateX(3px);
 }
 
 /* ── Hero ────────────────────────────────────────────────────────── */
@@ -408,7 +496,7 @@ site-footer {
 }
 
 .hero h1 {
-    font-family: "filson-pro", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(36px, 5.5vw, 72px);
     color: var(--text-heading);
@@ -424,21 +512,21 @@ site-footer {
     flex-wrap: wrap;
 }
 
-/* Pill badge that sits above the hero headline. */
+/* Pill badge that sits above the hero headline. One primitive for every
+   badge on the site: --badge-hue drives border, tint, dot, and text, so a
+   variant is a one-line hue override (see .eyebrow-amber). */
 .eyebrow {
+    --badge-hue: var(--accent-teal);
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 6px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(76, 189, 151, 0.25);
-    background: linear-gradient(135deg, rgba(76, 189, 151, 0.1), rgba(17, 159, 205, 0.05));
+    border: 1px solid color-mix(in srgb, var(--badge-hue) 26%, transparent);
+    background: color-mix(in srgb, var(--badge-hue) 8%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     margin-bottom: 32px;
-    box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.25),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     position: relative;
 }
 
@@ -447,14 +535,14 @@ site-footer {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--accent-teal);
-    box-shadow: 0 0 8px var(--accent-teal);
+    background: var(--badge-hue);
+    box-shadow: 0 0 8px var(--badge-hue);
     animation: eyebrow-pulse 2s infinite ease-in-out;
 }
 
 @keyframes eyebrow-pulse {
     0%, 100% { opacity: 0.5; transform: scale(0.9); }
-    50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 12px var(--accent-teal); }
+    50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 12px var(--badge-hue); }
 }
 
 .eyebrow span {
@@ -462,8 +550,12 @@ site-footer {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--accent-teal);
+    color: var(--badge-hue);
     font-weight: 500;
+}
+
+.eyebrow-amber {
+    --badge-hue: var(--accent-yellow);
 }
 
 /* Lead paragraph sized for hero copy. */
@@ -522,7 +614,7 @@ site-footer {
 }
 
 .section-header h2 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(32px, 4vw, 56px);
     color: var(--text-heading);
@@ -543,7 +635,7 @@ site-footer {
    2-col layout holds prose with its own h2 (vs. the centered
    .section-header pattern above). */
 .col-content h2 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(32px, 4vw, 56px);
     color: var(--text-heading);
@@ -607,6 +699,61 @@ site-footer {
 
 .callout strong {
     color: white;
+}
+
+/* ── Links ───────────────────────────────────────────────────────── */
+
+/* Inline prose link: bright accent with a soft underline that resolves
+   solid on hover. Replaces the per-page ad-hoc treatments. */
+.link {
+    color: var(--accent-blue-bright);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent-blue-bright) 35%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition:
+        color var(--dur-fast) var(--ease-card),
+        text-decoration-color var(--dur-fast) var(--ease-card);
+}
+.link:hover {
+    color: var(--text-heading);
+    text-decoration-color: var(--accent-blue-bright);
+}
+
+/* Standalone "go somewhere" link: heavier weight, sliding arrow, gradient
+   underline drawing in — the same hover language as the nav links. */
+.link-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+    color: var(--accent-blue-bright);
+    position: relative;
+    padding-bottom: 2px;
+    transition: color var(--dur-fast) var(--ease-card);
+}
+.link-action::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-blue-bright), var(--accent-green));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-card) var(--ease-card);
+}
+.link-action:hover::after {
+    transform: scaleX(1);
+}
+.link-action svg {
+    width: 15px;
+    height: 15px;
+    transition: transform var(--dur-fast) var(--ease-card);
+}
+.link-action:hover svg {
+    transform: translateX(3px);
 }
 
 /* ── Pain points ─────────────────────────────────────────────────── */
@@ -695,63 +842,89 @@ site-footer {
    .card-elevated / .card-hoverable remain in markup as harmless no-ops —
    the radius is now unified and the hover treatment is built into .card. */
 .card {
-    /* Multi-layered surface background + top-weighted gradient border */
-    background: 
-        linear-gradient(135deg, rgba(15, 27, 44, 0.65), rgba(7, 17, 26, 0.85)) padding-box,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) border-box;
-    border: 1px solid transparent;
+    position: relative;
+    /* One opaque surface with a faint top sheen — separation comes from the
+       lightness step over the page, not from translucent gradient stacks. */
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 46%),
+        var(--card-surface);
+    border: 1px solid var(--stroke-1);
     border-radius: var(--radius-card);
-    
-    /* Double shadow system: Ambient backdrop depth + internal light-edge bevel */
     box-shadow:
         var(--shadow-ambient),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-        0 0 0 1px color-mix(in srgb, var(--card-accent) 12%, transparent);
-    
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
     transition:
         translate var(--dur-card) var(--ease-card),
         box-shadow var(--dur-card) var(--ease-card),
-        border-color var(--dur-card) var(--ease-card),
-        background var(--dur-card) var(--ease-card);
+        border-color var(--dur-card) var(--ease-card);
+}
+
+/* Light seam: a 1px neon hairline on the top edge — the WebGL scenes' line
+   language carried into the component layer. Resting it sits dim and short;
+   on hover it spreads along the edge and brightens. Inherits --card-accent,
+   so the red/teal/amber card categories keep their color coding. */
+.card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 16%;
+    right: 16%;
+    height: 1px;
+    border-radius: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--card-accent) 85%, white 10%),
+        transparent
+    );
+    opacity: 0.45;
+    filter: drop-shadow(0 0 6px var(--card-accent));
+    pointer-events: none;
+    transition:
+        opacity var(--dur-card) var(--ease-card),
+        left var(--dur-card) var(--ease-card),
+        right var(--dur-card) var(--ease-card);
 }
 
 .card:hover {
     /* translate (not transform) so the lift composes with .reveal* instead of
        overriding their transform — see .reveal-blur.visible. */
-    translate: 0 -5px;
-    
-    /* Accent glow is injected into the border using gradient overlay */
-    background: 
-        linear-gradient(135deg, rgba(20, 38, 56, 0.8), rgba(9, 21, 32, 0.95)) padding-box,
-        linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 35%, transparent), rgba(255, 255, 255, 0.01)) border-box;
-    
+    translate: 0 -4px;
+    border-color: color-mix(in srgb, var(--card-accent) 30%, var(--stroke-1));
     box-shadow:
         var(--shadow-ambient-hover),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
-        0 0 0 1px color-mix(in srgb, var(--card-accent) 18%, transparent),
-        0 0 30px -5px color-mix(in srgb, var(--card-accent) 25%, transparent);
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+        0 14px 44px -14px color-mix(in srgb, var(--card-accent) 35%, transparent);
+}
+
+.card:hover::before {
+    opacity: 1;
+    left: 5%;
+    right: 5%;
 }
 
 /* Frosted-glass surface — Level-1 interactive "device" cards only. */
 .card-glass {
-    background: 
-        linear-gradient(135deg, rgba(17, 30, 48, 0.45), rgba(7, 17, 26, 0.65)) padding-box,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)) border-box;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 46%),
+        var(--card-surface-frost);
     -webkit-backdrop-filter: blur(var(--card-blur));
     backdrop-filter: blur(var(--card-blur));
 }
 
 /* Opt out of the hover lift/glow (prose cards, forms) while keeping the
-   surface, ambient shadow and resting accent ring. */
+   surface, ambient shadow and resting seam. */
 .card-static:hover {
     translate: 0;
-    background:
-        linear-gradient(135deg, rgba(15, 27, 44, 0.65), rgba(7, 17, 26, 0.85)) padding-box,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) border-box;
+    border-color: var(--stroke-1);
     box-shadow:
         var(--shadow-ambient),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-        0 0 0 1px color-mix(in srgb, var(--card-accent) 12%, transparent);
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+}
+.card-static:hover::before {
+    opacity: 0.45;
+    left: 16%;
+    right: 16%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -788,15 +961,32 @@ site-footer {
     }
 }
 
-/* Small icon container (rounded square with a tinted background and
-   a centered SVG). Used by orion-feature-icon and dev-link-icon. */
+/* Icon tiles — one system, two sizes. .icon-box (large, capability cards)
+   and .icon-chip (small, feature/dev-link rows) share the treatment: a 10%
+   accent tint plus a 1px inner ring at 22%, lit from within rather than
+   stamped on. --tint defaults blue; the .icon-* classes override it. */
 .icon-chip {
-    border-radius: 8px;
+    --tint: var(--accent-blue);
+    border-radius: var(--radius-xs);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: rgba(17, 159, 205, 0.15);
+    color: var(--tint);
+    background: color-mix(in srgb, var(--tint) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 22%, transparent);
+    transition:
+        transform var(--dur-card) var(--ease-spring),
+        box-shadow var(--dur-card) var(--ease-card),
+        background var(--dur-card) var(--ease-card);
+}
+
+.card:hover .icon-chip {
+    transform: scale(1.06);
+    background: color-mix(in srgb, var(--tint) 16%, transparent);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--tint) 40%, transparent),
+        0 0 18px -6px var(--tint);
 }
 
 /* Mono caption typography. Add .label-mono-upper for uppercase
@@ -838,57 +1028,66 @@ site-footer {
 }
 
 .icon-box {
-    width: 56px;
-    height: 56px;
+    --tint: var(--accent-blue);
+    width: 52px;
+    height: 52px;
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 24px;
-    transition: transform var(--dur-card) var(--ease-spring), box-shadow var(--dur-card) var(--ease-card);
+    color: var(--tint);
+    background: color-mix(in srgb, var(--tint) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 22%, transparent);
+    transition:
+        transform var(--dur-card) var(--ease-spring),
+        box-shadow var(--dur-card) var(--ease-card),
+        background var(--dur-card) var(--ease-card);
 }
 
 .card:hover .icon-box {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px -5px var(--card-accent);
+    transform: scale(1.06);
+    background: color-mix(in srgb, var(--tint) 16%, transparent);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--tint) 40%, transparent),
+        0 0 18px -6px var(--tint);
 }
 
 .icon-box svg {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
 }
 
 .icon-blue {
-    background: rgba(17, 159, 205, 0.08);
-    color: var(--accent-blue);
+    --tint: var(--accent-blue);
 }
 .icon-yellow {
-    background: rgba(255, 209, 103, 0.08);
-    color: var(--accent-yellow);
+    --tint: var(--accent-yellow);
 }
 .icon-teal {
-    background: rgba(76, 189, 151, 0.08);
-    color: var(--accent-teal);
+    --tint: var(--accent-teal);
 }
 .icon-red {
-    background: rgba(239, 71, 111, 0.08);
-    color: var(--accent-red);
+    --tint: var(--accent-red);
 }
 
 .capability-card h3 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 22px;
     color: var(--text-heading);
     margin-bottom: 4px;
 }
 
+/* Mono label voice — matches the eyebrows, badges, and form labels so all
+   caption-tier text shares one register. */
 .capability-subtitle {
-    font-size: 13px;
+    font-family: var(--font-code);
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-body);
-    margin-bottom: 12px;
+    letter-spacing: 1.4px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
 }
 
 .capability-card > p:last-child {
@@ -918,7 +1117,7 @@ site-footer {
 }
 
 .orion-heading {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(32px, 4vw, 56px);
     color: var(--text-heading);
@@ -970,11 +1169,10 @@ site-footer {
 .orion-feature-icon svg {
     width: 20px;
     height: 20px;
-    color: var(--text-heading);
 }
 
 .orion-feature-card h4 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 18px;
     color: var(--text-heading);
@@ -1009,8 +1207,8 @@ site-footer {
 }
 
 .section-cta h2 {
-    font-family: "Montserrat", sans-serif;
-    font-weight: 800;
+    font-family: var(--font-display);
+    font-weight: 700;
     font-size: clamp(32px, 3.5vw, 46px);
     color: var(--text-heading);
     letter-spacing: -0.5px;
@@ -1116,29 +1314,26 @@ site-footer {
 }
 
 /* Surface (bg/border/radius/shadow) comes from .card — added in the JSX.
-   These rules add only the padding, the per-card accent and the
-   before/after colour treatments. */
+   These rules add only the padding and the per-card accent; the light seam
+   carries the red/teal coding, so no overflow clipping and no full-card
+   gradient wash. */
 .comparison-card {
     padding: var(--pad-card-2xl);
     border-radius: var(--radius-card);
     position: relative;
-    overflow: hidden;
 }
 
 .before-card {
     --card-accent: var(--accent-red);
-    border: 1px solid rgba(239, 71, 111, 0.2);
+    border-color: color-mix(in srgb, var(--accent-red) 18%, var(--stroke-1));
 }
 
 .after-card {
     --card-accent: var(--accent-teal);
-    border: 1px solid var(--border-hover);
-    background: linear-gradient(
-        135deg,
-        rgba(6, 214, 160, 0.1),
-        var(--bg-card),
-        var(--bg-card)
-    );
+    border-color: color-mix(in srgb, var(--accent-teal) 22%, var(--stroke-1));
+    background:
+        linear-gradient(180deg, rgba(6, 214, 160, 0.05), transparent 40%),
+        var(--card-surface);
 }
 
 .comparison-label {
@@ -1150,8 +1345,12 @@ site-footer {
     color: var(--accent-green);
 }
 
+.comparison-label-blue {
+    color: var(--accent-blue-bright);
+}
+
 .comparison-card h3 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 28px;
     color: var(--text-heading);
@@ -1178,6 +1377,16 @@ site-footer {
     margin-top: 7px;
 }
 
+/* Hue classes for the comparison dots (previously inline styles in JSX). */
+.dot-sm-blue {
+    background: var(--accent-blue);
+    box-shadow: 0 0 6px rgba(17, 159, 205, 0.5);
+}
+.dot-sm-green {
+    background: var(--accent-green);
+    box-shadow: 0 0 6px rgba(6, 214, 160, 0.5);
+}
+
 .comparison-point p {
     font-size: 15px;
     color: var(--text-body);
@@ -1186,58 +1395,6 @@ site-footer {
 
 .after-card .comparison-point p {
     color: var(--text-heading);
-}
-
-/* ── Numbered step cards ─────────────────────────────────────────── */
-
-.steps-grid {
-    margin-top: 0;
-}
-
-/* Surface from .card .card-elevated .card-hoverable; .step-card adds
-   only the gradient halo overlay and number stack on top. */
-.step-card {
-    padding: 32px;
-    position: relative;
-}
-
-.step-card::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(
-        to right,
-        var(--accent-blue),
-        var(--accent-green)
-    );
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: -1;
-}
-
-.step-card:hover::before {
-    opacity: 0.1;
-}
-
-.step-num {
-    font-size: 40px;
-    font-weight: 300;
-    color: rgba(127, 175, 192, 0.3);
-    margin-bottom: 16px;
-}
-
-.step-card h3 {
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--text-heading);
-    margin-bottom: 12px;
-}
-
-.step-card p {
-    font-size: 15px;
-    color: var(--text-body);
-    line-height: 1.6;
 }
 
 /* ── Audience cards (CTA descriptive stat cards) ─────────────────── */
@@ -1272,12 +1429,12 @@ site-footer {
 }
 
 .audience-card a {
-    color: var(--accent-blue);
+    color: var(--accent-blue-bright);
     margin-top: 16px;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
 }
 .audience-card a:hover {
-    opacity: 0.8;
+    color: var(--text-heading);
 }
 
 /* ── Developer link cards (CTA horizontal links) ─────────────────── */
@@ -1298,12 +1455,11 @@ site-footer {
     gap: 16px;
 }
 
-/* Sizing/colour for the .icon-chip wrapper around the lucide icon. */
+/* Sizing for the .icon-chip wrapper around the lucide icon — color and
+   hover come from the shared tile treatment. */
 .dev-link-icon {
     width: 36px;
     height: 36px;
-    color: var(--accent-blue);
-    transition: transform var(--dur-card) var(--ease-spring);
 }
 
 .dev-link-icon svg {
@@ -1328,17 +1484,19 @@ site-footer {
 }
 
 .dev-link-arrow {
-    color: var(--accent-blue);
+    display: inline-flex;
+    color: var(--text-muted);
     transition: transform var(--dur-card) var(--ease-card), color var(--dur-card) var(--ease-card);
 }
 
-.dev-link-card:hover .dev-link-arrow {
-    transform: translateX(4px);
-    color: var(--accent-green);
+.dev-link-arrow svg {
+    width: 16px;
+    height: 16px;
 }
 
-.dev-link-card:hover .dev-link-icon {
-    transform: scale(1.08);
+.dev-link-card:hover .dev-link-arrow {
+    transform: translateX(3px);
+    color: var(--accent-green);
 }
 
 /* ── Footer ──────────────────────────────────────────────────────── */
@@ -1369,10 +1527,13 @@ site-footer {
 
 .footer-links a {
     color: var(--text-body);
-    transition: color 0.2s;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
 }
 .footer-links a:hover {
     color: var(--text-heading);
+    border-bottom-color: var(--stroke-2);
 }
 
 /* ── Scroll hint ─────────────────────────────────────────────────── */
@@ -1622,6 +1783,11 @@ section-graphic .sg-text-layer > .sg-text {
         transform-origin: center;
     }
     .nav-links a:not(.btn-nav):hover::after {
+        transform: translateX(-50%) scaleX(1);
+        transform-origin: center;
+    }
+    /* Active route keeps its centered underline in the drawer too. */
+    .nav-links a:not(.btn-nav)[aria-current="page"]::after {
         transform: translateX(-50%) scaleX(1);
         transform-origin: center;
     }

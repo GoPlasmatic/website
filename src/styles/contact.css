@@ -27,7 +27,7 @@ html.snap-ready {
 }
 
 .section-contact h1 {
-    font-family: "filson-pro", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(36px, 4.5vw, 60px);
     color: var(--text-heading);
@@ -60,16 +60,10 @@ html.snap-ready {
 
 /* ── Form ────────────────────────────────────────────────────────── */
 
-/* Surface (bg/border/radius/shadow/ring) comes from .card; the form opts
-   out of the hover lift via .card-static (set in ContactForm.jsx). A denser
-   surface keeps the inputs legible over the page background. */
+/* Surface (bg/border/radius/shadow/seam) comes from .card — now an opaque
+   surface, so no denser override is needed; the form opts out of the hover
+   lift via .card-static (set in ContactForm.jsx). */
 .contact-form {
-    background: linear-gradient(135deg, rgba(15, 32, 48, 0.75), rgba(7, 17, 26, 0.9)) padding-box,
-                linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) border-box;
-    border: 1px solid transparent;
-    box-shadow: 
-        var(--shadow-ambient),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     padding: var(--pad-card-xl);
     display: flex;
     flex-direction: column;
@@ -87,7 +81,13 @@ html.snap-ready {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--text-body);
+    color: var(--text-muted);
+    transition: color 0.25s var(--ease-card);
+}
+
+/* The whole row acknowledges focus: the label answers in accent. */
+.form-row:focus-within label {
+    color: var(--accent-blue-bright);
 }
 
 .form-row input,
@@ -95,23 +95,28 @@ html.snap-ready {
 .form-row textarea {
     width: 100%;
     padding: 12px 14px;
-    /* A bare color is only valid in the final background layer, so the surface
-       color is expressed as a two-stop gradient to keep the layered shorthand
-       valid (otherwise the whole declaration drops and inputs render white). */
-    background: linear-gradient(rgba(7, 17, 26, 0.6), rgba(7, 17, 26, 0.6)) padding-box,
-                linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)) border-box;
+    background: rgba(4, 10, 16, 0.55);
     color-scheme: dark;
-    border: 1px solid transparent;
+    border: 1px solid var(--stroke-1);
     border-radius: var(--radius-sm);
     color: var(--text-heading);
     font-family: "DM Sans", sans-serif;
     font-size: 15px;
     line-height: 1.5;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
     transition:
         border-color 0.25s var(--ease-card),
-        background-color 0.25s var(--ease-card),
         box-shadow 0.25s var(--ease-card);
+}
+
+.form-row input::placeholder,
+.form-row textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.form-row input:hover,
+.form-row select:hover,
+.form-row textarea:hover {
+    border-color: var(--stroke-2);
 }
 
 .form-row textarea {
@@ -130,14 +135,11 @@ html.snap-ready {
 .form-row input:focus,
 .form-row select:focus,
 .form-row textarea:focus {
-    /* The gradient border + glow below is the focus indicator, so opt out of
-       the global :focus-visible outline to avoid a doubled ring. */
+    /* The border + 3px ring below is the focus indicator, so opt out of the
+       global :focus-visible outline to avoid a doubled ring. */
     outline: none;
-    background: linear-gradient(rgba(7, 17, 26, 0.8), rgba(7, 17, 26, 0.8)) padding-box,
-                linear-gradient(135deg, var(--accent-blue), rgba(17, 159, 205, 0.2)) border-box;
-    box-shadow: 
-        inset 0 2px 4px rgba(0, 0, 0, 0.3),
-        0 0 12px -2px color-mix(in srgb, var(--accent-blue) 30%, transparent);
+    border-color: var(--accent-blue-bright);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue-bright) 18%, transparent);
 }
 
 .contact-submit {

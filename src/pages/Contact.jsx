@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import SectionGraphic from "../components/SectionGraphic.jsx";
 import ContactForm from "../components/ContactForm.jsx";
 import { usePageMeta } from "../hooks/usePageMeta.js";
@@ -58,9 +58,9 @@ export default function Contact() {
                                 href={DOCS_INSTALL_URL}
                                 target="_blank"
                                 rel="noopener"
-                                style={{ color: "var(--accent-blue)" }}
+                                className="link-action"
                             >
-                                Quickstart &rarr;
+                                Quickstart <ArrowRight aria-hidden="true" />
                             </a>
                         </p>
                     </div>

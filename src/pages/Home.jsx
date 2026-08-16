@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import {
+    ArrowRight,
     PenLine,
     Zap,
     ShieldCheck,
@@ -68,7 +69,7 @@ export default function Home() {
                     </p>
                     <div className="hero-ctas">
                         <Link to="/contact" className="btn-primary">
-                            Talk to an engineer &rarr;
+                            Talk to an engineer <ArrowRight aria-hidden="true" />
                         </Link>
                         <Link to="/orion" className="btn-secondary">
                             Explore Orion
@@ -323,7 +324,7 @@ export default function Home() {
                                 </p>
                             </div>
                             <Link to="/orion" className="btn-primary">
-                                Explore Orion &rarr;
+                                Explore Orion <ArrowRight aria-hidden="true" />
                             </Link>
                         </div>
                         <div className="orion-feature-list reveal-right">
@@ -409,7 +410,7 @@ export default function Home() {
                                     href={BENCHMARK_URL}
                                     target="_blank"
                                     rel="noopener"
-                                    style={{ color: "var(--accent-blue)" }}
+                                    className="link"
                                 >
                                     published v1.0 benchmark
                                 </a>
@@ -493,8 +494,8 @@ export default function Home() {
                                             comparisons, API reference
                                         </p>
                                     </div>
-                                    <span className="label-mono dev-link-arrow">
-                                        &rarr;
+                                    <span className="dev-link-arrow">
+                                        <ArrowRight aria-hidden="true" />
                                     </span>
                                 </a>
                                 <a
@@ -510,8 +511,8 @@ export default function Home() {
                                         <h4>GitHub</h4>
                                         <p>Explore the source and contribute</p>
                                     </div>
-                                    <span className="label-mono dev-link-arrow">
-                                        &rarr;
+                                    <span className="dev-link-arrow">
+                                        <ArrowRight aria-hidden="true" />
                                     </span>
                                 </a>
                                 <a
@@ -530,8 +531,8 @@ export default function Home() {
                                             service in four API calls
                                         </p>
                                     </div>
-                                    <span className="label-mono dev-link-arrow">
-                                        &rarr;
+                                    <span className="dev-link-arrow">
+                                        <ArrowRight aria-hidden="true" />
                                     </span>
                                 </a>
                             </div>
@@ -546,7 +547,8 @@ export default function Home() {
                             </div>
                             <div className="cta-buttons">
                                 <Link to="/contact" className="btn-primary">
-                                    Talk to an engineer &rarr;
+                                    Talk to an engineer{" "}
+                                    <ArrowRight aria-hidden="true" />
                                 </Link>
                                 <a
                                     href="https://github.com/GoPlasmatic/Orion"

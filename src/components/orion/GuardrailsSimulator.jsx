@@ -279,6 +279,17 @@ export default function GuardrailsSimulator() {
 
     return (
         <div className="diagram-card card card-glass reveal" style={{ padding: "24px" }}>
+            {/* Shared device-frame header — same chrome as the deploy
+                simulator, so the interactive widgets read as instruments of
+                one machine. */}
+            <div className="simulator-header">
+                <span className="dot dot-red"></span>
+                <span className="dot dot-yellow"></span>
+                <span className="dot dot-green"></span>
+                <span className="simulator-title">
+                    orion &mdash; change lifecycle
+                </span>
+            </div>
             <div className="guardrails-visual-container">
                 <div
                     className={`guard-step step-ai${pulse("dryrunning")}`}

@@ -18,6 +18,14 @@ const SHOT_ROOT = path.join(__dirname, "__screenshots__");
 // Pages that boot a Three.js scene and therefore emit document.body.dataset.sceneReady.
 const SCENE_PAGES = new Set(["index", "orion"]);
 
+// Settle delays so captures land after motion has finished, not mid-flight.
+// INITIAL_SETTLE_MS covers the widget auto-animations that run on mount (the
+// deploy simulator's ~3s auto-run) plus scene warm-up; SHOT_SETTLE_MS runs
+// before every screenshot so scroll-driven camera moves and hover/entry
+// effects have settled into their final frame.
+const INITIAL_SETTLE_MS = 3500;
+const SHOT_SETTLE_MS = 600;
+
 function ensureDir(p) {
     fs.mkdirSync(p, { recursive: true });
 }
@@ -38,6 +46,8 @@ for (const pg of PAGES) {
         await preparePage(page);
         // Allow any post-prepare layout settle (fonts, lucide icons).
         await page.waitForLoadState("networkidle").catch(() => {});
+        // Let mount-time animations (widget auto-runs, scene warm-up) finish.
+        await page.waitForTimeout(INITIAL_SETTLE_MS);
 
         const probes = await runLayoutProbes(page);
 
@@ -45,6 +55,7 @@ for (const pg of PAGES) {
             for (let i = 0; i < pg.sections.length; i++) {
                 const slug = pg.sections[i];
                 await scrollToSection(page, slug);
+                await page.waitForTimeout(SHOT_SETTLE_MS);
                 const fname = `${String(i).padStart(2, "0")}-${slug}.png`;
                 await page.screenshot({
                     path: path.join(dir, fname),
@@ -59,11 +70,13 @@ for (const pg of PAGES) {
                         requestAnimationFrame(() => requestAnimationFrame(r)),
                     ),
             );
+            await page.waitForTimeout(SHOT_SETTLE_MS);
             await page.screenshot({
                 path: path.join(dir, "_fullpage.png"),
                 fullPage: true,
             });
         } else {
+            await page.waitForTimeout(SHOT_SETTLE_MS);
             await page.screenshot({
                 path: path.join(dir, "_fullpage.png"),
                 fullPage: true,
@@ -89,6 +102,7 @@ for (const pg of PAGES) {
                             requestAnimationFrame(() => requestAnimationFrame(r)),
                         ),
                 );
+                await page.waitForTimeout(SHOT_SETTLE_MS);
                 await page.screenshot({
                     path: path.join(dir, "_nav-open.png"),
                     fullPage: false,

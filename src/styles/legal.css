@@ -26,7 +26,7 @@ html.snap-ready {
 }
 
 .legal-container h1 {
-    font-family: "filson-pro", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(36px, 4.5vw, 56px);
     color: var(--text-heading);
@@ -44,7 +44,7 @@ html.snap-ready {
 }
 
 .legal-container h2 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 22px;
     color: var(--text-heading);
@@ -54,7 +54,7 @@ html.snap-ready {
 }
 
 .legal-container h3 {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 17px;
     color: var(--text-heading);
@@ -95,12 +95,19 @@ html.snap-ready {
 }
 
 .legal-container a {
-    color: var(--accent-blue);
+    color: var(--accent-blue-bright);
     text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent-blue-bright) 35%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition:
+        color var(--dur-fast) var(--ease-card),
+        text-decoration-color var(--dur-fast) var(--ease-card);
 }
 
 .legal-container a:hover {
-    opacity: 0.85;
+    color: var(--text-heading);
+    text-decoration-color: var(--accent-blue-bright);
 }
 
 .legal-container strong {

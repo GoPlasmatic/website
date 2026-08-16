@@ -110,10 +110,7 @@ export default function DeploySimulator() {
                 <span className="slider-label" style={{ color }}>
                     {label}
                 </span>
-                <span
-                    className={`sim-speed-badge ${badgeClass}`}
-                    style={{ fontSize: "10px", padding: "2px 8px", margin: 0 }}
-                >
+                <span className={`sim-speed-badge ${badgeClass}`}>
                     {badge}
                 </span>
             </div>
@@ -158,7 +155,7 @@ export default function DeploySimulator() {
                 <div className="sim-columns">
                     {column({
                         label: "Conventional pipeline",
-                        color: "#ffd167",
+                        color: "var(--accent-yellow)",
                         badgeClass: "speed-slow",
                         badge: "Minutes to days",
                         support: "per change, per service",
@@ -168,7 +165,7 @@ export default function DeploySimulator() {
                     })}
                     {column({
                         label: "Orion lifecycle",
-                        color: "#4cbd97",
+                        color: "var(--accent-teal)",
                         badgeClass: "speed-fast",
                         badge: "Live on activation",
                         support: "no restart, no dropped request",
@@ -193,13 +190,6 @@ export default function DeploySimulator() {
                         id="sim-trigger-btn"
                         disabled={running}
                         onClick={run}
-                        style={{
-                            padding: "8px 20px",
-                            fontSize: "12px",
-                            borderRadius: "6px",
-                            opacity: running ? 0.5 : 1,
-                            cursor: running ? "not-allowed" : "pointer",
-                        }}
                     >
                         {running ? "Deploying..." : "Deploy Change"}
                     </button>

@@ -15,7 +15,9 @@ const projects = VIEWPORTS.map((vp) => ({
 
 module.exports = defineConfig({
     testDir: "tests/visual",
-    timeout: 60_000,
+    // Headroom for the per-screenshot settle delays in capture.spec.js
+    // (~10 captures × 600ms + 3.5s initial settle on the snap pages).
+    timeout: 90_000,
     expect: { timeout: 10_000 },
     fullyParallel: false, // keep deterministic capture ordering against one dev server
     workers: 1,

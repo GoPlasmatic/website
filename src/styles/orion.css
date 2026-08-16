@@ -91,14 +91,6 @@ site-footer {
     margin-bottom: 36px;
 }
 
-.capability-card h3 {
-    font-size: 24px;
-}
-
-.capability-subtitle {
-    font-size: 14px;
-}
-
 .orion-feature-card {
     min-height: 88px;
 }
@@ -152,18 +144,18 @@ site-footer {
     }
 }
 
+/* Level-2 nested panels: matte (no glass, no lift-on-scroll), one flat
+   surface with a hairline whose tint derives from the per-step
+   --card-accent. */
 .guard-step {
     flex: 1;
-    background: linear-gradient(135deg, rgba(9, 15, 22, 0.6), rgba(4, 8, 12, 0.8)) padding-box,
-                linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) border-box;
-    border: 1px solid transparent;
-    border-radius: 12px;
+    background: rgba(10, 22, 34, 0.75);
+    border: 1px solid color-mix(in srgb, var(--card-accent) 16%, var(--stroke-1));
+    border-radius: var(--radius-md);
     padding: 24px;
     text-align: center;
     position: relative;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: transform var(--dur-card) var(--ease-card), border-color var(--dur-card) var(--ease-card), box-shadow var(--dur-card) var(--ease-card);
+    transition: transform var(--dur-card) var(--ease-card), border-color var(--dur-card) var(--ease-card), box-shadow var(--dur-card) var(--ease-card), background var(--dur-card) var(--ease-card);
     min-height: 180px;
     display: flex;
     flex-direction: column;
@@ -172,39 +164,30 @@ site-footer {
     box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
 }
 
-/* Level-2 nested panels: matte (no glass/lift), but their resting border
-   and hover/pulse glows now derive from a single per-step --card-accent. */
 .step-ai {
     --card-accent: var(--accent-blue);
-    background: linear-gradient(135deg, rgba(17, 159, 205, 0.01), rgba(7, 17, 26, 0.85)) padding-box,
-                linear-gradient(135deg, rgba(17, 159, 205, 0.1), rgba(255, 255, 255, 0.01)) border-box;
 }
 
 .step-human {
     --card-accent: var(--accent-yellow);
-    background: linear-gradient(135deg, rgba(255, 209, 103, 0.01), rgba(7, 17, 26, 0.85)) padding-box,
-                linear-gradient(135deg, rgba(255, 209, 103, 0.1), rgba(255, 255, 255, 0.01)) border-box;
 }
 
 .step-orion {
     --card-accent: var(--accent-teal);
-    background: linear-gradient(135deg, rgba(76, 189, 151, 0.01), rgba(7, 17, 26, 0.85)) padding-box,
-                linear-gradient(135deg, rgba(76, 189, 151, 0.1), rgba(255, 255, 255, 0.01)) border-box;
 }
 
 .guard-step:hover {
     transform: translateY(-4px);
-    background: linear-gradient(135deg, rgba(12, 21, 31, 0.75), rgba(6, 12, 18, 0.95)) padding-box,
-                linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 35%, transparent), rgba(255, 255, 255, 0.01)) border-box;
-    box-shadow: 
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    border-color: color-mix(in srgb, var(--card-accent) 35%, transparent);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
         0 8px 24px -6px color-mix(in srgb, var(--card-accent) 20%, transparent);
 }
 
 .step-num {
     font-family: var(--font-code, "DM Mono"), monospace;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-muted);
     margin-bottom: 8px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -218,13 +201,13 @@ site-footer {
     letter-spacing: -0.2px;
 }
 
-.step-ai h4 { color: var(--accent-blue, #119FCD); }
-.step-human h4 { color: #FFD167; }
-.step-orion h4 { color: var(--accent-green, #4CBD97); }
+.step-ai h4 { color: var(--accent-blue); }
+.step-human h4 { color: var(--accent-yellow); }
+.step-orion h4 { color: var(--accent-green); }
 
 .guard-step p {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-body);
     line-height: 1.5;
     margin-bottom: 16px;
 }
@@ -242,13 +225,14 @@ site-footer {
     transform: scale(1.15);
 }
 
-.step-ai .step-icon { color: var(--accent-blue, #119FCD); }
-.step-human .step-icon { color: #FFD167; }
-.step-orion .step-icon { color: var(--accent-green, #4CBD97); }
+.step-ai .step-icon { color: var(--accent-blue); }
+.step-human .step-icon { color: var(--accent-yellow); }
+.step-orion .step-icon { color: var(--accent-green); }
 
 .step-arrow {
     font-size: 24px;
-    color: rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
+    opacity: 0.55;
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-weight: 300;
 }
@@ -288,8 +272,8 @@ site-footer {
 
 .simulator-title {
     font-family: var(--font-code, "DM Mono"), monospace;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    color: var(--text-muted);
     margin-left: 8px;
 }
 
@@ -300,10 +284,11 @@ site-footer {
 }
 
 .slider-label {
-    font-family: var(--font-display, "Montserrat"), sans-serif;
+    font-family: var(--font-code, "DM Mono"), monospace;
     font-size: 11px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: var(--text-body);
     text-transform: uppercase;
 }
 
@@ -336,9 +321,9 @@ site-footer {
 }
 
 .stages-chart {
-    background: #060a0f;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    background: rgba(4, 10, 16, 0.7);
+    border: 1px solid var(--stroke-1);
+    border-radius: var(--radius-xs);
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -366,13 +351,14 @@ site-footer {
     justify-content: space-between;
     font-family: var(--font-code, "DM Mono"), monospace;
     font-size: 11px;
-    color: #cbd5e1;
+    color: var(--text-body);
+    font-variant-numeric: tabular-nums;
 }
 
 .stage-progress-bar {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 2px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
     overflow: hidden;
     width: 100%;
 }
@@ -380,36 +366,63 @@ site-footer {
 .progress-fill {
     height: 100%;
     width: 0%;
-    background: #FFD167;
+    border-radius: 3px;
+    background: var(--accent-yellow);
     transition: width 0.3s ease-out;
+    position: relative;
 }
 
 .progress-fill.orion-fill {
-    background: var(--accent-green, #4CBD97);
-    box-shadow: 0 0 8px rgba(76, 189, 151, 0.5);
+    background: linear-gradient(90deg, var(--accent-teal), var(--accent-green));
+    box-shadow: 0 0 10px rgba(6, 214, 160, 0.5);
 }
 
+/* Light sweep along the filled Orion track — zeroed by the global
+   prefers-reduced-motion rule. */
+.progress-fill.orion-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transform: translateX(-100%);
+    animation: stage-shimmer 2.2s var(--ease-card) infinite;
+}
+
+@keyframes stage-shimmer {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Speed badges join the mono badge voice (see .eyebrow in common.css). */
 .sim-speed-badge {
     align-self: center;
-    font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 12px;
+    font-family: var(--font-code, "DM Mono"), monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    padding: 3px 9px;
     border-radius: 20px;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .speed-slow {
-    background: rgba(255, 209, 103, 0.1);
-    color: #FFD167;
-    border: 1px solid rgba(255, 209, 103, 0.2);
+    background: rgba(255, 209, 103, 0.08);
+    color: var(--accent-yellow);
+    border: 1px solid rgba(255, 209, 103, 0.25);
 }
 
 .speed-fast {
-    background: rgba(76, 189, 151, 0.1);
-    color: var(--accent-green, #4CBD97);
-    border: 1px solid rgba(76, 189, 151, 0.2);
-    box-shadow: 0 0 10px rgba(76, 189, 151, 0.2);
+    background: rgba(6, 214, 160, 0.08);
+    color: var(--accent-green);
+    border: 1px solid rgba(6, 214, 160, 0.25);
+    box-shadow: 0 0 10px rgba(6, 214, 160, 0.15);
 }
 
 /* ── Use Case Selector ──────────────────────────────────────────── */
@@ -417,40 +430,42 @@ site-footer {
 .use-case-tabs {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: 4px;
-    row-gap: 4px;
-    background: linear-gradient(rgba(7, 17, 26, 0.65), rgba(7, 17, 26, 0.65)) padding-box,
-                linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)) border-box;
-    border: 1px solid transparent;
+    gap: 3px;
+    row-gap: 3px;
+    background: rgba(4, 10, 16, 0.7);
+    border: 1px solid var(--stroke-1);
     border-radius: 99px;
-    padding: 4px;
+    padding: 3px;
     margin-bottom: 24px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .use-case-btn {
     background: transparent;
-    border: none;
-    color: rgba(127, 175, 192, 0.55);
-    padding: 8px 16px;
-    font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-size: 12px;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 8px 15px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 12.5px;
     font-weight: 600;
     border-radius: 99px;
     cursor: pointer;
-    transition: all 0.25s var(--ease-card);
+    transition:
+        color 0.25s var(--ease-card),
+        background 0.25s var(--ease-card),
+        border-color 0.25s var(--ease-card),
+        box-shadow 0.25s var(--ease-card);
 }
 
 .use-case-btn:hover {
-    color: rgba(255, 255, 255, 0.95);
-    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-heading);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .use-case-btn.active {
-    color: var(--accent-green, #4cbd97);
-    background: linear-gradient(rgba(76, 189, 151, 0.12), rgba(76, 189, 151, 0.12)) padding-box,
-                linear-gradient(135deg, var(--accent-green), rgba(76, 189, 151, 0.1)) border-box;
-    box-shadow: 0 2px 8px rgba(76, 189, 151, 0.15);
+    color: var(--accent-teal);
+    background: color-mix(in srgb, var(--accent-teal) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent-teal) 30%, transparent);
+    box-shadow: 0 0 14px -6px var(--accent-teal);
 }
 
 /* Level-1 device card — surface/shadow/blur come from .card + .card-glass
@@ -467,13 +482,13 @@ site-footer {
     font-family: var(--font-display, "Montserrat"), sans-serif;
     font-size: 18px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-heading);
     margin-bottom: 8px;
 }
 
 .use-case-display-card p {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-body);
     line-height: 1.6;
 }
 
@@ -496,45 +511,60 @@ site-footer {
     flex: 1;
 }
 
+/* Column labels join the mono caption voice; blue = the AI's side,
+   green = the runtime's. */
 .comp-col strong {
     display: block;
-    font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-size: 12px;
-    font-weight: 700;
+    font-family: var(--font-code, "DM Mono"), monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent-blue-bright);
     text-transform: uppercase;
     margin-bottom: 6px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.2px;
 }
 
 .comp-col-after strong {
-    color: var(--accent-green, #4CBD97);
+    color: var(--accent-green);
 }
 
 .comp-col p {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-body);
     line-height: 1.5;
 }
 
+/* Widget buttons share the site button system at xs scale: DM Sans 600,
+   8px radius, intent-driven color. Deploy is the quiet secondary intent. */
 .btn-deploy {
-    background: var(--accent-blue, #119FCD);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--bg-deep);
-    font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    padding: 6px 12px;
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--stroke-2);
+    color: var(--text-heading);
+    font-family: "DM Sans", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+    padding: 8px 16px;
+    border-radius: var(--radius-xs);
     cursor: pointer;
-    transition: all 0.25s var(--ease-card);
-    box-shadow: 0 4px 10px rgba(17, 159, 205, 0.25);
+    transition:
+        background 0.25s var(--ease-card),
+        border-color 0.25s var(--ease-card),
+        box-shadow 0.25s var(--ease-card),
+        transform 0.25s var(--ease-card);
 }
 
 .btn-deploy:hover {
-    background: #ffffff;
-    color: var(--bg-deep);
+    border-color: rgba(59, 193, 232, 0.45);
+    background: rgba(17, 159, 205, 0.08);
     transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.35);
+    box-shadow: 0 6px 18px -8px rgba(17, 159, 205, 0.5);
+}
+
+.btn-deploy[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* ── AI Guardrails Simulator ────────────────────────────────────── */
@@ -543,9 +573,8 @@ site-footer {
    border derived from --card-accent. */
 .proposal-simulator-card {
     --card-accent: var(--accent-yellow);
-    background: linear-gradient(135deg, rgba(17, 27, 39, 0.5), rgba(7, 17, 26, 0.8)) padding-box,
-                linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)) border-box;
-    border: 1px solid transparent;
+    background: rgba(10, 22, 34, 0.8);
+    border: 1px solid var(--stroke-1);
     border-radius: var(--radius-md);
     padding: 18px 24px;
     margin-top: var(--space-4);
@@ -564,17 +593,16 @@ site-footer {
 }
 
 .status-indicator {
-    font-family: var(--font-display, "Montserrat"), sans-serif;
+    font-family: var(--font-code, "DM Mono"), monospace;
     font-size: 10px;
-    font-weight: 700;
-    color: #FFD167;
-    background: linear-gradient(rgba(255, 209, 103, 0.08), rgba(255, 209, 103, 0.08)) padding-box,
-                linear-gradient(135deg, rgba(255, 209, 103, 0.25), rgba(255, 255, 255, 0.02)) border-box;
-    border: 1px solid transparent;
+    font-weight: 500;
+    color: var(--accent-yellow);
+    background: rgba(255, 209, 103, 0.08);
+    border: 1px solid rgba(255, 209, 103, 0.25);
     padding: 4px 10px;
     border-radius: 20px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
 .pulsing {
@@ -596,7 +624,7 @@ site-footer {
     background: rgba(255, 255, 255, 0.05);
     padding: 3px 6px;
     border-radius: 4px;
-    color: #FFD167;
+    color: var(--accent-yellow);
 }
 
 .proposal-actions {
@@ -605,53 +633,67 @@ site-footer {
     margin-top: 20px;
 }
 
+/* Success intent, xs size. */
 .btn-approve {
-    background: var(--accent-green, #4CBD97);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--bg-deep);
-    font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-weight: 700;
+    background: var(--accent-green);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #04141d;
+    font-family: "DM Sans", sans-serif;
+    font-weight: 600;
     font-size: 12px;
+    letter-spacing: 0.2px;
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     cursor: pointer;
-    transition: all 0.25s var(--ease-card);
-    box-shadow: 0 4px 12px rgba(76, 189, 151, 0.25);
+    transition:
+        transform 0.25s var(--ease-card),
+        box-shadow 0.25s var(--ease-card),
+        border-color 0.25s var(--ease-card);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+        0 6px 18px -8px rgba(6, 214, 160, 0.6);
 }
 
 .btn-approve:hover {
-    background: #ffffff;
-    color: var(--bg-deep);
     transform: translateY(-1.5px);
-    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+        0 10px 24px -8px rgba(6, 214, 160, 0.8);
 }
 
+/* Danger intent, xs size — outlined: a destructive action should never be
+   the filled button. */
 .btn-reject {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.7);
-    font-family: var(--font-display, "Montserrat"), sans-serif;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--accent-red) 40%, transparent);
+    color: var(--accent-red);
+    font-family: "DM Sans", sans-serif;
     font-weight: 600;
     font-size: 12px;
+    letter-spacing: 0.2px;
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     cursor: pointer;
-    transition: all 0.25s var(--ease-card);
+    transition:
+        border-color 0.25s var(--ease-card),
+        background 0.25s var(--ease-card),
+        transform 0.25s var(--ease-card);
 }
 
 .btn-reject:hover {
-    border-color: #ff5f56;
-    color: #ff5f56;
-    background: rgba(255, 95, 86, 0.08);
+    border-color: var(--accent-red);
+    background: rgba(239, 71, 111, 0.1);
     transform: translateY(-1px);
 }
 
 .sim-log {
     font-family: var(--font-code, "DM Mono"), monospace;
-    color: #64748b;
+    color: var(--text-muted);
     padding: 12px;
-    background: rgba(0,0,0,0.25);
-    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--stroke-1);
+    border-radius: var(--radius-xs);
     font-size: 11px;
 }
 
@@ -666,68 +708,72 @@ site-footer {
 .sim-note {
     font-family: var(--font-code, "DM Mono"), monospace;
     font-size: 11px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 /* Column support line; pairs with .label-mono for the face. */
 .sim-support {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
 }
 
 .sim-ok {
-    color: var(--accent-green, #4cbd97);
+    color: var(--accent-green);
 }
 
 .sim-err {
-    color: #ff5f56;
+    color: var(--accent-red);
 }
 
 .sim-dim {
-    color: #94a3b8;
+    color: var(--text-body);
 }
 
 .sim-success-box, .sim-rejected-box {
     padding: 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-xs);
     background: rgba(0, 0, 0, 0.25);
 }
 
 .sim-success-box {
-    border-left: 3px solid var(--accent-green, #4CBD97);
+    border-left: 3px solid var(--accent-green);
 }
 
 .sim-rejected-box {
-    border-left: 3px solid #ff5f56;
+    border-left: 3px solid var(--accent-red);
 }
 
+/* Quiet intent, xs size. */
 .btn-undo {
     background: transparent;
-    border: 1px dashed rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.6);
-    font-family: var(--font-display, "Montserrat"), sans-serif;
-    font-size: 11px;
+    border: 1px solid var(--stroke-2);
+    color: var(--text-muted);
+    font-family: "DM Sans", sans-serif;
+    font-size: 12px;
     font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 4px;
+    letter-spacing: 0.2px;
+    padding: 7px 14px;
+    border-radius: var(--radius-xs);
     margin-top: 12px;
     cursor: pointer;
-    transition: all 0.25s var(--ease-card);
+    transition:
+        border-color 0.25s var(--ease-card),
+        color 0.25s var(--ease-card),
+        background 0.25s var(--ease-card);
 }
 
 .btn-undo:hover {
-    border-color: #ffffff;
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(166, 209, 230, 0.35);
+    color: var(--text-heading);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 /* ── Interactive Highlight States on Steps ─────────────────────── */
 
 .guard-step.pulse-active {
-    background: linear-gradient(135deg, rgba(12, 21, 31, 0.8), rgba(6, 12, 18, 0.95)) padding-box,
-                linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 55%, transparent), rgba(255, 255, 255, 0.02)) border-box;
-    box-shadow: 
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+    border-color: color-mix(in srgb, var(--card-accent) 55%, transparent);
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
         0 0 24px color-mix(in srgb, var(--card-accent) 30%, transparent);
     transform: scale(1.02) translateY(-2px);
 }
@@ -752,7 +798,7 @@ site-footer {
 }
 
 .decouple-flow-header {
-    font-family: var(--font-sans, "Outfit"), sans-serif;
+    font-family: "DM Sans", sans-serif;
     font-size: 13px;
     font-weight: 600;
     text-align: center;
@@ -760,19 +806,37 @@ site-footer {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Hue variants (previously inline styles in Orion.jsx). */
+.decouple-flow-header.flow-amber {
+    color: var(--accent-yellow);
+    border-bottom-color: rgba(255, 209, 103, 0.2);
+}
+.decouple-flow-header.flow-teal {
+    color: var(--accent-teal);
+    border-bottom-color: rgba(76, 189, 151, 0.2);
+}
+
 .decouple-flow-canvas {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, rgba(7, 17, 26, 0.4), rgba(4, 8, 12, 0.6)) padding-box,
-                linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)) border-box;
-    border: 1px solid transparent;
-    border-radius: 12px;
+    background: rgba(4, 10, 16, 0.55);
+    border: 1px solid var(--stroke-1);
+    border-radius: var(--radius-md);
     padding: 24px 16px;
     min-height: 280px;
     justify-content: center;
     box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
+}
+
+/* ── AI & Trust comparison cards ─────────────────────────────────── */
+
+/* Intro line inside the comparison cards (previously inline styles). */
+.comparison-card .comparison-intro {
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: var(--text-body);
 }
 
 /* ── Artifact comparison (The Artifact section) ─────────────────── */
@@ -826,6 +890,10 @@ site-footer {
     }
     .simulator-card {
         padding: var(--space-3);
+    }
+    .simulator-header {
+        padding-bottom: 8px;
+        margin-bottom: 4px;
     }
     .proposal-simulator-card {
         padding: var(--space-4);
