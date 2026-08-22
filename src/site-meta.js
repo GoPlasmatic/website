@@ -16,19 +16,19 @@ export const ROUTES = {
         path: "/",
         title: "Plasmatic – Builders of Orion",
         description:
-            "Plasmatic builds Orion, the open-source declarative runtime where engineers and their AI assistants ship business logic, with guardrails, versioning, and one-call rollback enforced by the runtime.",
+            "Plasmatic builds Orion, the governed services platform for teams building software with AI, so engineers and AI assistants can build, change and ship faster.",
     },
     "/orion": {
         path: "/orion",
-        title: "Orion – Declarative Services Runtime",
+        title: "Orion – Governed Services Platform",
         description:
-            "Orion turns a JSON definition into a live, governed REST or Kafka service. Safe enough to let an AI write your services; fast enough to run them in production. Open source, Apache-2.0.",
+            "Orion is the governed services platform for teams building software with AI: a JSON definition becomes a live, governed REST or Kafka service. Apache-2.0.",
     },
     "/contact": {
         path: "/contact",
         title: "Contact – Plasmatic",
         description:
-            "Talk to the Plasmatic team about Orion pilots, enterprise support, or partnerships.",
+            "Talk to the Plasmatic team about Orion pilots, enterprise support or partnerships.",
     },
     "/privacy": {
         path: "/privacy",

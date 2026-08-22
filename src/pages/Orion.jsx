@@ -33,7 +33,10 @@ export default function Orion() {
                 <section className="hero" data-test-section="hero">
                     <div className="hero-text" id="heroText" ref={heroTextRef}>
                         <div className="eyebrow">
-                            <span>Orion 1.0 &middot; Open Source &middot; Apache-2.0</span>
+                            <span>
+                                Platform &middot; Build &middot; Deploy
+                                &middot; Govern
+                            </span>
                         </div>
                         <h1 className="reveal-blur">
                             <span className="gradient-text">Orion</span>
@@ -42,16 +45,15 @@ export default function Orion() {
                             className="reveal-blur hero-tagline"
                             style={{ "--reveal-delay": "0.12s" }}
                         >
-                            Safe enough to let an AI write your services.
-                            Fast enough to run them in production.
+                            The governed services platform for teams
+                            building software with AI.
                         </h1>
                         <p className="lead">
-                            Orion is the nervous system for your services: one
-                            runtime that carries every request and every change
-                            through the same governed pathways. Your engineers
-                            and their AI assistants write the business logic;
-                            the runtime enforces the lifecycle: draft, dry-run,
-                            canary, one-call rollback.
+                            Its runtime acts as the production nervous system,
+                            coordinating, observing and controlling how services
+                            behave, so engineers and AI assistants can build,
+                            change and ship faster. The lifecycle is fixed:
+                            draft, dry-run, canary, one-call rollback.
                         </p>
                         <div className="hero-ctas">
                             <Link to="/contact" className="btn-primary">
@@ -99,7 +101,9 @@ export default function Orion() {
                                         The bottleneck moved from{" "}
                                         <em>writing</em> software to{" "}
                                         <em>shipping and governing</em> it.{" "}
-                                        <strong>And the business waits.</strong>
+                                        <strong>
+                                            That is the part Orion takes over.
+                                        </strong>
                                     </p>
                                 </div>
                             </div>
@@ -323,10 +327,12 @@ export default function Orion() {
                             <div className="eyebrow">
                                 <span>Governance</span>
                             </div>
-                            <h2 className="reveal-blur">AI &amp; Trust</h2>
+                            <h2 className="reveal-blur">
+                                AI proposes. You approve. The runtime enforces.
+                            </h2>
                             <p>
-                                What happens when the AI writes something
-                                wrong? A person and a lifecycle, not luck.
+                                Every change follows the same path, whoever or
+                                whatever wrote it.
                             </p>
                         </div>
                         <div className="grid-2col comparison-grid">
@@ -337,7 +343,7 @@ export default function Orion() {
                                 <h3>AI builds</h3>
                                 <p className="section-body comparison-intro">
                                     Over MCP, an assistant works through the
-                                    same admin API your engineers use:
+                                    same admin API engineers use:
                                 </p>
                                 <div className="comparison-points">
                                     <div className="comparison-point">
@@ -368,7 +374,7 @@ export default function Orion() {
                                 <div className="label-mono label-mono-upper comparison-label comparison-label-green">
                                     The gate
                                 </div>
-                                <h3>You approve. The runtime governs.</h3>
+                                <h3>You approve the exact bytes</h3>
                                 <p className="section-body comparison-intro">
                                     Versions are immutable, so approving the
                                     diff is approving the exact bytes that will
@@ -423,11 +429,13 @@ export default function Orion() {
                             <div className="eyebrow">
                                 <span>Guardrails</span>
                             </div>
-                            <h2 className="reveal-blur">AI with Guardrails</h2>
+                            <h2 className="reveal-blur">
+                                Every change moves through the same gate.
+                            </h2>
                             <p>
-                                An AI drafts &rarr; you approve &rarr; Orion
-                                executes, and every step below is a real
-                                product mechanic.
+                                An assistant drafts, you approve, Orion
+                                executes. Every step below is a real product
+                                mechanic.
                             </p>
                         </div>
 
@@ -454,10 +462,11 @@ export default function Orion() {
                                 </h2>
                                 <div className="card orion-desc-card">
                                     <p>
-                                        Business logic as a governed, living
-                                        artifact: written by your engineers and
-                                        their AI assistants in minutes, live in
-                                        seconds, reversible in one call.
+                                        Business logic becomes a governed,
+                                        living artifact. Engineers and AI
+                                        assistants write it; the runtime
+                                        versions, traces and guards every
+                                        execution.
                                     </p>
                                     <p
                                         style={{
@@ -503,7 +512,7 @@ export default function Orion() {
                                     </div>
                                     <h4>One runtime, five kinds of service</h4>
                                     <p>
-                                        APIs, decisions, pipelines, ingestion,
+                                        APIs, decisions, pipelines, ingestion
                                         and agent tools, with the same guards
                                         and lifecycle.
                                     </p>

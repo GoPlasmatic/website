@@ -299,7 +299,7 @@ export default function GuardrailsSimulator() {
                     <h4>AI builds</h4>
                     <p>
                         An assistant drafts and dry-runs the workflow through
-                        the same admin API your engineers use. Nothing serves
+                        the same admin API engineers use. Nothing serves
                         traffic until it is activated.
                     </p>
                     <div className="step-icon">

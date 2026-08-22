@@ -11,8 +11,8 @@ export default function SiteFooter() {
             <footer className="footer section-dimmed" data-test-section="footer">
                 <div className="section-container">
                     <p className="footer-strap">
-                        Orion: the declarative runtime for AI agents,
-                        workflows, microservices, and event processing.
+                        Orion: the governed services platform for teams
+                        building software with AI.
                     </p>
                     <div className="footer-bottom">
                         <p>&copy; 2026 Plasmatic. All rights reserved.</p>

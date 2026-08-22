@@ -56,16 +56,16 @@ export default function Home() {
                         <span>Plasmatic &middot; Builders of Orion</span>
                     </div>
                     <h1 className="reveal-blur">
-                        AI writes the software.{" "}
+                        AI speeds up development.{" "}
                         <span className="gradient-text">
-                            We make running it safe.
+                            Orion keeps production under control.
                         </span>
                     </h1>
                     <p className="lead hero-sub">
-                        Orion is Plasmatic's open-source declarative runtime:
-                        engineers and their AI assistants write the business
-                        logic; the runtime enforces the guardrails, versioning,
-                        and rollback.
+                        Orion is the governed services platform for teams
+                        building software with AI. Its runtime coordinates,
+                        observes and controls how services behave, so engineers
+                        and AI assistants can build, change and ship faster.
                     </p>
                     <div className="hero-ctas">
                         <Link to="/contact" className="btn-primary">
@@ -116,19 +116,19 @@ export default function Home() {
                             <p className="section-body">
                                 Every service needs the same architecture: rate
                                 limiting, retries, metrics, versioning,
-                                rollout. Plasmatic builds runtimes that enforce
-                                it at execution time, so the only thing your
-                                teams write and review is the logic that makes
-                                your business different.
+                                rollout. Orion's runtime enforces all of it at
+                                execution time, so the only thing your teams
+                                write and review is the logic that makes your
+                                business different.
                             </p>
                             <div className="callout">
                                 <p>
-                                    Business logic becomes a governed,
-                                    versioned artifact:{" "}
+                                    Business logic becomes a governed
+                                    artifact:{" "}
                                     <strong>
-                                        changed in seconds by your engineers or
-                                        their AI assistants, reversible in one
-                                        call.
+                                        versioned like code, changed in seconds
+                                        by engineers or AI assistants,
+                                        reversible in one call.
                                     </strong>
                                 </p>
                             </div>
@@ -169,27 +169,30 @@ export default function Home() {
                         <div></div>
                         <div className="col-content reveal-right">
                             <h2 className="reveal-blur">
-                                AI moved one cost.{" "}
+                                AI made writing software fast.{" "}
                                 <span className="gradient-text">
-                                    It left the other.
+                                    Shipping it stayed slow.
                                 </span>
                             </h2>
                             <p className="section-body">
-                                Writing software accelerated. Shipping and
-                                governing it didn't.
+                                The pipeline doesn't care who wrote the
+                                change. It reviews, builds and rolls out at the
+                                pace it always did, so work an assistant
+                                finishes in minutes still waits days to reach
+                                production.
                             </p>
                             <div className="pain-points">
                                 <div className="pain-point">
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            AI writes code faster than you can
-                                            govern it
+                                            AI writes faster than review keeps
+                                            up
                                         </p>
                                         <p className="pain-desc">
-                                            Every generated service is more
-                                            unreviewed infrastructure, each
-                                            copy slightly different
+                                            Each generated service is new
+                                            infrastructure to read, and every
+                                            copy is slightly different
                                         </p>
                                     </div>
                                 </div>
@@ -200,9 +203,9 @@ export default function Home() {
                                             The release cycle didn't move
                                         </p>
                                         <p className="pain-desc">
-                                            An AI drafts the change in minutes;
-                                            the pipeline still ships it in
-                                            days
+                                            An assistant drafts the change in
+                                            minutes; the pipeline still ships
+                                            it in days
                                         </p>
                                     </div>
                                 </div>
@@ -210,20 +213,23 @@ export default function Home() {
                                     <div className="dot dot-blue"></div>
                                     <div>
                                         <p className="pain-title">
-                                            Review is the new bottleneck
+                                            Review became the bottleneck
                                         </p>
                                         <p className="pain-desc">
-                                            Most of what an AI generates is
-                                            plumbing, and every line is yours
-                                            to review
+                                            The logic that matters is a
+                                            fraction of what you have to
+                                            approve
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             <div className="callout">
                                 <p>
-                                    Speed without governance isn't velocity.{" "}
-                                    <strong>It's exposure.</strong>
+                                    The speed is real.{" "}
+                                    <strong>
+                                        The path it ships through has to
+                                        change.
+                                    </strong>
                                 </p>
                             </div>
                         </div>
@@ -238,7 +244,9 @@ export default function Home() {
             >
                 <div className="section-container">
                     <div className="section-header reveal">
-                        <h2 className="reveal-blur">A better way to build.</h2>
+                        <h2 className="reveal-blur">
+                            Build, deploy and govern on one path.
+                        </h2>
                         <p>
                             Logic as a governed artifact. Guardrails as
                             configuration. One safe path for every change.
@@ -251,7 +259,7 @@ export default function Home() {
                             </div>
                             <h3>Declare the logic</h3>
                             <p className="capability-subtitle">
-                                Written by people or AI
+                                Written by engineers or AI
                             </p>
                             <p>
                                 Business logic is a JSON document: versioned
@@ -283,8 +291,8 @@ export default function Home() {
                                 Enforced, not promised
                             </p>
                             <p>
-                                Draft, dry-run, canary, active. The same safe
-                                path for a 3 a.m. fix and an AI's proposal.
+                                Draft, dry-run, canary, active. The same path
+                                for an urgent fix and an assistant's proposal.
                             </p>
                         </div>
                     </div>
@@ -301,12 +309,12 @@ export default function Home() {
                         <div className="reveal-left">
                             <div className="eyebrow">
                                 <span>
-                                    Orion &middot; Declarative Services Runtime
+                                    Orion &middot; Governed Services Platform
                                     &middot; v1.0 &middot; Apache-2.0
                                 </span>
                             </div>
                             <h2 className="orion-heading reveal-blur">
-                                One runtime.
+                                One platform.
                                 <br />
                                 One safe path for{" "}
                                 <span className="gradient-text">
@@ -334,9 +342,9 @@ export default function Home() {
                                 </div>
                                 <h4>Built for AI authorship</h4>
                                 <p>
-                                    An assistant drafts, dry-runs, and rolls
+                                    An assistant drafts, dry-runs and rolls
                                     back services over MCP, inside the same
-                                    lifecycle rules your engineers follow.
+                                    lifecycle rules engineers follow.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
@@ -346,8 +354,9 @@ export default function Home() {
                                 <h4>Guardrails as configuration</h4>
                                 <p>
                                     Rate limiting, circuit breakers,
-                                    validation, observability: declared once
-                                    per channel, not rewritten per service.
+                                    validation and observability: declared
+                                    once per channel, not rewritten per
+                                    service.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
@@ -377,7 +386,7 @@ export default function Home() {
                             Built for modern architectures.
                         </h2>
                         <p>
-                            Open, measured, and designed for how distributed
+                            Open, measured and built for how distributed
                             systems are actually run today.
                         </p>
                     </div>
@@ -440,9 +449,9 @@ export default function Home() {
                                 Admin API, CLI, MCP
                             </p>
                             <p>
-                                Admin API, CLI, CI/CD packages, and an MCP
-                                server so an AI assistant operates the runtime
-                                the same governed way your engineers do.
+                                Admin API, CLI, CI/CD packages and an MCP
+                                server, so an assistant operates the runtime
+                                the same governed way engineers do.
                             </p>
                         </div>
                     </div>
