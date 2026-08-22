@@ -23,11 +23,11 @@ export default function Terms() {
 
                 <h2>1. About us</h2>
                 <p>
-                    The Site is operated by <strong>Plasmatic Pte Ltd</strong>{" "}
+                    The Site is operated by <strong>Plasmatic Solutions Pte. Ltd.</strong>{" "}
                     (“Plasmatic”, “we”, “our”, or “us”), a private limited
                     company incorporated in Singapore with UEN{" "}
-                    <strong>[UEN]</strong>, having its registered office at{" "}
-                    <strong>[Registered Office Address], Singapore</strong>.
+                    <strong>202602426M</strong>, having its registered office at{" "}
+                    <strong>60 PAYA LEBAR ROAD, #06-28, PAYA LEBAR SQUARE, SINGAPORE 409051</strong>.
                 </p>
 
                 <h2>2. Definitions</h2>
@@ -233,14 +233,14 @@ export default function Terms() {
                 <p>
                     Questions about these Terms can be sent to:
                     <br />
-                    <strong>Plasmatic Pte Ltd</strong>
+                    <strong>Plasmatic Solutions Pte. Ltd.</strong>
                     <br />
                     Email:{" "}
                     <a href="mailto:enquiries@goplasmatic.io">
                         enquiries@goplasmatic.io
                     </a>
                     <br />
-                    Address: [Registered Office Address], Singapore
+                    Address: 60 PAYA LEBAR ROAD, #06-28, PAYA LEBAR SQUARE, SINGAPORE 409051
                 </p>
             </div>
         </section>

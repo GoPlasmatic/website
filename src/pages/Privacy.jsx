@@ -14,7 +14,7 @@ export default function Privacy() {
                 </div>
                 <h1>Privacy Policy</h1>
                 <p className="legal-lede">
-                    This policy explains how Plasmatic Pte Ltd collects, uses,
+                    This policy explains how Plasmatic Solutions Pte. Ltd. collects, uses,
                     discloses and protects personal data in accordance with the
                     Personal Data Protection Act 2012 of Singapore (the
                     “PDPA”).
@@ -22,10 +22,10 @@ export default function Privacy() {
 
                 <h2>1. About us</h2>
                 <p>
-                    Plasmatic Pte Ltd (“Plasmatic”, “we”, “our”, or “us”) is a
+                    Plasmatic Solutions Pte. Ltd. (“Plasmatic”, “we”, “our”, or “us”) is a
                     private limited company incorporated in Singapore with UEN{" "}
-                    <strong>[UEN]</strong>, having its registered office at{" "}
-                    <strong>[Registered Office Address], Singapore</strong>.
+                    <strong>202602426M</strong>, having its registered office at{" "}
+                    <strong>60 PAYA LEBAR ROAD, #06-28, PAYA LEBAR SQUARE, SINGAPORE 409051</strong>.
                 </p>
                 <p>
                     This Privacy Policy applies to personal data we collect
@@ -267,7 +267,7 @@ export default function Privacy() {
                 </p>
                 <p>
                     <strong>
-                        Plasmatic Pte Ltd — Data Protection Officer
+                        Plasmatic Solutions Pte. Ltd. — Data Protection Officer
                     </strong>
                     <br />
                     Email:{" "}
@@ -278,7 +278,7 @@ export default function Privacy() {
                         enquiries@goplasmatic.io
                     </a>
                     <br />
-                    Address: [Registered Office Address], Singapore
+                    Address: 60 PAYA LEBAR ROAD, #06-28, PAYA LEBAR SQUARE, SINGAPORE 409051
                 </p>
             </div>
         </section>
