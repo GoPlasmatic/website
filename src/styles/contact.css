@@ -38,6 +38,10 @@ html.snap-ready {
 
 .contact-direct {
     margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
 }
 
 .contact-direct-link {
@@ -53,9 +57,34 @@ html.snap-ready {
     color: var(--accent-blue);
 }
 
-.contact-direct-link svg {
+.contact-direct-link svg,
+.contact-direct-address svg {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
+}
+
+/* Registered office. The icon sits on the first line rather than centred on
+   the whole block, so the pin lines up with the company name. */
+.contact-direct-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+}
+
+.contact-direct-address svg {
+    margin-top: 4px;
+    color: var(--text-muted);
+}
+
+.contact-direct-address strong {
+    display: block;
+    font-weight: 500;
+    color: var(--text-body);
 }
 
 /* ── Form ────────────────────────────────────────────────────────── */

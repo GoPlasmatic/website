@@ -1,8 +1,14 @@
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, MapPin } from "lucide-react";
 import SectionGraphic from "../components/SectionGraphic.jsx";
 import ContactForm from "../components/ContactForm.jsx";
 import { usePageMeta } from "../hooks/usePageMeta.js";
-import { DOCS_INSTALL_URL, ROUTES } from "../site-meta.js";
+import {
+    CONTACT_EMAIL,
+    DOCS_INSTALL_URL,
+    LEGAL_NAME,
+    POSTAL_ADDRESS,
+    ROUTES,
+} from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import logoSvg from "../assets/logo.svg";
 import contactCss from "../styles/contact.css?inline";
@@ -41,12 +47,24 @@ export default function Contact() {
                         </p>
                         <div className="contact-direct">
                             <a
-                                href="mailto:enquiries@goplasmatic.io"
+                                href={`mailto:${CONTACT_EMAIL}`}
                                 className="contact-direct-link"
                             >
                                 <Mail aria-hidden="true" />
-                                <span>enquiries@goplasmatic.io</span>
+                                <span>{CONTACT_EMAIL}</span>
                             </a>
+                            <address className="contact-direct-address">
+                                <MapPin aria-hidden="true" />
+                                <span>
+                                    <strong>{LEGAL_NAME}</strong>
+                                    {POSTAL_ADDRESS.street}
+                                    <br />
+                                    {POSTAL_ADDRESS.building}
+                                    <br />
+                                    {POSTAL_ADDRESS.locality}{" "}
+                                    {POSTAL_ADDRESS.postalCode}
+                                </span>
+                            </address>
                         </div>
                         <p
                             className="section-body"

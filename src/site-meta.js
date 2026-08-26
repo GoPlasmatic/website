@@ -21,6 +21,17 @@ export const GITHUB_ORG_URL = "https://github.com/GoPlasmatic";
 export const LEGAL_NAME = "Plasmatic Solutions Pte. Ltd.";
 // Public enquiries address, also rendered on the Contact page.
 export const CONTACT_EMAIL = "enquiries@goplasmatic.io";
+// Registered office, matching the address in the Privacy and Terms contact
+// blocks. Rendered on the Contact page and expanded into the PostalAddress
+// node below — keep the two in step, and keep the site-wide Organization copy
+// in index.html (same @id) carrying the same values.
+export const POSTAL_ADDRESS = {
+    street: "60 Paya Lebar Road, #06-28",
+    building: "Paya Lebar Square",
+    locality: "Singapore",
+    postalCode: "409051",
+    country: "SG",
+};
 
 // Stable @id values for the JSON-LD graph. Nodes declared on more than one
 // route share an @id so consumers merge them into one entity instead of
@@ -161,7 +172,10 @@ export const ROUTES = {
                     foundingDate: "2025",
                     address: {
                         "@type": "PostalAddress",
-                        addressCountry: "SG",
+                        streetAddress: `${POSTAL_ADDRESS.street}, ${POSTAL_ADDRESS.building}`,
+                        addressLocality: POSTAL_ADDRESS.locality,
+                        postalCode: POSTAL_ADDRESS.postalCode,
+                        addressCountry: POSTAL_ADDRESS.country,
                     },
                     contactPoint: {
                         "@type": "ContactPoint",
