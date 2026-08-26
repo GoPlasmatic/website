@@ -37,6 +37,21 @@ const PAGES = [
             "footer",
         ],
     },
+    {
+        name: "about",
+        path: "/about",
+        mode: "snap",
+        // 7 sections in DOM order; slugs match data-test-section in src/pages/About.jsx.
+        sections: [
+            "hero",
+            "why-we-started",
+            "business-model",
+            "buying",
+            "team",
+            "cta",
+            "footer",
+        ],
+    },
     { name: "contact", path: "/contact", mode: "long" },
     { name: "privacy", path: "/privacy", mode: "long" },
     { name: "terms",   path: "/terms",   mode: "long" },

@@ -15,7 +15,7 @@ npm run build      # bundle + minify to dist/ (+ per-route HTML stubs with baked
 npm run preview    # serve the production build on http://localhost:8000
 ```
 
-Routes: `/`, `/orion`, `/contact`, `/privacy`, `/terms`.
+Routes: `/`, `/orion`, `/about`, `/contact`, `/privacy`, `/terms`.
 
 **Regenerate the neural-pathway binary** (after editing Blender source):
 ```bash

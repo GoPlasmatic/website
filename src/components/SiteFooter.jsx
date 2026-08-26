@@ -17,6 +17,7 @@ export default function SiteFooter() {
                     <div className="footer-bottom">
                         <p>&copy; 2026 Plasmatic. All rights reserved.</p>
                         <div className="footer-links">
+                            <Link to="/about">About</Link>
                             <a href={DOCS_URL} target="_blank" rel="noopener">
                                 Docs
                             </a>

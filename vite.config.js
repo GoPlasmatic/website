@@ -39,6 +39,18 @@ function applyRouteMeta(html, meta) {
   h = setMeta(h, "name", "twitter:title", t);
   h = setMeta(h, "name", "twitter:description", d);
   h = h.replace(/(<link rel="canonical" href=")[\s\S]*?(")/, `$1${url}$2`);
+  if (meta.jsonLd) {
+    // Page-scoped structured data for crawlers that don't run JS. The runtime
+    // useJsonLd hook writes the same block with the same data-page-jsonld
+    // marker and clears any it finds first, so the rendered document never
+    // carries two. Escaping "<" keeps a "</script>" inside a string literal
+    // from closing the tag early.
+    const json = JSON.stringify(meta.jsonLd).replace(/</g, "\\u003c");
+    h = h.replace(
+      /<\/head>/,
+      `    <script type="application/ld+json" data-page-jsonld>${json}</script>\n    </head>`,
+    );
+  }
   return h;
 }
 function routePrerender() {

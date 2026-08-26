@@ -13,11 +13,13 @@ export default function SiteNav() {
 
     const activeKey = pathname.startsWith("/orion")
         ? "product"
-        : pathname.startsWith("/contact")
-          ? "contact"
-          : pathname === "/"
-            ? "home"
-            : "";
+        : pathname.startsWith("/about")
+          ? "about"
+          : pathname.startsWith("/contact")
+            ? "contact"
+            : pathname === "/"
+              ? "home"
+              : "";
 
     // Close the drawer when the route changes.
     useEffect(() => {
@@ -63,20 +65,16 @@ export default function SiteNav() {
                 </button>
                 <div className="nav-links" id="site-nav-links">
                     <Link to="/orion" {...current("product")}>
-                        Product
+                      Orion
                     </Link>
-                    <a href={DOCS_URL} target="_blank" rel="noopener">
-                        Docs
-                    </a>
+                    <Link to="/about" {...current("about")}>
+                        About
+                    </Link>
                     <Link to="/contact" {...current("contact")}>
                         Contact
                     </Link>
-                    <a
-                        href="https://github.com/GoPlasmatic"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        GitHub
+                    <a href={DOCS_URL} target="_blank" rel="noopener">
+                        Docs
                     </a>
                     <Link to="/contact" className="btn-nav">
                         Talk to an engineer

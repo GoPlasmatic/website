@@ -1,0 +1,591 @@
+/* About-page styles. Loaded after common.css via usePageStyles.
+   No em dashes anywhere in this file: the About copy spec forbids them in the
+   rendered page, and keeping the rule in the source makes it greppable. */
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+
+/* Frame, snap alignment, h1 scale and divider all come from common.css's
+   .hero. The only page-specific need is the compact-height companion: that
+   tier trims the graphic-background container padding to a value smaller than
+   the fixed nav, and this section starts at the page top so it has to clear
+   the nav itself (same reason .section-contact sets it). Inert elsewhere. */
+.about-hero {
+    --compact-graphic-pad-top: calc(var(--nav-offset) + 24px);
+}
+
+.about-hero-lead {
+    max-width: 560px;
+    margin-bottom: 36px;
+}
+
+/* ── Repository strip ────────────────────────────────────────────── */
+
+/* Small type by design: the strip's job is the count, not the names. It must
+   not run to three lines, hence the mono size and the tight separators. */
+/* Stacked and left-aligned: the container is full width so the names hold one
+   line, but the row stays clear of the background graphic on the right. */
+.repo-strip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--stroke-1);
+}
+
+.repo-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 6px;
+    list-style: none;
+    color: var(--text-body);
+}
+
+/* The separator belongs to the name before it, so a wrap breaks after the dot
+   instead of stranding one at the start of the next line. */
+.repo-list li:not(:last-child)::after {
+    content: "\00b7";
+    margin: 0 10px;
+    color: var(--text-muted);
+}
+
+.repo-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.repo-note .link-action {
+    font-size: 13px;
+}
+
+/* ── Section 2: why we started ───────────────────────────────────── */
+
+/* Editorial split: the heading holds the left rail while the story runs down
+   a single measured column on the right. */
+.story-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.5fr);
+    gap: 64px;
+    align-items: start;
+}
+
+.story-body {
+    max-width: 640px;
+}
+
+.story-body .section-body:last-child {
+    margin-bottom: 0;
+}
+
+/* common.css gives .callout a top margin only, which leaves the paragraph
+   after it touching the rule. */
+.story-body .callout {
+    margin-bottom: 40px;
+}
+
+/* ── Section 3: the business model ───────────────────────────────── */
+
+.model-card h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.3;
+    color: var(--text-heading);
+    margin-bottom: 12px;
+}
+
+.model-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+}
+
+/* ── Section 4: buying from us ───────────────────────────────────── */
+
+/* The same editorial split as .story-grid, and here it is load-bearing rather
+   than stylistic. Stacked under a centred header this section ran 937px against
+   an 804px snap frame at 1440x900 (1226 against 984 at 1920x1080), so the
+   closing line and its link fell below the fold on landing. Setting the heading
+   and the argument beside the blocks rather than above them removes the
+   header's full height from the stack and puts the blocks on a wider measure,
+   which is what brings the section inside the frame with the copy intact. */
+.stance-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.5fr);
+    gap: 64px;
+    align-items: start;
+}
+
+/* Prose blocks rather than cards: each lead-in runs on into its own sentence,
+   so splitting them into heading plus body would break the argument. The rule
+   colour codes the block (amber for the risks, accent for the answers) and the
+   bold lead-in keeps the section scannable in about fifteen seconds. */
+.stance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.stance-block {
+    --stance-hue: var(--accent-blue);
+    padding: 2px 0 2px 22px;
+    border-left: 2px solid
+        color-mix(in srgb, var(--stance-hue) 55%, transparent);
+}
+
+.stance-block p {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text-body);
+}
+
+.stance-block strong {
+    color: var(--text-heading);
+    font-weight: 500;
+}
+
+.stance-risk {
+    --stance-hue: var(--accent-yellow);
+}
+
+.stance-structure {
+    --stance-hue: var(--accent-blue);
+}
+
+.stance-small {
+    --stance-hue: var(--accent-teal);
+}
+
+.stance-ask {
+    --stance-hue: var(--accent-green);
+}
+
+.stance-test {
+    margin-top: 32px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(20px, 2.2vw, 26px);
+    line-height: 1.4;
+    letter-spacing: -0.3px;
+    color: var(--text-heading);
+}
+
+.stance-cta {
+    margin-top: 20px;
+}
+
+/* This label is long enough to wrap in the left column. .link-action is
+   inline-flex, which would leave the arrow parked beside the whole two-line
+   block rather than after the last word, and its underline is an absolutely
+   positioned ::after that cannot follow a wrapped inline box. So this one link
+   flows inline and takes the text-decoration underline that legal.css already
+   uses for prose links. */
+.stance-cta .link-action {
+    display: inline;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition:
+        color var(--dur-fast) var(--ease-card),
+        text-decoration-color var(--dur-fast) var(--ease-card);
+}
+
+.stance-cta .link-action::after {
+    content: none;
+}
+
+.stance-cta .link-action:hover {
+    text-decoration-color: var(--accent-blue-bright);
+}
+
+.stance-cta .link-action svg {
+    display: inline-block;
+    vertical-align: -2px;
+    margin-left: 6px;
+}
+
+/* ── Section 5: the team ─────────────────────────────────────────── */
+
+/* Three columns via the shared .grid-3col, inside the shared 1200px measure.
+   Each card carries identity only (portrait, name, role, LinkedIn) so it is no
+   taller than that content needs; the bio opens in a dialog, which gives it far
+   more room than a column ever could. */
+.team-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--pad-card-lg);
+}
+
+/* Portrait tile: the .icon-box language (accent ring, hover lift) carried onto
+   a photograph, so the three cards keep the card system's framing. The ring is
+   drawn by ::after rather than an inset shadow on the frame, because an inset
+   shadow paints beneath the child image and would never be seen. */
+.team-photo {
+    --tint: var(--accent-blue);
+    position: relative;
+    width: clamp(104px, 8vw, 128px);
+    aspect-ratio: 1;
+    height: auto;
+    flex-shrink: 0;
+    margin-bottom: 20px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--surface-2);
+    transition:
+        transform var(--dur-card) var(--ease-spring),
+        box-shadow var(--dur-card) var(--ease-card);
+}
+
+/* Scoped to the card: in the dialog header the portrait sits in a horizontal
+   row beside the name, where centring does not apply. */
+.team-card .team-photo {
+    align-self: center;
+}
+
+.team-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Ring only, no tone treatment. The three source portraits were shot against
+   different backdrops (two light, one near-black); a vignette was tried here
+   and rejected, because the bright field sits behind the head rather than at
+   the edges, so darkening the corners reads as a spotlight without closing the
+   gap. Matching backdrops belong in the source images. */
+.team-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 30%, transparent);
+    pointer-events: none;
+    transition: box-shadow var(--dur-card) var(--ease-card);
+}
+
+.card:hover .team-photo {
+    transform: scale(1.03);
+    box-shadow: 0 0 22px -8px color-mix(in srgb, var(--tint) 70%, transparent);
+}
+
+.card:hover .team-photo::after {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 55%, transparent);
+}
+
+.team-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.25;
+    color: var(--text-heading);
+    margin-bottom: 6px;
+}
+
+/* Two-line reserve. One of the three roles wraps and the other two do not, so
+   without it the action rows would sit at different heights across columns. */
+.team-card .capability-subtitle {
+    margin-bottom: 18px;
+    line-height: 1.5;
+    min-height: calc(2 * 1.5 * 11px);
+}
+
+/* Pinned to the bottom of the card, so the three rows line up across columns. */
+.team-actions {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.team-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent-blue-bright);
+    transition: color var(--dur-fast) var(--ease-card);
+}
+
+.team-link:hover {
+    color: var(--text-heading);
+}
+
+.team-link svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.team-bio-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--stroke-2);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface-3) 55%, transparent);
+    color: var(--text-body);
+    font-family: var(--font-code);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    cursor: pointer;
+    transition:
+        color var(--dur-fast) var(--ease-card),
+        border-color var(--dur-fast) var(--ease-card),
+        background var(--dur-fast) var(--ease-card);
+}
+
+.team-bio-btn:hover {
+    color: var(--text-heading);
+    border-color: color-mix(in srgb, var(--accent-blue-bright) 45%, transparent);
+    background: color-mix(in srgb, var(--accent-blue-bright) 12%, transparent);
+}
+
+.team-bio-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    transition: transform var(--dur-fast) var(--ease-card);
+}
+
+.team-bio-btn:hover svg {
+    transform: translateX(3px);
+}
+
+/* ── Biography dialog ────────────────────────────────────────────── */
+
+/* The [open] guard matters: the UA hides a closed dialog with
+   `dialog:not([open]) { display: none }`, and an unguarded display here would
+   outrank it and leave every bio on the page. */
+.bio-dialog {
+    /* The UA centres a modal with `dialog { margin: auto }`, which common.css's
+       `* { margin: 0 }` reset outranks, so it has to be restored here or the
+       dialog lands in the top-left corner. */
+    margin: auto;
+    width: min(720px, calc(100vw - 40px));
+    max-height: min(82dvh, 760px);
+    padding: 0;
+    border: 1px solid var(--stroke-2);
+    border-radius: var(--radius-card);
+    background: var(--surface-1);
+    color: var(--text-body);
+    box-shadow: var(--shadow-ambient-hover);
+    overflow: hidden;
+}
+
+.bio-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    animation: bio-dialog-in 0.28s var(--ease-card);
+}
+
+@keyframes bio-dialog-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+}
+
+.bio-dialog::backdrop {
+    background: rgba(3, 9, 15, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* showModal() does not stop the page behind from scrolling. */
+body.bio-open {
+    overflow: hidden;
+}
+
+.bio-dialog-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.bio-dialog-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--stroke-1);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--surface-3) 55%, transparent);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+        color var(--dur-fast) var(--ease-card),
+        border-color var(--dur-fast) var(--ease-card);
+}
+
+.bio-dialog-close:hover {
+    color: var(--text-heading);
+    border-color: var(--stroke-2);
+}
+
+.bio-dialog-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.bio-dialog-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: var(--pad-card-lg);
+    padding-right: 64px;
+    border-bottom: 1px solid var(--stroke-1);
+}
+
+.bio-dialog-head .team-photo {
+    width: 88px;
+    margin-bottom: 0;
+}
+
+.bio-dialog-head .capability-subtitle {
+    margin-bottom: 12px;
+}
+
+.bio-dialog-body {
+    padding: var(--pad-card-lg);
+    overflow-y: auto;
+    min-height: 0;
+    overscroll-behavior: contain;
+}
+
+.bio-dialog-body p {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin-bottom: 18px;
+}
+
+.bio-dialog-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ── Section 6: close ────────────────────────────────────────────── */
+
+.about-cta-desc {
+    max-width: 520px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-body);
+    margin-bottom: 16px;
+}
+
+.about-cta-desc:last-of-type {
+    margin-bottom: 32px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+
+/* Mirrors the collapse breakpoint in common.css so the two-column blocks fold
+   at the same point the shared grids do. */
+@media (max-width: 1024px) and (orientation: portrait), (max-width: 950px) {
+    .story-grid,
+    .stance-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .team-photo {
+        margin-bottom: 14px;
+    }
+
+    /* Once the grid collapses, the copy sits directly over the background
+       graphic instead of beside it. Fading it keeps the atmosphere without
+       costing contrast on the lead paragraph. */
+    .about-hero > section-graphic[position="background"],
+    .about-cta > section-graphic[position="background"] {
+        opacity: 0.4;
+    }
+}
+
+@media (max-width: 768px) {
+    /* The generic graphic-background rule in common.css keeps a 32px gutter at
+       every width. Match the 24px the rest of this page drops to, which also
+       buys the repository strip the room it needs to hold two lines. The
+       :has() is repeated because that rule's specificity (0,2,2) beats a plain
+       class pair. */
+    section.about-hero:has(> section-graphic[position="background"])
+        > .section-container,
+    section.about-cta:has(> section-graphic[position="background"])
+        > .section-container {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .team-card {
+        padding: var(--pad-card-md);
+    }
+
+    .stance-block {
+        padding-left: 18px;
+    }
+
+    .stance-block p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .repo-list {
+        font-size: 11px;
+    }
+
+    .repo-list li:not(:last-child)::after {
+        margin: 0 6px;
+    }
+
+    .model-cta .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Compact height (short laptops, tablets in landscape). The `html` prefix is
+   required to beat common.css's own compact tier, which is injected before
+   this stylesheet but uses the same prefix. */
+@media (min-width: 951px) and (max-height: 1079px) {
+    html .story-grid {
+        gap: 48px;
+    }
+
+    html .stance-grid {
+        gap: 48px;
+    }
+
+    html .stance-list {
+        gap: 16px;
+    }
+
+    /* Matches the way the compact tier steps .section-body down; without it
+       the blocks alone outgrow a 720px-tall snap frame. */
+    html .stance-block p {
+        font-size: 16px;
+        line-height: 1.65;
+    }
+
+    html .stance-test {
+        margin-top: 32px;
+    }
+}
