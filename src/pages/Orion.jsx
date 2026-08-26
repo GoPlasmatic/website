@@ -6,7 +6,13 @@ import DeploySimulator from "../components/orion/DeploySimulator.jsx";
 import UseCaseTabs from "../components/orion/UseCaseTabs.jsx";
 import GuardrailsSimulator from "../components/orion/GuardrailsSimulator.jsx";
 import { usePageMeta } from "../hooks/usePageMeta.js";
-import { DOCS_INSTALL_URL, DOCS_URL, ROUTES } from "../site-meta.js";
+import { useJsonLd } from "../hooks/useJsonLd.js";
+import {
+    DOCS_INSTALL_URL,
+    DOCS_URL,
+    ORION_FAQ,
+    ROUTES,
+} from "../site-meta.js";
 import { usePageStyles } from "../hooks/usePageStyles.js";
 import orionCss from "../styles/orion.css?inline";
 
@@ -21,6 +27,7 @@ const COMPARE_LINKS = [
 
 export default function Orion() {
     usePageMeta(ROUTES["/orion"]);
+    useJsonLd(ROUTES["/orion"].jsonLd);
     usePageStyles(orionCss);
     const heroTextRef = useRef(null);
 
@@ -558,6 +565,43 @@ export default function Orion() {
                                 The docs name where each neighbour wins; Orion
                                 is for request-shaped work in milliseconds.
                             </p>
+                        </div>
+                    </div>
+                </section>
+
+                {/* FAQ — rendered from ORION_FAQ, the same constant the FAQPage
+                    node in site-meta.js is built from, so the visible answers and
+                    the structured data cannot drift. Google requires them to
+                    match, and an answer engine quoting the markup should be
+                    quoting what a reader sees. <details> keeps every answer in
+                    the DOM whether or not it is open. */}
+                <section
+                    className="section-full section-dimmed"
+                    data-test-section="faq"
+                >
+                    <div className="section-container">
+                        <div className="section-header reveal">
+                            <div className="eyebrow">
+                                <span>Questions</span>
+                            </div>
+                            <h2 className="reveal-blur">
+                                What people ask before they start.
+                            </h2>
+                        </div>
+                        <div className="faq-list reveal">
+                            {ORION_FAQ.map(({ q, a }, i) => (
+                                <details
+                                    key={q}
+                                    className="faq-item"
+                                    name="orion-faq"
+                                    open={i === 0}
+                                >
+                                    <summary className="faq-question">
+                                        <span>{q}</span>
+                                    </summary>
+                                    <p className="faq-answer">{a}</p>
+                                </details>
+                            ))}
                         </div>
                     </div>
                 </section>

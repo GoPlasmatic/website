@@ -4,7 +4,7 @@
   "description": "Plasmatic marketing site — Vite + React SPA with Three.js visualizations.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node tools/prerender.mjs",
     "preview": "vite preview",
     "screenshots": "playwright test",
     "screenshots:ui": "playwright test --ui"

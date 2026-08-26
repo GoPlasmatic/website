@@ -958,3 +958,72 @@ site-footer {
         font-size: 14px;
     }
 }
+
+/* ── FAQ ─────────────────────────────────────────────────────────────
+   Accordion so seven answers fit one snap viewport. <details> keeps every
+   answer in the DOM regardless of open state, which is the point: the same
+   copy feeds the FAQPage node in site-meta.js and has to be readable by a
+   crawler that never clicks. */
+.faq-list {
+    max-width: 860px;
+    margin: var(--space-4) auto 0;
+    border-top: 1px solid var(--stroke-soft, rgba(255, 255, 255, 0.08));
+}
+
+.faq-item {
+    border-bottom: 1px solid var(--stroke-soft, rgba(255, 255, 255, 0.08));
+}
+
+.faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 4px;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display, "Montserrat"), sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-heading);
+    transition: color 0.2s ease;
+}
+
+.faq-question::-webkit-details-marker {
+    display: none;
+}
+
+.faq-question:hover {
+    color: var(--accent-teal);
+}
+
+/* Chevron drawn in CSS so the accordion carries no icon import. */
+.faq-question::after {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translate(-2px, -2px);
+    transition: transform 0.2s ease;
+}
+
+.faq-item[open] .faq-question::after {
+    transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.faq-answer {
+    padding: 0 4px 20px;
+    max-width: 72ch;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-body);
+}
+
+@media (max-width: 768px) {
+    .faq-question {
+        font-size: 15px;
+        padding: 16px 2px;
+    }
+}

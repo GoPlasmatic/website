@@ -33,6 +33,7 @@ export function usePageMeta({
     path = "/",
     image = DEFAULT_IMAGE,
     type = "website",
+    noindex = false,
 }) {
     useEffect(() => {
         const url = `${SITE_URL}${path}`;
@@ -51,5 +52,15 @@ export function usePageMeta({
         upsertMeta("name", "twitter:title", title);
         upsertMeta("name", "twitter:description", description);
         upsertMeta("name", "twitter:image", image);
-    }, [title, description, path, image, type]);
+
+        // Only the 404 route sets this. It has to be torn down on navigation
+        // rather than left in place, or the first client-side hop off a
+        // not-found URL would carry noindex onto a real page.
+        const robots = document.head.querySelector('meta[name="robots"]');
+        if (noindex) {
+            upsertMeta("name", "robots", "noindex, follow");
+        } else if (robots) {
+            robots.remove();
+        }
+    }, [title, description, path, image, type, noindex]);
 }

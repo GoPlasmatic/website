@@ -883,8 +883,8 @@ export async function initOrionScene(canvas, options = {}) {
 
     /* ── Scroll-driven camera (brain → spine journey) ──────────────── */
 
-    // One keyframe per snap-section (10 sections, 9 segments)
-    // Hero | Two Clocks | Solution | Modular Monolith | The Artifact | AI & Trust | Guardrails Diagram | The Future | CTA | Footer
+    // One keyframe per snap-section (11 sections, 10 segments)
+    // Hero | Two Clocks | Solution | Modular Monolith | The Artifact | AI & Trust | Guardrails Diagram | The Future | FAQ | CTA | Footer
     const maxLookY = spineBottomY * 0.45; // limit: don't let spine go above mid-screen
     const camKeyframes = [
         { posX: 1.5, lookY: brainCenterY, camZ: 5, camYOff: 0.5, rotOff: 0 }, // 0 Hero
@@ -895,20 +895,23 @@ export async function initOrionScene(canvas, options = {}) {
         { posX: 0, lookY: spineBottomY * 0.25, camZ: 10, camYOff: 0.1, rotOff: 0 }, // 5 AI & Trust
         { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 6 Guardrails Diagram
         { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 7 The Future
+        // 8 FAQ holds The Future's framing: the reader is scanning text, so the
+        // camera rests rather than moving, then swings to the CTA as before.
+        { posX: 0, lookY: maxLookY, camZ: 10, camYOff: 0.0, rotOff: 0 }, // 8 FAQ
         {
             posX: 2.4,
             lookY: brainCenterY * 0.4,
             camZ: 10,
             camYOff: 0.3,
             rotOff: -Math.PI / 2,
-        }, // 8 CTA
+        }, // 9 CTA
         {
             posX: 2.4,
             lookY: brainCenterY * 0.4,
             camZ: 10,
             camYOff: 0.3,
             rotOff: -Math.PI / 2,
-        }, // 9 Footer
+        }, // 10 Footer
     ];
 
     // Map scroll position to keyframe progress via the actual snap sections.

@@ -50,7 +50,6 @@ const TABS = Object.entries(USE_CASES).map(([key, { label }]) => ({
 
 export default function UseCaseTabs() {
     const [active, setActive] = useState("apis");
-    const data = USE_CASES[active];
 
     return (
         <div
@@ -58,10 +57,15 @@ export default function UseCaseTabs() {
             id="use-case-card"
             style={{ "--reveal-delay": "0.2s" }}
         >
-            <div className="use-case-tabs">
+            <div className="use-case-tabs" role="tablist">
                 {TABS.map((t) => (
                     <button
                         key={t.key}
+                        type="button"
+                        role="tab"
+                        id={`use-case-tab-${t.key}`}
+                        aria-selected={active === t.key}
+                        aria-controls={`use-case-panel-${t.key}`}
                         className={`use-case-btn${active === t.key ? " active" : ""}`}
                         onClick={() => setActive(t.key)}
                     >
@@ -70,18 +74,33 @@ export default function UseCaseTabs() {
                 ))}
             </div>
 
-            <h4>{data.title}</h4>
-            <p>{data.desc}</p>
-            <div className="use-case-comparison">
-                <div className="comp-col">
-                    <strong>The AI writes</strong>
-                    <p>{data.writes}</p>
+            {/* Every panel stays in the DOM and the inactive ones are hidden,
+                rather than rendering only the active entry. These five service
+                kinds are the page's most retrievable copy; rendering one at a
+                time kept four of them out of the HTML source entirely. */}
+            {Object.entries(USE_CASES).map(([key, data]) => (
+                <div
+                    key={key}
+                    className="use-case-panel"
+                    id={`use-case-panel-${key}`}
+                    role="tabpanel"
+                    aria-labelledby={`use-case-tab-${key}`}
+                    hidden={active !== key}
+                >
+                    <h4>{data.title}</h4>
+                    <p>{data.desc}</p>
+                    <div className="use-case-comparison">
+                        <div className="comp-col">
+                            <strong>The AI writes</strong>
+                            <p>{data.writes}</p>
+                        </div>
+                        <div className="comp-col comp-col-after">
+                            <strong>The runtime carries</strong>
+                            <p>{data.carries}</p>
+                        </div>
+                    </div>
                 </div>
-                <div className="comp-col comp-col-after">
-                    <strong>The runtime carries</strong>
-                    <p>{data.carries}</p>
-                </div>
-            </div>
+            ))}
         </div>
     );
 }

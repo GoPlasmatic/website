@@ -24,3 +24,6 @@ proposal.md
 # Python (tools/convert_obj.py)
 __pycache__/
 *.py[cod]
+
+# SSR bundle (build intermediate for tools/prerender.mjs)
+dist-ssr/

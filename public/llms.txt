@@ -1,0 +1,82 @@
+# Plasmatic
+
+> Plasmatic builds Orion, a governed services platform for teams building
+> software with AI. A JSON definition becomes a live, governed REST or Kafka
+> service: the runtime carries the endpoint, validation, retries, rate
+> limiting, credentials, metrics, versioning and rollback, so the part a person
+> or an AI assistant writes is the business logic and nothing else.
+
+Plasmatic Solutions Pte. Ltd. is registered in Singapore (UEN 202602426M).
+Orion is open source under the Apache License 2.0. The commercial relationship
+is delivery, support and enterprise engagement, not a licence to the runtime.
+
+## What Orion is
+
+Orion sits under your business logic as a runtime rather than beside it as a
+framework. One governed document describes a service; the platform coordinates,
+observes and controls how that service behaves in production.
+
+It runs five kinds of service:
+
+- **Microservice APIs** — request-shaped work answered in milliseconds.
+- **Decision APIs** — pricing tiers and eligibility as JSONLogic condition
+  trees, where the decision is the response.
+- **Event pipelines** — a Kafka topic in, transform and enrich, publish onward,
+  with retries, duplicate suppression and a dead-letter queue.
+- **Webhook and data ingestion** — normalize Stripe, GitHub or Shopify payloads,
+  then write to your databases over pooled connections.
+- **AI agent tools** — agents call your channels as tools and, over MCP, draft
+  the workflows behind them, inside a draft / dry-run / explicit-activation
+  lifecycle.
+
+## How it governs AI-authored change
+
+Every change moves through the same gate regardless of who wrote it. The AI
+proposes a definition, a person approves one document, and the runtime enforces
+the lifecycle: draft, then dry-run, then explicit activation. Every decision is
+traced and every version is reversible in one call.
+
+## What Orion is not for
+
+Orion is for request-shaped work measured in milliseconds. The documentation
+names where each neighbouring tool wins instead — Temporal for durable
+execution, Kong for the API edge, Drools for rule evaluation, and general
+automation platforms for long-running human workflows.
+
+- [Is Orion right for you?](https://docs.goplasmatic.io/comparison.html)
+- [Durable execution](https://docs.goplasmatic.io/compare/durable-execution.html)
+- [API gateways](https://docs.goplasmatic.io/compare/api-gateways.html)
+- [Automation platforms](https://docs.goplasmatic.io/compare/automation-platforms.html)
+- [Rule engines](https://docs.goplasmatic.io/compare/rule-engines.html)
+
+## Pages
+
+- [Home](https://goplasmatic.io/): what Plasmatic builds and why.
+- [Orion](https://goplasmatic.io/orion): the platform, its service kinds, the
+  governance model, and answers to the questions asked most often.
+- [About](https://goplasmatic.io/about): the team, why the company started, how
+  the business works, and how to buy.
+- [Contact](https://goplasmatic.io/contact): thirty minutes with a founding
+  engineer, or enquiries@goplasmatic.io.
+- [Privacy](https://goplasmatic.io/privacy) and
+  [Terms](https://goplasmatic.io/terms).
+
+## Documentation and source
+
+- [Documentation](https://docs.goplasmatic.io)
+- [Install (about one minute)](https://docs.goplasmatic.io/getting-started/install.html)
+- [GitHub organisation](https://github.com/GoPlasmatic)
+- [Orion repository](https://github.com/GoPlasmatic/Orion)
+
+## Team
+
+- **AKM Muthaalagan** — Founder and CEO. Nearly three decades in banking,
+  fintech, data and enterprise technology, most of it in senior roles inside
+  Singapore's major banks.
+- **Harishankar Narayanan** — Co-founder, engineering and technology strategy.
+  Over 21 years designing low-latency systems and scaling engineering
+  organizations; previously Senior Director at Global Payments and at Volante
+  Technologies, architecting core payment engines.
+- **Vinay Raja** — Co-founder, product and experience. Fifteen years in product,
+  design and positioning; previously Creative and Digital Experience Director at
+  AVJennings and creative services lead for Asia Pacific at PageGroup.

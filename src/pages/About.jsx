@@ -441,6 +441,7 @@ export default function About() {
                                         alt={`Portrait of ${person.name}`}
                                         width="128"
                                         height="128"
+                                        loading="lazy"
                                         decoding="async"
                                     />
                                 </div>
@@ -473,10 +474,19 @@ export default function About() {
                         ))}
                     </div>
 
+                    {/* All three biographies live in the DOM at all times.
+                        A closed <dialog> is display:none, so the prose is still
+                        in the HTML source for crawlers and text extractors that
+                        never fire a click; only the active panel is revealed.
+                        Do not go back to rendering one panel on demand: these
+                        bios are the page's strongest credibility content and
+                        conditional rendering makes them invisible off-page. */}
                     <dialog
                         ref={bioDialog}
                         className="bio-dialog"
-                        aria-labelledby="bio-dialog-name"
+                        aria-labelledby={
+                            openBio ? `bio-name-${openBio.id}` : undefined
+                        }
                         onClose={() => setOpenBio(null)}
                         onClick={(e) => {
                             // A click on the backdrop targets the dialog itself.
@@ -484,8 +494,12 @@ export default function About() {
                                 bioDialog.current.close();
                         }}
                     >
-                        {openBio && (
-                            <div className="bio-dialog-inner">
+                        {TEAM.map((person) => (
+                            <div
+                                key={person.id}
+                                className="bio-dialog-inner"
+                                hidden={openBio?.id !== person.id}
+                            >
                                 <button
                                     type="button"
                                     className="bio-dialog-close"
@@ -496,31 +510,33 @@ export default function About() {
                                 </button>
                                 <div className="bio-dialog-head">
                                     <div
-                                        className={`team-photo ${openBio.tint}`}
+                                        className={`team-photo ${person.tint}`}
                                     >
                                         <img
-                                            src={openBio.photo}
+                                            src={person.photo}
                                             alt=""
                                             width="128"
                                             height="128"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     </div>
                                     <div>
                                         <h3
-                                            id="bio-dialog-name"
+                                            id={`bio-name-${person.id}`}
                                             className="team-name"
                                         >
-                                            {openBio.name}
+                                            {person.name}
                                         </h3>
                                         <p className="capability-subtitle">
-                                            {openBio.role}
+                                            {person.role}
                                         </p>
                                         <a
-                                            href={openBio.linkedin}
+                                            href={person.linkedin}
                                             target="_blank"
                                             rel="noopener"
                                             className="team-link"
-                                            aria-label={`LinkedIn profile for ${openBio.name}`}
+                                            aria-label={`LinkedIn profile for ${person.name}`}
                                         >
                                             <LinkedinMark />
                                             <span>LinkedIn</span>
@@ -528,12 +544,12 @@ export default function About() {
                                     </div>
                                 </div>
                                 <div className="bio-dialog-body">
-                                    {openBio.bio.map((para, i) => (
+                                    {person.bio.map((para, i) => (
                                         <p key={i}>{para}</p>
                                     ))}
                                 </div>
                             </div>
-                        )}
+                        ))}
                     </dialog>
                 </div>
             </section>

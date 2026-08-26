@@ -1,4 +1,44 @@
+# NOTE: Cloudflare prepends a *managed* robots.txt block ahead of this file on
+# both zones. While AI Crawl Control's managed-robots toggle is on, that block
+# Disallows ClaudeBot, GPTBot, Google-Extended, CCBot, Bytespider,
+# Applebot-Extended, Amazonbot and meta-externalagent no matter what is written
+# here. Always check https://goplasmatic.io/robots.txt, not this file, to know
+# what crawlers actually see. The groups below are the site's intent and take
+# effect once the managed block is disabled in the dashboard.
+
 User-agent: *
+Allow: /
+
+# AI crawlers are welcome. Answer engines citing Orion is the point; see
+# /llms.txt for a curated summary written for them.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://goplasmatic.io/sitemap.xml

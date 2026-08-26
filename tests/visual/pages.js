@@ -33,6 +33,7 @@ const PAGES = [
             "ai-trust",
             "guardrails",
             "orion",
+            "faq",
             "cta",
             "footer",
         ],
@@ -55,6 +56,9 @@ const PAGES = [
     { name: "contact", path: "/contact", mode: "long" },
     { name: "privacy", path: "/privacy", mode: "long" },
     { name: "terms",   path: "/terms",   mode: "long" },
+    // Catch-all route: any unmatched path renders it. Captured so the 404 does
+    // not silently regress into the empty <main> it used to be.
+    { name: "notfound", path: "/no-such-page", mode: "long" },
 ];
 
 module.exports = { PAGES };

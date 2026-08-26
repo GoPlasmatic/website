@@ -1,81 +1,37 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { ROUTES, SITE_URL } from "./src/site-meta.js";
 
-// Bake per-route <head> metadata into static HTML so non-JS crawlers / social
-// scrapers get the right title/description/OG tags and a 200 for /orion,
-// /contact, etc. (Cloudflare's html_handling:"drop-trailing-slash" serves
-// dist/orion/index.html at /orion.) Each stub still loads the same SPA bundle,
-// so React Router renders normally. Route copy is the single source of truth
-// in src/site-meta.js (also used by the runtime usePageMeta hook).
-function escAttr(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-// Rewrite the content="" of the <meta> tag identified by idAttr=idVal. [^>]
-// spans newlines, so this is tolerant of multi-line / reordered attributes.
-function setMeta(html, idAttr, idVal, content) {
-  const tagRe = new RegExp(`<meta\\b[^>]*\\b${idAttr}="${idVal}"[^>]*>`, "i");
-  return html.replace(tagRe, (tag) =>
-    /content="[^"]*"/i.test(tag)
-      ? tag.replace(/content="[^"]*"/i, `content="${content}"`)
-      : tag.replace(/<meta\b/i, `<meta content="${content}"`),
-  );
-}
-function applyRouteMeta(html, meta) {
-  const url = `${SITE_URL}${meta.path}`;
-  const t = escAttr(meta.title);
-  const d = escAttr(meta.description);
-  let h = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${t}</title>`);
-  h = setMeta(h, "name", "description", d);
-  h = setMeta(h, "property", "og:title", t);
-  h = setMeta(h, "property", "og:description", d);
-  h = setMeta(h, "property", "og:url", url);
-  h = setMeta(h, "name", "twitter:title", t);
-  h = setMeta(h, "name", "twitter:description", d);
-  h = h.replace(/(<link rel="canonical" href=")[\s\S]*?(")/, `$1${url}$2`);
-  if (meta.jsonLd) {
-    // Page-scoped structured data for crawlers that don't run JS. The runtime
-    // useJsonLd hook writes the same block with the same data-page-jsonld
-    // marker and clears any it finds first, so the rendered document never
-    // carries two. Escaping "<" keeps a "</script>" inside a string literal
-    // from closing the tag early.
-    const json = JSON.stringify(meta.jsonLd).replace(/</g, "\\u003c");
-    h = h.replace(
-      /<\/head>/,
-      `    <script type="application/ld+json" data-page-jsonld>${json}</script>\n    </head>`,
-    );
-  }
-  return h;
-}
-function routePrerender() {
+// `vite preview` SPA-falls-back every deep route to dist/index.html, so it
+// would serve the *home page's* prerendered markup at /orion and React would
+// hydrate the Orion tree over it — a mismatch that only exists in preview.
+// Cloudflare resolves /orion to dist/orion/index.html
+// (html_handling:"drop-trailing-slash") and unknown paths to 404.html, so match
+// that here or previewing a production build reports bugs that are not real.
+function previewLikeCloudflare() {
   return {
-    name: "route-prerender",
-    closeBundle() {
+    name: "preview-like-cloudflare",
+    configurePreviewServer(server) {
       const dist = resolve(__dirname, "dist");
-      const base = readFileSync(resolve(dist, "index.html"), "utf8");
-      for (const meta of Object.values(ROUTES)) {
-        const html = applyRouteMeta(base, meta);
-        if (meta.path === "/") {
-          writeFileSync(resolve(dist, "index.html"), html);
-        } else {
-          const dir = resolve(dist, meta.path.replace(/^\//, ""));
-          mkdirSync(dir, { recursive: true });
-          writeFileSync(resolve(dir, "index.html"), html);
+      server.middlewares.use((req, _res, next) => {
+        const path = req.url.split("?")[0];
+        if (/\.[a-z0-9]+$/i.test(path)) return next();
+        const stub = resolve(dist, `.${path}`, "index.html");
+        if (stub.startsWith(dist) && existsSync(stub)) {
+          req.url = `${path.replace(/\/$/, "")}/index.html`;
+        } else if (existsSync(resolve(dist, "404.html"))) {
+          req.url = "/404.html";
         }
-      }
+        next();
+      });
     },
   };
 }
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), routePrerender()],
+  plugins: [react(), previewLikeCloudflare()],
   resolve: {
     alias: {
       // three 0.170 exports "./addons/*" natively, but pin the mapping so the

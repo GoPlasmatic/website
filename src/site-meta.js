@@ -19,6 +19,50 @@ export const GITHUB_ORG_URL = "https://github.com/GoPlasmatic";
 
 // Registered entity, matching the Privacy and Terms pages (UEN 202602426M).
 export const LEGAL_NAME = "Plasmatic Solutions Pte. Ltd.";
+// Public enquiries address, also rendered on the Contact page.
+export const CONTACT_EMAIL = "enquiries@goplasmatic.io";
+
+// Stable @id values for the JSON-LD graph. Nodes declared on more than one
+// route share an @id so consumers merge them into one entity instead of
+// treating each page's copy as a competing claim.
+export const ORG_ID = `${SITE_URL}/#organization`;
+export const ORION_ID = `${SITE_URL}/orion#software`;
+
+// Questions Orion is actually asked, answered in the page's own voice. These
+// feed both the rendered FAQ section on /orion and the FAQPage node below, so
+// the visible copy and the structured data can never drift apart — Google
+// requires them to match, and an answer engine quoting the markup should be
+// quoting what a reader sees.
+export const ORION_FAQ = [
+    {
+        q: "What is a governed services platform?",
+        a: "A runtime that carries the parts of a service that are not your business logic: the endpoint, validation, retries, rate limiting, credentials, metrics and versioning. You write the logic as a JSON definition; the platform coordinates, observes and controls how it behaves in production.",
+    },
+    {
+        q: "What is Plasmatic Orion?",
+        a: "Orion is Plasmatic's governed services platform for teams building software with AI. A JSON definition becomes a live, governed REST or Kafka service, so a change written in minutes can be reviewed as one document, activated in seconds and reversed with one call.",
+    },
+    {
+        q: "Is Orion open source?",
+        a: "Yes. Orion is released under the Apache License 2.0 and developed in the open at github.com/GoPlasmatic. Plasmatic sells delivery, support and enterprise engagements around it, not a licence to the runtime.",
+    },
+    {
+        q: "How is Orion different from Temporal, Kong or Drools?",
+        a: "Those tools each carry one layer: Temporal handles durable orchestration, Kong handles the API edge, Drools handles rules evaluation. Orion carries the whole service definition, so the endpoint, the transformation, the decision logic and the operational guarantees live in one governed document rather than three systems you integrate yourself.",
+    },
+    {
+        q: "What kinds of services can Orion run?",
+        a: "Microservice APIs, decision APIs expressed as JSONLogic condition trees, Kafka event pipelines, webhook and data ingestion that normalizes payloads from providers such as Stripe, GitHub or Shopify, and tools that AI agents call directly over MCP.",
+    },
+    {
+        q: "How does Orion govern what AI changes?",
+        a: "Every change moves through the same gate regardless of who wrote it. The AI proposes a definition, a person approves it, and the runtime enforces the lifecycle: draft, dry-run, then explicit activation, with a trace of every decision and a one-call path back to the previous version.",
+    },
+    {
+        q: "Who builds Orion?",
+        a: "Plasmatic Solutions Pte. Ltd., a company registered in Singapore. The team that wrote the runtime is the team that deploys it.",
+    },
+];
 
 export const ROUTES = {
     "/": {
@@ -32,6 +76,66 @@ export const ROUTES = {
         title: "Orion – Governed Services Platform",
         description:
             "Orion is the governed services platform for teams building software with AI: a JSON definition becomes a live, governed REST or Kafka service. Apache-2.0.",
+        // The product schema belongs on the product page. `offers` is what makes
+        // Google treat a SoftwareApplication as eligible rather than skipping
+        // it, and price 0 is the honest value: the runtime is Apache-2.0 and
+        // the commercial relationship is delivery, not a licence.
+        jsonLd: {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "SoftwareApplication",
+                    "@id": ORION_ID,
+                    name: "Plasmatic Orion",
+                    alternateName: "Orion",
+                    applicationCategory: "DeveloperApplication",
+                    applicationSubCategory: "Governed services platform",
+                    operatingSystem: "Linux, macOS",
+                    description:
+                        "A governed services platform: a JSON definition becomes a live REST or Kafka service, with validation, retries, rate limiting, metrics, versioning and rollback carried by the runtime rather than written per service.",
+                    url: `${SITE_URL}/orion`,
+                    codeRepository: `${GITHUB_ORG_URL}/Orion`,
+                    license: "https://www.apache.org/licenses/LICENSE-2.0",
+                    isAccessibleForFree: true,
+                    publisher: { "@id": ORG_ID },
+                    author: { "@id": ORG_ID },
+                    softwareHelp: DOCS_URL,
+                    offers: {
+                        "@type": "Offer",
+                        price: "0",
+                        priceCurrency: "USD",
+                        availability: "https://schema.org/InStock",
+                    },
+                },
+                {
+                    "@type": "FAQPage",
+                    "@id": `${SITE_URL}/orion#faq`,
+                    mainEntity: ORION_FAQ.map(({ q, a }) => ({
+                        "@type": "Question",
+                        name: q,
+                        acceptedAnswer: { "@type": "Answer", text: a },
+                    })),
+                },
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": `${SITE_URL}/orion#breadcrumb`,
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: `${SITE_URL}/`,
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "Orion",
+                            item: `${SITE_URL}/orion`,
+                        },
+                    ],
+                },
+            ],
+        },
     },
     "/about": {
         path: "/about",
@@ -47,15 +151,23 @@ export const ROUTES = {
             "@graph": [
                 {
                     "@type": "Organization",
-                    "@id": `${SITE_URL}/#organization`,
+                    "@id": ORG_ID,
                     name: SITE_NAME,
                     legalName: LEGAL_NAME,
+                    description:
+                        "Plasmatic builds Orion, the governed services platform for teams building software with AI.",
                     url: `${SITE_URL}/`,
                     logo: `${SITE_URL}/favicon.svg`,
                     foundingDate: "2025",
                     address: {
                         "@type": "PostalAddress",
                         addressCountry: "SG",
+                    },
+                    contactPoint: {
+                        "@type": "ContactPoint",
+                        email: CONTACT_EMAIL,
+                        contactType: "sales",
+                        url: `${SITE_URL}/contact`,
                     },
                     // The LinkedIn company URL is deliberately absent until it
                     // is confirmed: sameAs is what resolves Plasmatic as an
@@ -73,7 +185,7 @@ export const ROUTES = {
                     "@id": `${SITE_URL}/about#muthu`,
                     name: "AKM Muthaalagan",
                     jobTitle: "Founder and CEO",
-                    worksFor: { "@id": `${SITE_URL}/#organization` },
+                    worksFor: { "@id": ORG_ID },
                     sameAs: ["https://www.linkedin.com/in/akmmuthu/"],
                     image: `${SITE_URL}/team/akmmuthu.jpg`,
                 },
@@ -82,7 +194,7 @@ export const ROUTES = {
                     "@id": `${SITE_URL}/about#harishankar`,
                     name: "Harishankar Narayanan",
                     jobTitle: "Co-founder, Engineering and Technology Strategy",
-                    worksFor: { "@id": `${SITE_URL}/#organization` },
+                    worksFor: { "@id": ORG_ID },
                     sameAs: ["https://www.linkedin.com/in/code42tiger/"],
                     image: `${SITE_URL}/team/harishankar.jpg`,
                 },
@@ -91,18 +203,9 @@ export const ROUTES = {
                     "@id": `${SITE_URL}/about#vinay`,
                     name: "Vinay Raja",
                     jobTitle: "Co-founder, Product and Experience",
-                    worksFor: { "@id": `${SITE_URL}/#organization` },
+                    worksFor: { "@id": ORG_ID },
                     sameAs: ["https://www.linkedin.com/in/vinayraja/"],
                     image: `${SITE_URL}/team/vinay.jpg`,
-                },
-                {
-                    "@type": "SoftwareApplication",
-                    name: "Plasmatic Orion",
-                    applicationCategory: "DeveloperApplication",
-                    operatingSystem: "Linux, macOS",
-                    codeRepository: `${GITHUB_ORG_URL}/Orion`,
-                    license: "https://www.apache.org/licenses/LICENSE-2.0",
-                    publisher: { "@id": `${SITE_URL}/#organization` },
                 },
             ],
         },
@@ -124,5 +227,17 @@ export const ROUTES = {
         title: "Terms of Service – Plasmatic",
         description:
             "The terms governing use of the Plasmatic website and services.",
+    },
+    // Not a navigable route: the catch-all <Route path="*"> renders it, and the
+    // prerender plugin emits it as dist/404.html. `noindex` is what keeps the
+    // unlimited number of URLs that resolve here out of the index, since the
+    // SPA fallback answers all of them with HTTP 200. Deliberately absent from
+    // sitemap.xml.
+    "/404": {
+        path: "/404",
+        title: "Page not found – Plasmatic",
+        description:
+            "The address you followed is not a page on this site. Find Orion, the team, or the documentation instead.",
+        noindex: true,
     },
 };
