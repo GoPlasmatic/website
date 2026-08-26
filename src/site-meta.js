@@ -228,11 +228,11 @@ export const ROUTES = {
         description:
             "The terms governing use of the Plasmatic website and services.",
     },
-    // Not a navigable route: the catch-all <Route path="*"> renders it, and the
-    // prerender plugin emits it as dist/404.html. `noindex` is what keeps the
-    // unlimited number of URLs that resolve here out of the index, since the
-    // SPA fallback answers all of them with HTTP 200. Deliberately absent from
-    // sitemap.xml.
+    // Not a navigable route: the catch-all <Route path="*"> renders it, and
+    // tools/prerender.mjs emits it as dist/404.html, which Cloudflare serves
+    // with a real 404 status. `noindex` covers the client-rendered case, where
+    // an in-app navigation to a dead link swaps in NotFound without a new
+    // response. Deliberately absent from sitemap.xml.
     "/404": {
         path: "/404",
         title: "Page not found – Plasmatic",

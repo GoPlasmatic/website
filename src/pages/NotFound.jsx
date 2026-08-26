@@ -7,13 +7,12 @@ import legalCss from "../styles/legal.css?inline";
 
 // Catch-all route. Without this, an unmatched path rendered an empty <main>
 // under the nav and footer, which crawlers read as a soft 404: HTTP 200, the
-// home page's title, and no content. The static /404.html stub emitted by the
-// route-prerender plugin carries the same copy plus a noindex robots tag.
+// home page's title, and no content.
 //
-// Note the status code is still 200 — Cloudflare's
-// not_found_handling:"single-page-application" serves the SPA shell for unknown
-// paths. The noindex directive is what keeps these out of the index; see
-// site-meta.js.
+// In production this markup is served as dist/404.html with a real 404 status
+// (wrangler.jsonc not_found_handling:"404-page"). It renders client-side too,
+// for an in-app navigation to a dead link, which is why the noindex in
+// site-meta.js is kept as well.
 export default function NotFound() {
     usePageMeta(ROUTES["/404"]);
     usePageStyles(legalCss);

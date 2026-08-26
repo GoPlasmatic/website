@@ -14,7 +14,9 @@
 //
 // Cloudflare serves dist/orion/index.html at /orion via
 // html_handling:"drop-trailing-slash"; /404.html is written flat because
-// not_found_handling:"single-page-application" looks for it at the root.
+// not_found_handling:"404-page" looks for it at the root. That setting only
+// works because this script emits a stub for every route, so a deep link never
+// needs an SPA fallback — a route missing from ROUTES will hard-404.
 
 import {
     readFileSync,
@@ -65,9 +67,9 @@ function applyRouteMeta(html, meta, rendered) {
     h = setMeta(h, "name", "twitter:description", d);
     h = h.replace(/(<link rel="canonical" href=")[\s\S]*?(")/, `$1${url}$2`);
 
-    // Every URL that is not a real route resolves to the 404 stub with HTTP
-    // 200, because the SPA fallback cannot return a status. noindex is what
-    // keeps that unbounded URL space out of the index.
+    // The 404 stub is served with a real 404 status, so this is belt and
+    // braces — but it also covers the client-rendered case, where an in-app
+    // navigation to a dead link swaps in NotFound without a new response.
     if (meta.noindex) {
         h = injectHead(h, `    <meta name="robots" content="noindex, follow" />`);
     }

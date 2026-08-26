@@ -20,9 +20,17 @@
   ],
   "assets": {
     "directory": "./dist",
-    // Serve /index.html with a 200 for any path that doesn't match a built file,
-    // so React Router deep links (/orion, /contact, /privacy, /terms) boot the SPA.
-    "not_found_handling": "single-page-application",
+    // Serve /404.html with a real 404 for any path that doesn't match a built
+    // file. This used to be "single-page-application", which answered every
+    // unknown URL with /index.html and a 200 — a soft 404 on an unbounded URL
+    // space. It is safe now only because tools/prerender.mjs emits a stub for
+    // every route in src/site-meta.js, so deep links resolve to their own file
+    // rather than needing the fallback.
+    //
+    // CONSEQUENCE: adding a React Router route without adding it to ROUTES in
+    // src/site-meta.js now yields a hard 404 in production instead of silently
+    // booting the SPA. Add the route to both.
+    "not_found_handling": "404-page",
     // Serve /orion directly (no auto-added trailing slash); /orion/ 307s to /orion.
     // Keeps URLs matching the app's routes and the sitemap.
     "html_handling": "drop-trailing-slash"
