@@ -417,6 +417,13 @@ body.bio-open {
     min-height: 0;
 }
 
+/* The `display: flex` above outranks the UA's `[hidden] { display: none }`,
+   so without this the two inactive panels render stacked under the active
+   one. */
+.bio-dialog-inner[hidden] {
+    display: none;
+}
+
 .bio-dialog-close {
     position: absolute;
     top: 14px;
@@ -550,6 +557,14 @@ body.bio-open {
 @media (max-width: 640px) {
     .repo-list {
         font-size: 11px;
+    }
+
+    /* Side-by-side, the photo plus the close-button gutter leave the name
+       ~130px on a 360px phone, so it wraps mid-word and abuts the button. */
+    .bio-dialog-head {
+        flex-direction: column;
+        gap: 16px;
+        padding-right: var(--pad-card-lg);
     }
 
     .repo-list li:not(:last-child)::after {
