@@ -73,10 +73,10 @@ automation platforms for long-running human workflows.
 - **AKM Muthaalagan** — Founder and CEO. Nearly three decades in banking,
   fintech, data and enterprise technology, most of it in senior roles inside
   Singapore's major banks.
-- **Harishankar Narayanan** — Co-founder, engineering and technology strategy.
+- **Harishankar Narayanan** — Founder, engineering and technology strategy.
   Over 21 years designing low-latency systems and scaling engineering
   organizations; previously Senior Director at Global Payments and at Volante
   Technologies, architecting core payment engines.
-- **Vinay Raja** — Co-founder, product and experience. Fifteen years in product,
+- **Vinay Raja** — Founder, product and experience. Fifteen years in product,
   design and positioning; previously Creative and Digital Experience Director at
   AVJennings and creative services lead for Asia Pacific at PageGroup.

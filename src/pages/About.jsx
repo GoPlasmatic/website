@@ -57,7 +57,7 @@ const TEAM = [
         id: "harishankar",
         name: "Harishankar Narayanan",
         photo: "/team/harishankar.jpg",
-        role: "Co-founder, engineering and technology strategy",
+        role: "Founder, Engineering and Technology Strategy",
         tint: "icon-blue",
         linkedin: "https://www.linkedin.com/in/code42tiger/",
         bio: [
@@ -70,7 +70,7 @@ const TEAM = [
         id: "vinay",
         name: "Vinay Raja",
         photo: "/team/vinay.jpg",
-        role: "Co-founder, Product and Experience",
+        role: "Founder, Product and Experience",
         tint: "icon-yellow",
         linkedin: "https://www.linkedin.com/in/vinayraja/",
         bio: [
