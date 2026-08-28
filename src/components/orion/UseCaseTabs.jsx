@@ -37,7 +37,7 @@ const USE_CASES = {
     agents: {
         label: "Agent tools",
         title: "AI agent tools",
-        desc: "An agent calls your channels as tools, and via MCP it drafts the workflows behind them.",
+        desc: "An agent calls your channels as tools, and through the CLI and its skills it drafts the workflows behind them.",
         writes: "The tools themselves.",
         carries: "Lifecycle rules the agent operates inside: draft, dry-run, then explicit activation.",
     },

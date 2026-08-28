@@ -63,7 +63,7 @@ export const ORION_FAQ = [
     },
     {
         q: "What kinds of services can Orion run?",
-        a: "Microservice APIs, decision APIs expressed as JSONLogic condition trees, Kafka event pipelines, webhook and data ingestion that normalizes payloads from providers such as Stripe, GitHub or Shopify, and tools that AI agents call directly over MCP.",
+        a: "Microservice APIs, decision APIs expressed as JSONLogic condition trees, Kafka event pipelines, webhook and data ingestion that normalizes payloads from providers such as Stripe, GitHub or Shopify, and tools that AI agents call directly.",
     },
     {
         q: "How does Orion govern what AI changes?",

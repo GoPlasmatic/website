@@ -343,8 +343,9 @@ export default function Home() {
                                 <h4>Built for AI authorship</h4>
                                 <p>
                                     An assistant drafts, dry-runs and rolls
-                                    back services over MCP, inside the same
-                                    lifecycle rules engineers follow.
+                                    back services through the CLI and admin
+                                    API, inside the same lifecycle rules
+                                    engineers follow.
                                 </p>
                             </div>
                             <div className="card orion-feature-card">
@@ -446,12 +447,13 @@ export default function Home() {
                             </div>
                             <h3>API-first &amp; developer-friendly</h3>
                             <p className="capability-subtitle">
-                                Admin API, CLI, MCP
+                                Admin API, CLI, skills
                             </p>
                             <p>
-                                Admin API, CLI, CI/CD packages and an MCP
-                                server, so an assistant operates the runtime
-                                the same governed way engineers do.
+                                Admin API, CLI, CI/CD packages and skills
+                                for AI assistants, so an assistant operates
+                                the runtime the same governed way engineers
+                                do.
                             </p>
                         </div>
                     </div>

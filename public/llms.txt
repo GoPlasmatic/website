@@ -25,9 +25,9 @@ It runs five kinds of service:
   with retries, duplicate suppression and a dead-letter queue.
 - **Webhook and data ingestion** — normalize Stripe, GitHub or Shopify payloads,
   then write to your databases over pooled connections.
-- **AI agent tools** — agents call your channels as tools and, over MCP, draft
-  the workflows behind them, inside a draft / dry-run / explicit-activation
-  lifecycle.
+- **AI agent tools** — agents call your channels as tools and, through the CLI
+  and admin API, draft the workflows behind them, inside a draft / dry-run /
+  explicit-activation lifecycle.
 
 ## How it governs AI-authored change
 

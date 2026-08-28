@@ -349,8 +349,9 @@ export default function Orion() {
                                 </div>
                                 <h3>AI builds</h3>
                                 <p className="section-body comparison-intro">
-                                    Over MCP, an assistant works through the
-                                    same admin API engineers use:
+                                    With the CLI and a set of skills, an
+                                    assistant works through the same admin API
+                                    engineers use:
                                 </p>
                                 <div className="comparison-points">
                                     <div className="comparison-point">
